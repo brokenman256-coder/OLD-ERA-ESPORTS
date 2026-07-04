@@ -1,6 +1,7 @@
 # Old Era Esports — Tournament Platform
 
-A gaming tournament platform built with Next.js 16 (App Router), Prisma, and SQLite.
+A gaming tournament platform built with Next.js 16 (App Router), Prisma, and PostgreSQL.
+Deployed on Vercel with Neon Postgres and Vercel Blob for payment-screenshot storage.
 
 - **Players** browse tournaments and register, optionally paying an entry fee.
 - **Organizers** (from any firm/company) post their own tournaments, paying a hosting fee.
@@ -21,21 +22,31 @@ A gaming tournament platform built with Next.js 16 (App Router), Prisma, and SQL
 
 ```bash
 npm install
-cp .env.example .env   # then edit JWT_SECRET / ADMIN_* values
-npx prisma migrate deploy   # creates the SQLite database
+cp .env.example .env   # then fill in DATABASE_URL(_UNPOOLED), JWT_SECRET, ADMIN_*, BLOB_READ_WRITE_TOKEN
+npx prisma migrate deploy   # applies migrations to your Postgres database
 npm run db:seed             # creates/updates the admin account from .env
 npm run dev
 ```
 
 Visit `http://localhost:3000`.
 
+On Vercel, the `build` script (`prisma migrate deploy && tsx prisma/seed.ts && next build`)
+runs migrations and seeds the admin account automatically on every deploy — both are
+idempotent, so this is safe to run repeatedly.
+
 ### Environment variables
 
 | Variable | Purpose |
 | --- | --- |
-| `DATABASE_URL` | SQLite file path, defaults to `file:./dev.db` |
+| `DATABASE_URL` | Pooled Postgres connection string (used at runtime/query time) |
+| `DATABASE_URL_UNPOOLED` | Direct (non-pooled) Postgres connection string, used by Prisma Migrate |
 | `JWT_SECRET` | Secret used to sign session cookies. Generate with `openssl rand -base64 32` |
 | `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` | Used by `npm run db:seed` to create/update the admin account |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token used to store payment screenshots |
+
+If you provision Postgres via the **Neon** integration in Vercel's Storage tab (or
+`vercel integration add neon`), `DATABASE_URL` and `DATABASE_URL_UNPOOLED` are set for
+you automatically. Same for `BLOB_READ_WRITE_TOKEN` via `vercel blob create-store`.
 
 **Log in as admin** with `ADMIN_EMAIL` / `ADMIN_PASSWORD` (defaults in `.env`), then go to
 **Account** in the nav bar and change the password immediately.
@@ -57,15 +68,15 @@ Visit `http://localhost:3000`.
    Only an `ADMIN` account can reach these routes/pages (enforced both by the `proxy.ts`
    route guard and by every API route via `requireRole`).
 
-Payment screenshots are stored on local disk under `public/uploads/payments/` and are not
-committed to git. **If you deploy to a platform with an ephemeral/read-only filesystem
-(e.g. serverless functions), uploaded files will not persist across deploys** — swap
-`src/lib/upload.ts` for an object-storage backend (S3, R2, etc.) in that case.
+Payment screenshots are uploaded to **Vercel Blob** (public access, unguessable random
+filenames) via `src/lib/upload.ts`, and the returned URL is stored on the record. This
+works on serverless/ephemeral filesystems like Vercel, unlike writing to local disk.
 
 ## Tech stack
 
 - Next.js 16 (App Router, Turbopack, the `proxy.ts` convention replacing `middleware.ts`)
-- Prisma 5 + SQLite
+- Prisma 5 + PostgreSQL (Neon)
+- Vercel Blob for payment-screenshot storage
 - JWT session cookies (`jsonwebtoken` + `bcryptjs`), no third-party auth provider
 - Tailwind CSS v4
 

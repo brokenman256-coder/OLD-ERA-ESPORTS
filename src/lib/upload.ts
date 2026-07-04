@@ -1,6 +1,5 @@
 import { randomUUID } from "crypto";
-import { mkdir, writeFile } from "fs/promises";
-import path from "path";
+import { put } from "@vercel/blob";
 
 const ALLOWED_TYPES: Record<string, string> = {
   "image/png": "png",
@@ -10,13 +9,11 @@ const ALLOWED_TYPES: Record<string, string> = {
 
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads", "payments");
-
 export class UploadError extends Error {}
 
 /**
- * Saves an uploaded payment-screenshot image to disk and returns the
- * public-facing path to store on the record (e.g. "/uploads/payments/xyz.png").
+ * Uploads a payment-screenshot image to Vercel Blob storage and returns its
+ * public URL to store on the record.
  */
 export async function savePaymentScreenshot(file: File): Promise<string> {
   const ext = ALLOWED_TYPES[file.type];
@@ -27,11 +24,12 @@ export async function savePaymentScreenshot(file: File): Promise<string> {
     throw new UploadError("Payment screenshot must be smaller than 5MB.");
   }
 
-  await mkdir(UPLOAD_DIR, { recursive: true });
+  const filename = `payments/${randomUUID()}.${ext}`;
+  const blob = await put(filename, file, {
+    access: "public",
+    contentType: file.type,
+    addRandomSuffix: false,
+  });
 
-  const filename = `${randomUUID()}.${ext}`;
-  const buffer = Buffer.from(await file.arrayBuffer());
-  await writeFile(path.join(UPLOAD_DIR, filename), buffer);
-
-  return `/uploads/payments/${filename}`;
+  return blob.url;
 }

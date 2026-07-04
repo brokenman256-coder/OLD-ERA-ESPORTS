@@ -43,10 +43,6 @@ next-env.d.ts
 
 /src/generated/prisma
 
-# sqlite database
+# sqlite database (legacy local dev only; production uses Postgres)
 /prisma/dev.db
 /prisma/dev.db-journal
-
-# user-uploaded payment screenshots
-/public/uploads/payments/*
-!/public/uploads/payments/.gitkeep
