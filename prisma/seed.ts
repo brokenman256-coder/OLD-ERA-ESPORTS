@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  const email = (process.env.ADMIN_EMAIL || "arpanattri73@gmail.com").toLowerCase();
+  const email = (process.env.ADMIN_EMAIL || "brokenman256@gmail.com").toLowerCase();
   const password = process.env.ADMIN_PASSWORD || "ChangeMe123!";
   const name = process.env.ADMIN_NAME || "Old Era Esports Admin";
 
