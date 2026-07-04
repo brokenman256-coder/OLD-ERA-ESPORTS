@@ -1,0 +1,75 @@
+// Prisma schema for Old Era Esports tournament platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Role: "PLAYER" | "ORGANIZER" | "ADMIN"
+// ApprovalStatus: "PENDING" | "APPROVED" | "REJECTED"
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("PLAYER")
+  firmName     String? // organizer's company / firm name
+  phone        String?
+  isBanned     Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tournaments   Tournament[]   @relation("OrganizerTournaments")
+  registrations Registration[]
+}
+
+model Tournament {
+  id          String         @id @default(cuid())
+  title       String
+  game        String
+  description String
+  rules       String?
+  prizePool   String?
+  entryFee    Float          @default(0)
+  hostingFee  Float          @default(0)
+  maxSlots    Int?
+  startDate   DateTime
+  endDate     DateTime?
+
+  organizerId String
+  organizer   User   @relation("OrganizerTournaments", fields: [organizerId], references: [id], onDelete: Cascade)
+
+  status              String  @default("PENDING")
+  reviewNote          String?
+  hostingFeeProof     String? // path to payment screenshot for hosting fee
+  hostingFeeVerified  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  registrations Registration[]
+}
+
+model Registration {
+  id           String @id @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  playerId String
+  player   User   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+
+  teamName      String?
+  paymentProof  String? // path to payment screenshot for entry fee
+  status        String  @default("PENDING")
+  reviewNote    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tournamentId, playerId])
+}
