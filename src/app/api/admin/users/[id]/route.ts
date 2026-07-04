@@ -21,6 +21,7 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (typeof body.isBanned === "boolean") data.isBanned = body.isBanned;
     if (typeof body.name === "string") data.name = body.name;
     if (typeof body.firmName === "string") data.firmName = body.firmName;
+    if (typeof body.isVerified === "boolean") data.isVerified = body.isVerified;
 
     const updated = await prisma.user.update({ where: { id }, data });
     return NextResponse.json({ user: publicUser(updated) });

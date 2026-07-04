@@ -54,7 +54,9 @@ export default function RegistrationsTab() {
             key={f}
             onClick={() => setFilter(f)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-              filter === f ? "bg-black text-white" : "bg-neutral-100 text-neutral-600"
+              filter === f
+                ? "bg-black text-white dark:bg-white dark:text-black"
+                : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
             }`}
           >
             {f}
@@ -69,7 +71,7 @@ export default function RegistrationsTab() {
       ) : (
         <div className="mt-6 space-y-4">
           {registrations.map((r) => (
-            <div key={r.id} className="rounded-lg border border-neutral-200 bg-white p-5">
+            <div key={r.id} className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h3 className="text-lg font-bold">{r.tournament.title}</h3>

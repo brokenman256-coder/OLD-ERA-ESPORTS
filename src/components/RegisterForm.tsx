@@ -1,7 +1,14 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+interface Team {
+  id: string;
+  name: string;
+  tag: string | null;
+}
 
 export default function RegisterForm({
   tournamentId,
@@ -10,12 +17,21 @@ export default function RegisterForm({
   tournamentId: string;
   entryFee: number;
 }) {
+  const [teams, setTeams] = useState<Team[]>([]);
+  const [teamId, setTeamId] = useState("");
   const [teamName, setTeamName] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    fetch("/api/teams")
+      .then((res) => res.json())
+      .then((data) => setTeams(data.teams ?? []))
+      .catch(() => setTeams([]));
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -28,7 +44,8 @@ export default function RegisterForm({
 
     setLoading(true);
     const form = new FormData();
-    if (teamName) form.set("teamName", teamName);
+    if (teamId) form.set("teamId", teamId);
+    else if (teamName) form.set("teamName", teamName);
     if (file) form.set("paymentProof", file);
 
     const res = await fetch(`/api/tournaments/${tournamentId}/register`, {
@@ -49,7 +66,7 @@ export default function RegisterForm({
 
   if (done) {
     return (
-      <div className="rounded-md border border-green-300 bg-green-50 p-4 text-green-800">
+      <div className="rounded-md border border-green-300 bg-green-50 p-4 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-300">
         You&apos;re registered! {entryFee > 0
           ? "Your payment screenshot is pending admin verification."
           : "Your spot is confirmed."}
@@ -58,18 +75,53 @@ export default function RegisterForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border border-neutral-200 bg-white p-6">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 rounded-lg border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900"
+    >
       <h3 className="text-lg font-bold">Register for this tournament</h3>
 
-      <div>
-        <label className="block text-sm font-medium">Team / IGN (optional)</label>
-        <input
-          type="text"
-          value={teamName}
-          onChange={(e) => setTeamName(e.target.value)}
-          className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
-        />
-      </div>
+      {teams.length > 0 ? (
+        <div>
+          <label className="block text-sm font-medium">Register as</label>
+          <select
+            value={teamId}
+            onChange={(e) => setTeamId(e.target.value)}
+            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+          >
+            <option value="">Solo (just me)</option>
+            {teams.map((t) => (
+              <option key={t.id} value={t.id}>
+                {t.name} {t.tag ? `[${t.tag}]` : ""}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-neutral-500">
+            Manage your squads on the{" "}
+            <Link href="/teams" className="text-red-600 hover:underline">
+              Teams
+            </Link>{" "}
+            page.
+          </p>
+        </div>
+      ) : (
+        <div>
+          <label className="block text-sm font-medium">Team / IGN (optional)</label>
+          <input
+            type="text"
+            value={teamName}
+            onChange={(e) => setTeamName(e.target.value)}
+            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+          />
+          <p className="mt-1 text-xs text-neutral-500">
+            Want to register as a squad? Create one on the{" "}
+            <Link href="/teams" className="text-red-600 hover:underline">
+              Teams
+            </Link>{" "}
+            page first.
+          </p>
+        </div>
+      )}
 
       {entryFee > 0 && (
         <div>

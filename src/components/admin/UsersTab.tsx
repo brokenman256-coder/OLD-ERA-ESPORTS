@@ -9,6 +9,7 @@ interface UserRow {
   role: string;
   firmName: string | null;
   isBanned: boolean;
+  isVerified: boolean;
   createdAt: string;
 }
 
@@ -46,6 +47,15 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
     load();
   }
 
+  async function toggleVerified(id: string, isVerified: boolean) {
+    await fetch(`/api/admin/users/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isVerified: !isVerified }),
+    });
+    load();
+  }
+
   async function removeUser(id: string) {
     if (!window.confirm("Delete this user and all their tournaments/registrations?")) return;
     await fetch(`/api/admin/users/${id}`, { method: "DELETE" });
@@ -58,7 +68,7 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
     <div className="overflow-x-auto">
       <table className="w-full min-w-[700px] text-left text-sm">
         <thead>
-          <tr className="border-b border-neutral-200 text-neutral-500">
+          <tr className="border-b border-neutral-200 text-neutral-500 dark:border-neutral-800">
             <th className="py-2 pr-4">Name</th>
             <th className="py-2 pr-4">Email</th>
             <th className="py-2 pr-4">Role</th>
@@ -68,7 +78,7 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
         </thead>
         <tbody>
           {users.map((u) => (
-            <tr key={u.id} className="border-b border-neutral-100">
+            <tr key={u.id} className="border-b border-neutral-100 dark:border-neutral-900">
               <td className="py-2 pr-4">
                 {u.name}
                 {u.firmName && <span className="text-neutral-500"> ({u.firmName})</span>}
@@ -79,7 +89,7 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
                   value={u.role}
                   disabled={u.id === currentAdminId}
                   onChange={(e) => setRole(u.id, e.target.value)}
-                  className="rounded-md border border-neutral-300 px-2 py-1"
+                  className="rounded-md border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
                 >
                   <option value="PLAYER">PLAYER</option>
                   <option value="ORGANIZER">ORGANIZER</option>
@@ -89,16 +99,26 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
               <td className="py-2 pr-4">{u.isBanned ? "Banned" : "Active"}</td>
               <td className="py-2 pr-4 space-x-2">
                 <button
+                  onClick={() => toggleVerified(u.id, u.isVerified)}
+                  className={`rounded-md px-3 py-1 text-xs font-medium hover:opacity-80 ${
+                    u.isVerified
+                      ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
+                      : "bg-neutral-100 dark:bg-neutral-800"
+                  }`}
+                >
+                  {u.isVerified ? "Verified ✓" : "Verify"}
+                </button>
+                <button
                   disabled={u.id === currentAdminId}
                   onClick={() => toggleBan(u.id, u.isBanned)}
-                  className="rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium hover:bg-neutral-200 disabled:opacity-40"
+                  className="rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium hover:bg-neutral-200 disabled:opacity-40 dark:bg-neutral-800 dark:hover:bg-neutral-700"
                 >
                   {u.isBanned ? "Unban" : "Ban"}
                 </button>
                 <button
                   disabled={u.id === currentAdminId}
                   onClick={() => removeUser(u.id)}
-                  className="rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium text-red-600 hover:bg-neutral-200 disabled:opacity-40"
+                  className="rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium text-red-600 hover:bg-neutral-200 disabled:opacity-40 dark:bg-neutral-800 dark:hover:bg-neutral-700"
                 >
                   Delete
                 </button>

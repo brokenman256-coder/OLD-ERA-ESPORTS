@@ -2,6 +2,10 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { TOURNAMENT_FORMAT_LABELS } from "@/lib/constants";
+
+const inputClass =
+  "mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950";
 
 export default function CreateTournamentForm() {
   const [error, setError] = useState<string | null>(null);
@@ -9,6 +13,7 @@ export default function CreateTournamentForm() {
   const [open, setOpen] = useState(false);
   const [hostingFee, setHostingFee] = useState("0");
   const [proof, setProof] = useState<File | null>(null);
+  const [banner, setBanner] = useState<File | null>(null);
   const router = useRouter();
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -24,6 +29,7 @@ export default function CreateTournamentForm() {
     setLoading(true);
     const form = new FormData(e.currentTarget);
     if (proof) form.set("hostingFeeProof", proof);
+    if (banner) form.set("banner", banner);
 
     const res = await fetch("/api/tournaments", { method: "POST", body: form });
     const data = await res.json();
@@ -52,7 +58,7 @@ export default function CreateTournamentForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-lg border border-neutral-200 bg-white p-6"
+      className="space-y-4 rounded-lg border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900"
     >
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold">Post a new tournament</h3>
@@ -64,48 +70,75 @@ export default function CreateTournamentForm() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="block text-sm font-medium">Title</label>
-          <input name="title" required className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2" />
+          <input name="title" required className={inputClass} />
         </div>
         <div>
           <label className="block text-sm font-medium">Game</label>
-          <input name="game" required className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2" />
+          <input name="game" required className={inputClass} />
         </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Cover banner (optional)</label>
+        <input
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          onChange={(e) => setBanner(e.target.files?.[0] ?? null)}
+          className="mt-1 w-full text-sm"
+        />
+        <p className="mt-1 text-xs text-neutral-500">A wide image shown at the top of your tournament page and its card.</p>
       </div>
 
       <div>
         <label className="block text-sm font-medium">Description</label>
-        <textarea
-          name="description"
-          required
-          rows={4}
-          className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
-        />
+        <textarea name="description" required rows={4} className={inputClass} />
       </div>
 
       <div>
         <label className="block text-sm font-medium">Rules (optional)</label>
-        <textarea name="rules" rows={3} className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2" />
+        <textarea name="rules" rows={3} className={inputClass} />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label className="block text-sm font-medium">Tags (comma-separated)</label>
+          <input name="tags" placeholder="ranked, 5v5, community" className={inputClass} />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Format</label>
+          <select name="format" defaultValue="SINGLE_ELIMINATION" className={inputClass}>
+            {Object.entries(TOURNAMENT_FORMAT_LABELS).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div>
+          <label className="block text-sm font-medium">Discord invite (optional)</label>
+          <input name="discordUrl" placeholder="https://discord.gg/..." className={inputClass} />
+        </div>
+        <div>
+          <label className="block text-sm font-medium">Stream URL (optional)</label>
+          <input name="streamUrl" placeholder="https://twitch.tv/..." className={inputClass} />
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         <div>
           <label className="block text-sm font-medium">Prize pool</label>
-          <input name="prizePool" className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2" placeholder="₹10,000" />
+          <input name="prizePool" className={inputClass} placeholder="₹10,000" />
         </div>
         <div>
           <label className="block text-sm font-medium">Entry fee (₹)</label>
-          <input
-            name="entryFee"
-            type="number"
-            min="0"
-            step="1"
-            defaultValue="0"
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
-          />
+          <input name="entryFee" type="number" min="0" step="1" defaultValue="0" className={inputClass} />
         </div>
         <div>
           <label className="block text-sm font-medium">Max slots</label>
-          <input name="maxSlots" type="number" min="1" className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2" />
+          <input name="maxSlots" type="number" min="1" className={inputClass} />
         </div>
         <div>
           <label className="block text-sm font-medium">Hosting fee (₹)</label>
@@ -116,7 +149,7 @@ export default function CreateTournamentForm() {
             step="1"
             value={hostingFee}
             onChange={(e) => setHostingFee(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+            className={inputClass}
           />
         </div>
       </div>
@@ -124,11 +157,11 @@ export default function CreateTournamentForm() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div>
           <label className="block text-sm font-medium">Start date</label>
-          <input name="startDate" type="datetime-local" required className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2" />
+          <input name="startDate" type="datetime-local" required className={inputClass} />
         </div>
         <div>
           <label className="block text-sm font-medium">End date (optional)</label>
-          <input name="endDate" type="datetime-local" className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2" />
+          <input name="endDate" type="datetime-local" className={inputClass} />
         </div>
       </div>
 

@@ -39,7 +39,7 @@ export default async function OrganizerDashboard() {
       ) : (
         <div className="mt-4 space-y-4">
           {tournaments.map((t) => (
-            <div key={t.id} className="rounded-lg border border-neutral-200 bg-white p-5">
+            <div key={t.id} className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <Link href={`/tournaments/${t.id}`} className="text-lg font-bold hover:underline">
@@ -59,7 +59,7 @@ export default async function OrganizerDashboard() {
                 <StatusBadge status={t.status} />
               </div>
               {t.reviewNote && (
-                <p className="mt-3 text-sm text-neutral-600">Admin note: {t.reviewNote}</p>
+                <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">Admin note: {t.reviewNote}</p>
               )}
               {t.hostingFeeProof && (
                 <a

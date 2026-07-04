@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import Avatar from "@/components/Avatar";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface Me {
   id: string;
@@ -10,6 +12,7 @@ interface Me {
   email: string;
   role: string;
   firmName: string | null;
+  avatarUrl: string | null;
 }
 
 export default function Navbar() {
@@ -37,27 +40,39 @@ export default function Navbar() {
         ? "/dashboard/organizer"
         : "/dashboard/player";
 
+  const profileHref =
+    user?.role === "ORGANIZER" ? `/organizers/${user.id}` : user?.role === "PLAYER" ? `/players/${user.id}` : null;
+
   return (
-    <header className="border-b border-black/10 dark:border-white/10 bg-black text-white">
+    <header className="sticky top-0 z-10 border-b border-black/10 bg-black text-white dark:border-white/10">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="text-lg font-bold tracking-tight">
           OLD ERA ESPORTS
         </Link>
-        <div className="flex items-center gap-6 text-sm">
+        <div className="flex items-center gap-5 text-sm">
           <Link href="/tournaments" className="hover:text-red-400">
             Tournaments
           </Link>
+          {user !== undefined && <ThemeToggle />}
           {user === undefined ? null : user ? (
             <>
               <Link href={dashboardHref} className="hover:text-red-400">
                 Dashboard
               </Link>
+              {user.role === "PLAYER" && (
+                <Link href="/teams" className="hover:text-red-400">
+                  Teams
+                </Link>
+              )}
               <Link href="/account" className="hover:text-red-400">
                 Account
               </Link>
-              <span className="hidden text-white/50 sm:inline">
-                {user.name} ({user.role})
-              </span>
+              {profileHref && (
+                <Link href={profileHref} className="flex items-center gap-2 hover:opacity-80">
+                  <Avatar name={user.firmName || user.name} src={user.avatarUrl} size={28} />
+                  <span className="hidden text-white/50 sm:inline">{user.name}</span>
+                </Link>
+              )}
               <button
                 onClick={logout}
                 className="rounded-md bg-white/10 px-3 py-1.5 hover:bg-white/20"

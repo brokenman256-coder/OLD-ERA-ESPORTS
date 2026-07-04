@@ -32,6 +32,10 @@ const EDITABLE_FIELDS = [
   "maxSlots",
   "startDate",
   "endDate",
+  "tags",
+  "discordUrl",
+  "streamUrl",
+  "format",
 ] as const;
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {

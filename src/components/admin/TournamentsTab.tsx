@@ -71,7 +71,9 @@ export default function TournamentsTab() {
             key={f}
             onClick={() => setFilter(f)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-              filter === f ? "bg-black text-white" : "bg-neutral-100 text-neutral-600"
+              filter === f
+                ? "bg-black text-white dark:bg-white dark:text-black"
+                : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
             }`}
           >
             {f}
@@ -86,7 +88,7 @@ export default function TournamentsTab() {
       ) : (
         <div className="mt-6 space-y-4">
           {tournaments.map((t) => (
-            <div key={t.id} className="rounded-lg border border-neutral-200 bg-white p-5">
+            <div key={t.id} className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase text-red-600">{t.game}</p>
@@ -135,13 +137,13 @@ export default function TournamentsTab() {
                 )}
                 <button
                   onClick={() => setEditingId(editingId === t.id ? null : t.id)}
-                  className="rounded-md bg-neutral-100 px-3 py-1.5 text-sm font-medium hover:bg-neutral-200"
+                  className="rounded-md bg-neutral-100 px-3 py-1.5 text-sm font-medium hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
                 >
                   {editingId === t.id ? "Close editor" : "Edit"}
                 </button>
                 <button
                   onClick={() => remove(t.id)}
-                  className="rounded-md bg-neutral-100 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-neutral-200"
+                  className="rounded-md bg-neutral-100 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
                 >
                   Delete
                 </button>
@@ -193,29 +195,31 @@ function EditTournamentInline({
     onSaved();
   }
 
+  const fieldClass = "rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950";
+
   return (
-    <div className="mt-4 space-y-3 rounded-md border border-neutral-200 bg-neutral-50 p-4">
+    <div className="mt-4 space-y-3 rounded-md border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-950/50">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <input value={title} onChange={(e) => setTitle(e.target.value)} className="rounded-md border border-neutral-300 px-3 py-2" placeholder="Title" />
-        <input value={game} onChange={(e) => setGame(e.target.value)} className="rounded-md border border-neutral-300 px-3 py-2" placeholder="Game" />
+        <input value={title} onChange={(e) => setTitle(e.target.value)} className={fieldClass} placeholder="Title" />
+        <input value={game} onChange={(e) => setGame(e.target.value)} className={fieldClass} placeholder="Game" />
       </div>
       <textarea
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         rows={3}
-        className="w-full rounded-md border border-neutral-300 px-3 py-2"
+        className={`w-full ${fieldClass}`}
         placeholder="Description"
       />
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <input value={prizePool} onChange={(e) => setPrizePool(e.target.value)} className="rounded-md border border-neutral-300 px-3 py-2" placeholder="Prize pool" />
-        <input value={entryFee} onChange={(e) => setEntryFee(e.target.value)} type="number" className="rounded-md border border-neutral-300 px-3 py-2" placeholder="Entry fee" />
-        <input value={hostingFee} onChange={(e) => setHostingFee(e.target.value)} type="number" className="rounded-md border border-neutral-300 px-3 py-2" placeholder="Hosting fee" />
-        <input value={maxSlots} onChange={(e) => setMaxSlots(e.target.value)} type="number" className="rounded-md border border-neutral-300 px-3 py-2" placeholder="Max slots" />
+        <input value={prizePool} onChange={(e) => setPrizePool(e.target.value)} className={fieldClass} placeholder="Prize pool" />
+        <input value={entryFee} onChange={(e) => setEntryFee(e.target.value)} type="number" className={fieldClass} placeholder="Entry fee" />
+        <input value={hostingFee} onChange={(e) => setHostingFee(e.target.value)} type="number" className={fieldClass} placeholder="Hosting fee" />
+        <input value={maxSlots} onChange={(e) => setMaxSlots(e.target.value)} type="number" className={fieldClass} placeholder="Max slots" />
       </div>
       <button
         onClick={save}
         disabled={saving}
-        className="rounded-md bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800 disabled:opacity-50"
+        className="rounded-md bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
       >
         {saving ? "Saving..." : "Save changes"}
       </button>

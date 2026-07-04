@@ -13,7 +13,7 @@ export default async function PlayerDashboard() {
   const registrations = await prisma.registration.findMany({
     where: { playerId: user.id },
     orderBy: { createdAt: "desc" },
-    include: { tournament: { include: { organizer: true } } },
+    include: { tournament: { include: { organizer: true } }, team: true },
   });
 
   return (
@@ -34,7 +34,7 @@ export default async function PlayerDashboard() {
       ) : (
         <div className="mt-8 space-y-4">
           {registrations.map((r) => (
-            <div key={r.id} className="rounded-lg border border-neutral-200 bg-white p-5">
+            <div key={r.id} className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <Link
@@ -47,12 +47,18 @@ export default async function PlayerDashboard() {
                     {r.tournament.game} · hosted by{" "}
                     {r.tournament.organizer.firmName || r.tournament.organizer.name}
                   </p>
-                  {r.teamName && <p className="mt-1 text-sm">Team / IGN: {r.teamName}</p>}
+                  {r.team ? (
+                    <p className="mt-1 text-sm">
+                      Squad: {r.team.name} {r.team.tag ? `[${r.team.tag}]` : ""}
+                    </p>
+                  ) : (
+                    r.teamName && <p className="mt-1 text-sm">Team / IGN: {r.teamName}</p>
+                  )}
                 </div>
                 <StatusBadge status={r.status} />
               </div>
               {r.reviewNote && (
-                <p className="mt-3 text-sm text-neutral-600">Admin note: {r.reviewNote}</p>
+                <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">Admin note: {r.reviewNote}</p>
               )}
               {r.paymentProof && (
                 <a

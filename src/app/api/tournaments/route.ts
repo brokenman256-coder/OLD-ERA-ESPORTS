@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser, AuthError } from "@/lib/auth";
-import { savePaymentScreenshot, UploadError } from "@/lib/upload";
-import { APPROVAL, ROLES } from "@/lib/constants";
+import { savePaymentScreenshot, saveTournamentBanner, UploadError } from "@/lib/upload";
+import { APPROVAL, ROLES, TOURNAMENT_FORMATS } from "@/lib/constants";
 import { publicTournament } from "@/lib/serialize";
 
 export async function GET(req: NextRequest) {
@@ -64,6 +64,13 @@ export async function POST(req: NextRequest) {
     const maxSlots = maxSlotsRaw ? Number(maxSlotsRaw) : null;
     const startDateRaw = String(form.get("startDate") ?? "");
     const endDateRaw = form.get("endDate") ? String(form.get("endDate")) : null;
+    const tags = form.get("tags") ? String(form.get("tags")).trim() : null;
+    const discordUrl = form.get("discordUrl") ? String(form.get("discordUrl")).trim() : null;
+    const streamUrl = form.get("streamUrl") ? String(form.get("streamUrl")).trim() : null;
+    const formatRaw = form.get("format") ? String(form.get("format")) : TOURNAMENT_FORMATS.SINGLE_ELIMINATION;
+    const format = Object.values(TOURNAMENT_FORMATS).includes(formatRaw as never)
+      ? formatRaw
+      : TOURNAMENT_FORMATS.SINGLE_ELIMINATION;
 
     if (!title || !game || !description || !startDateRaw) {
       return NextResponse.json({ error: "Title, game, description, and start date are required" }, { status: 400 });
@@ -93,6 +100,12 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    let bannerUrl: string | null = null;
+    const bannerFile = form.get("banner");
+    if (bannerFile instanceof File && bannerFile.size > 0) {
+      bannerUrl = await saveTournamentBanner(bannerFile);
+    }
+
     const tournament = await prisma.tournament.create({
       data: {
         title,
@@ -105,6 +118,11 @@ export async function POST(req: NextRequest) {
         maxSlots,
         startDate,
         endDate,
+        bannerUrl,
+        tags,
+        discordUrl,
+        streamUrl,
+        format,
         organizerId: user.id,
         hostingFeeProof,
         status: APPROVAL.PENDING,

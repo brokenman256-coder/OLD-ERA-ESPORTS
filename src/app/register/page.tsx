@@ -46,7 +46,9 @@ export default function RegisterPage() {
           type="button"
           onClick={() => setRole("PLAYER")}
           className={`rounded-md border px-4 py-3 text-sm font-semibold ${
-            role === "PLAYER" ? "border-red-600 bg-red-50 text-red-700" : "border-neutral-300"
+            role === "PLAYER"
+              ? "border-red-600 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300"
+              : "border-neutral-300 dark:border-neutral-700"
           }`}
         >
           I&apos;m a Player
@@ -55,7 +57,9 @@ export default function RegisterPage() {
           type="button"
           onClick={() => setRole("ORGANIZER")}
           className={`rounded-md border px-4 py-3 text-sm font-semibold ${
-            role === "ORGANIZER" ? "border-red-600 bg-red-50 text-red-700" : "border-neutral-300"
+            role === "ORGANIZER"
+              ? "border-red-600 bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300"
+              : "border-neutral-300 dark:border-neutral-700"
           }`}
         >
           I&apos;m an Organizer
@@ -70,7 +74,7 @@ export default function RegisterPage() {
             required
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
           />
         </div>
 
@@ -82,7 +86,7 @@ export default function RegisterPage() {
               required
               value={firmName}
               onChange={(e) => setFirmName(e.target.value)}
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
               placeholder="e.g. Phoenix Gaming Pvt Ltd"
             />
           </div>
@@ -95,7 +99,7 @@ export default function RegisterPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
           />
         </div>
 
@@ -105,7 +109,7 @@ export default function RegisterPage() {
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
           />
         </div>
 
@@ -117,7 +121,7 @@ export default function RegisterPage() {
             minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2"
+            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
           />
           <p className="mt-1 text-xs text-neutral-500">At least 8 characters.</p>
         </div>

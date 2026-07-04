@@ -18,7 +18,7 @@ export default function AdminPanel({ currentAdminId }: { currentAdminId: string 
 
   return (
     <div>
-      <div className="flex gap-2 border-b border-neutral-200">
+      <div className="flex gap-2 border-b border-neutral-200 dark:border-neutral-800">
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -26,7 +26,7 @@ export default function AdminPanel({ currentAdminId }: { currentAdminId: string 
             className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium ${
               tab === t.key
                 ? "border-red-600 text-red-600"
-                : "border-transparent text-neutral-500 hover:text-neutral-800"
+                : "border-transparent text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
             }`}
           >
             {t.label}

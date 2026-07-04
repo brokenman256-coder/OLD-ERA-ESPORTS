@@ -12,6 +12,7 @@ datasource db {
 
 // Role: "PLAYER" | "ORGANIZER" | "ADMIN"
 // ApprovalStatus: "PENDING" | "APPROVED" | "REJECTED"
+// TournamentFormat: "SINGLE_ELIMINATION" | "DOUBLE_ELIMINATION" | "ROUND_ROBIN" | "SWISS" | "BATTLE_ROYALE"
 
 model User {
   id           String   @id @default(cuid())
@@ -22,11 +23,48 @@ model User {
   firmName     String? // organizer's company / firm name
   phone        String?
   isBanned     Boolean  @default(false)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
 
-  tournaments   Tournament[]   @relation("OrganizerTournaments")
+  avatarUrl     String?
+  bio           String?
+  discordHandle String?
+  twitterUrl    String?
+  websiteUrl    String?
+  isVerified    Boolean  @default(false) // verified-organizer / notable-player badge
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tournaments      Tournament[]   @relation("OrganizerTournaments")
+  registrations    Registration[]
+  captainOfTeams   Team[]         @relation("TeamCaptain")
+  teamMemberships  TeamMember[]
+}
+
+model Team {
+  id        String   @id @default(cuid())
+  name      String
+  tag       String? // short clan tag, e.g. "TSM"
+
+  captainId String
+  captain   User   @relation("TeamCaptain", fields: [captainId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  members       TeamMember[]
   registrations Registration[]
+}
+
+model TeamMember {
+  id     String @id @default(cuid())
+  teamId String
+  team   Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  joinedAt DateTime @default(now())
+
+  @@unique([teamId, userId])
 }
 
 model Tournament {
@@ -41,6 +79,12 @@ model Tournament {
   maxSlots    Int?
   startDate   DateTime
   endDate     DateTime?
+
+  bannerUrl  String?
+  tags       String? // comma-separated
+  discordUrl String?
+  streamUrl  String?
+  format     String  @default("SINGLE_ELIMINATION")
 
   organizerId String
   organizer   User   @relation("OrganizerTournaments", fields: [organizerId], references: [id], onDelete: Cascade)
@@ -64,7 +108,9 @@ model Registration {
   playerId String
   player   User   @relation(fields: [playerId], references: [id], onDelete: Cascade)
 
-  teamName      String?
+  teamName      String? // free-text team/IGN label shown alongside the registration
+  teamId        String? // optional link to a real Team roster
+  team          Team?   @relation(fields: [teamId], references: [id], onDelete: SetNull)
   paymentProof  String? // path to payment screenshot for entry fee
   status        String  @default("PENDING")
   reviewNote    String?

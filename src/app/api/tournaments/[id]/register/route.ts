@@ -37,6 +37,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     const form = await req.formData();
     const teamName = form.get("teamName") ? String(form.get("teamName")) : null;
+    const teamId = form.get("teamId") ? String(form.get("teamId")) : null;
+
+    if (teamId) {
+      const membership = await prisma.teamMember.findUnique({
+        where: { teamId_userId: { teamId, userId: user.id } },
+      });
+      if (!membership) {
+        return NextResponse.json({ error: "You're not a member of that team" }, { status: 403 });
+      }
+    }
 
     let paymentProof: string | null = null;
     const proofFile = form.get("paymentProof");
@@ -56,9 +66,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         tournamentId: id,
         playerId: user.id,
         teamName,
+        teamId,
         paymentProof,
         status: tournament.entryFee > 0 ? APPROVAL.PENDING : APPROVAL.APPROVED,
       },
+      include: { team: true },
     });
 
     return NextResponse.json({ registration: publicRegistration(registration) }, { status: 201 });
