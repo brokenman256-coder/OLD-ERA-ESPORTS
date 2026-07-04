@@ -21,6 +21,7 @@ export async function PATCH(req: NextRequest) {
     if (typeof body.upiId === "string") data.upiId = body.upiId.trim() || null;
     if (typeof body.whatsappLink === "string") data.whatsappLink = body.whatsappLink.trim() || null;
     if (typeof body.instagramUrl === "string") data.instagramUrl = body.instagramUrl.trim() || null;
+    if (typeof body.qrCodeUrl === "string" && body.qrCodeUrl === "") data.qrCodeUrl = null;
 
     const settings = await prisma.siteSettings.upsert({
       where: { id: "global" },

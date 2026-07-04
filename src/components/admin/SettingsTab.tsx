@@ -101,8 +101,24 @@ export default function SettingsTab() {
           <div>
             <label className="block text-sm font-medium">Payment QR code</label>
             {settings.qrCodeUrl && (
-              // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image
-              <img src={settings.qrCodeUrl} alt="Payment QR" className="mt-2 h-32 w-32 rounded-md border border-neutral-200 object-contain dark:border-neutral-700" />
+              <div className="mt-2 flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image */}
+                <img src={settings.qrCodeUrl} alt="Payment QR" className="h-32 w-32 rounded-md border border-neutral-200 object-contain dark:border-neutral-700" />
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await fetch("/api/admin/settings", {
+                      method: "PATCH",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ qrCodeUrl: "" }),
+                    });
+                    load();
+                  }}
+                  className="text-sm text-red-600 hover:underline"
+                >
+                  Remove
+                </button>
+              </div>
             )}
             <input
               type="file"
