@@ -2,6 +2,9 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { APPROVAL, ROLES } from "@/lib/constants";
 import TournamentCard from "@/components/TournamentCard";
+import PromoCarousel from "@/components/PromoCarousel";
+import StatCounter from "@/components/StatCounter";
+import SocialLinks from "@/components/SocialLinks";
 
 export default async function Home() {
   const [tournaments, liveCount, playerCount, organizerCount] = await Promise.all([
@@ -52,20 +55,30 @@ export default async function Home() {
             </Link>
           </div>
 
+          <PromoCarousel />
+
           <div className="mx-auto mt-14 grid max-w-lg grid-cols-3 gap-4 text-center">
             <div>
-              <p className="text-2xl font-bold sm:text-3xl">{liveCount}</p>
+              <p className="text-2xl font-bold sm:text-3xl">
+                <StatCounter value={liveCount} />
+              </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Live tournaments</p>
             </div>
             <div>
-              <p className="text-2xl font-bold sm:text-3xl">{playerCount}</p>
+              <p className="text-2xl font-bold sm:text-3xl">
+                <StatCounter value={playerCount} />
+              </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Players</p>
             </div>
             <div>
-              <p className="text-2xl font-bold sm:text-3xl">{organizerCount}</p>
+              <p className="text-2xl font-bold sm:text-3xl">
+                <StatCounter value={organizerCount} />
+              </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Organizers</p>
             </div>
           </div>
+
+          <SocialLinks className="mt-8 justify-center" />
         </div>
       </section>
 

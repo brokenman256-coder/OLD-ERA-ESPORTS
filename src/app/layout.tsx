@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Navbar from "@/components/Navbar";
+import SocialLinks from "@/components/SocialLinks";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -46,7 +47,12 @@ export default function RootLayout({
         <Navbar />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-black/10 py-6 text-center text-xs text-neutral-500 dark:border-white/10">
-          © {new Date().getFullYear()} Old Era Esports. All payments are verified manually by our admin team.
+          <div className="flex flex-col items-center gap-3">
+            <SocialLinks />
+            <p>
+              © {new Date().getFullYear()} Old Era Esports. All payments are verified manually by our admin team.
+            </p>
+          </div>
         </footer>
       </body>
     </html>

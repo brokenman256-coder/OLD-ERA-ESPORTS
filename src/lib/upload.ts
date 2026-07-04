@@ -45,3 +45,11 @@ export function saveTournamentBanner(file: File): Promise<string> {
 export function saveAvatar(file: File): Promise<string> {
   return uploadImage(file, "avatars");
 }
+
+export function saveQrCode(file: File): Promise<string> {
+  return uploadImage(file, "settings");
+}
+
+export function savePromoBanner(file: File): Promise<string> {
+  return uploadImage(file, "promos");
+}

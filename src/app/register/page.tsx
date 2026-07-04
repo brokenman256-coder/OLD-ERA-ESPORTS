@@ -104,9 +104,12 @@ export default function RegisterPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium">Phone (optional)</label>
+          <label className="block text-sm font-medium">
+            Phone {role === "ORGANIZER" ? "" : "(optional)"}
+          </label>
           <input
             type="tel"
+            required={role === "ORGANIZER"}
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"

@@ -6,6 +6,8 @@ import StatusBadge from "@/components/StatusBadge";
 interface Registration {
   id: string;
   teamName: string | null;
+  contactPhone: string | null;
+  squadMembers: { name: string; gameId: string }[] | null;
   paymentProof: string | null;
   status: string;
   reviewNote: string | null;
@@ -81,9 +83,20 @@ export default function RegistrationsTab() {
                     {r.teamName ? ` · Team/IGN: ${r.teamName}` : ""}
                   </p>
                   <p className="mt-1 text-sm">Entry fee: ₹{r.tournament.entryFee}</p>
+                  {r.contactPhone && <p className="mt-1 text-sm">Contact: {r.contactPhone}</p>}
                 </div>
                 <StatusBadge status={r.status} />
               </div>
+
+              {Array.isArray(r.squadMembers) && r.squadMembers.length > 0 && (
+                <div className="mt-3 grid grid-cols-2 gap-1 text-sm text-neutral-600 dark:text-neutral-400 sm:grid-cols-4">
+                  {r.squadMembers.map((m, i) => (
+                    <p key={i}>
+                      P{i + 1}: {m.name} ({m.gameId})
+                    </p>
+                  ))}
+                </div>
+              )}
 
               {r.paymentProof && (
                 <div className="mt-3">

@@ -47,16 +47,24 @@ export default async function PlayerDashboard() {
                     {r.tournament.game} · hosted by{" "}
                     {r.tournament.organizer.firmName || r.tournament.organizer.name}
                   </p>
-                  {r.team ? (
+                  {r.team && (
                     <p className="mt-1 text-sm">
                       Squad: {r.team.name} {r.team.tag ? `[${r.team.tag}]` : ""}
                     </p>
-                  ) : (
-                    r.teamName && <p className="mt-1 text-sm">Team / IGN: {r.teamName}</p>
                   )}
+                  {r.contactPhone && <p className="mt-1 text-sm">Contact: {r.contactPhone}</p>}
                 </div>
                 <StatusBadge status={r.status} />
               </div>
+              {Array.isArray(r.squadMembers) && r.squadMembers.length > 0 && (
+                <div className="mt-3 grid grid-cols-2 gap-1 text-sm text-neutral-600 dark:text-neutral-400">
+                  {(r.squadMembers as { name: string; gameId: string }[]).map((m, i) => (
+                    <p key={i}>
+                      P{i + 1}: {m.name} ({m.gameId})
+                    </p>
+                  ))}
+                </div>
+              )}
               {r.reviewNote && (
                 <p className="mt-3 text-sm text-neutral-600 dark:text-neutral-400">Admin note: {r.reviewNote}</p>
               )}

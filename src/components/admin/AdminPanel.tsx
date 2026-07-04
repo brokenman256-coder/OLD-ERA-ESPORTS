@@ -4,11 +4,15 @@ import { useState } from "react";
 import TournamentsTab from "./TournamentsTab";
 import RegistrationsTab from "./RegistrationsTab";
 import UsersTab from "./UsersTab";
+import SettingsTab from "./SettingsTab";
+import PromosTab from "./PromosTab";
 
 const TABS = [
   { key: "tournaments", label: "Tournaments & Hosting Fees" },
   { key: "registrations", label: "Player Payments" },
   { key: "users", label: "Users" },
+  { key: "settings", label: "Payment Settings" },
+  { key: "promos", label: "Promotions" },
 ] as const;
 
 type TabKey = (typeof TABS)[number]["key"];
@@ -18,7 +22,7 @@ export default function AdminPanel({ currentAdminId }: { currentAdminId: string 
 
   return (
     <div>
-      <div className="flex gap-2 border-b border-neutral-200 dark:border-neutral-800">
+      <div className="flex flex-wrap gap-2 border-b border-neutral-200 dark:border-neutral-800">
         {TABS.map((t) => (
           <button
             key={t.key}
@@ -38,6 +42,8 @@ export default function AdminPanel({ currentAdminId }: { currentAdminId: string 
         {tab === "tournaments" && <TournamentsTab />}
         {tab === "registrations" && <RegistrationsTab />}
         {tab === "users" && <UsersTab currentAdminId={currentAdminId} />}
+        {tab === "settings" && <SettingsTab />}
+        {tab === "promos" && <PromosTab />}
       </div>
     </div>
   );

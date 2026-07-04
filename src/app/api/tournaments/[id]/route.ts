@@ -28,7 +28,6 @@ const EDITABLE_FIELDS = [
   "rules",
   "prizePool",
   "entryFee",
-  "hostingFee",
   "maxSlots",
   "startDate",
   "endDate",
@@ -69,13 +68,13 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (field in body) data[field] = body[field];
   }
   if (typeof data.entryFee !== "undefined") data.entryFee = Number(data.entryFee);
-  if (typeof data.hostingFee !== "undefined") data.hostingFee = Number(data.hostingFee);
   if (typeof data.maxSlots !== "undefined") data.maxSlots = data.maxSlots ? Number(data.maxSlots) : null;
   if (typeof data.startDate !== "undefined") data.startDate = new Date(data.startDate as string);
   if (typeof data.endDate !== "undefined") data.endDate = data.endDate ? new Date(data.endDate as string) : null;
 
-  // Only admins may directly change status/verification/review fields.
+  // Only admins may directly change the platform hosting fee or status/verification/review fields.
   if (isAdmin) {
+    if (typeof body.hostingFee !== "undefined") data.hostingFee = Number(body.hostingFee);
     if (typeof body.status !== "undefined") data.status = body.status;
     if (typeof body.reviewNote !== "undefined") data.reviewNote = body.reviewNote;
     if (typeof body.hostingFeeVerified !== "undefined") data.hostingFeeVerified = Boolean(body.hostingFeeVerified);

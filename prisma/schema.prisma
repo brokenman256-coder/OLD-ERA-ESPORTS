@@ -115,8 +115,31 @@ model Registration {
   status        String  @default("PENDING")
   reviewNote    String?
 
+  contactPhone  String? // mandatory contact number collected at registration
+  squadMembers  Json?   // array of exactly 4 { name, gameId } entries
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@unique([tournamentId, playerId])
+}
+
+model SiteSettings {
+  id               String   @id @default("global")
+  hostingFeeAmount Float    @default(200)
+  upiId            String?
+  qrCodeUrl        String?
+  whatsappLink     String?
+  instagramUrl     String?
+  updatedAt        DateTime @updatedAt
+}
+
+model PromoBanner {
+  id        String   @id @default(cuid())
+  title     String
+  imageUrl  String
+  linkUrl   String?
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
 }

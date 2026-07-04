@@ -48,6 +48,28 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       }
     }
 
+    const contactPhone = String(form.get("contactPhone") ?? "").trim();
+    if (!contactPhone) {
+      return NextResponse.json({ error: "A contact phone number is required" }, { status: 400 });
+    }
+
+    let squadMembers: { name: string; gameId: string }[];
+    try {
+      squadMembers = JSON.parse(String(form.get("squadMembers") ?? "[]"));
+    } catch {
+      squadMembers = [];
+    }
+    if (
+      !Array.isArray(squadMembers) ||
+      squadMembers.length !== 4 ||
+      squadMembers.some((m) => !m?.name?.trim() || !m?.gameId?.trim())
+    ) {
+      return NextResponse.json(
+        { error: "Please provide the name and in-game ID for all 4 squad members" },
+        { status: 400 }
+      );
+    }
+
     let paymentProof: string | null = null;
     const proofFile = form.get("paymentProof");
     if (proofFile instanceof File && proofFile.size > 0) {
@@ -67,6 +89,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         playerId: user.id,
         teamName,
         teamId,
+        contactPhone,
+        squadMembers,
         paymentProof,
         status: tournament.entryFee > 0 ? APPROVAL.PENDING : APPROVAL.APPROVED,
       },

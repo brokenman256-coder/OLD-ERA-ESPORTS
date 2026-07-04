@@ -1,27 +1,41 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import { TOURNAMENT_FORMAT_LABELS } from "@/lib/constants";
 
 const inputClass =
   "mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950";
 
+interface Settings {
+  hostingFeeAmount: number;
+  upiId: string | null;
+  qrCodeUrl: string | null;
+}
+
 export default function CreateTournamentForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
-  const [hostingFee, setHostingFee] = useState("0");
   const [proof, setProof] = useState<File | null>(null);
   const [banner, setBanner] = useState<File | null>(null);
+  const [settings, setSettings] = useState<Settings | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => setSettings(data.settings))
+      .catch(() => setSettings(null));
+  }, []);
+
+  const hostingFee = settings?.hostingFeeAmount ?? 200;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
 
-    const fee = Number(hostingFee || 0);
-    if (fee > 0 && !proof) {
+    if (hostingFee > 0 && !proof) {
       setError("Please upload a screenshot of your hosting fee payment.");
       return;
     }
@@ -127,7 +141,7 @@ export default function CreateTournamentForm() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
         <div>
           <label className="block text-sm font-medium">Prize pool</label>
           <input name="prizePool" className={inputClass} placeholder="₹10,000" />
@@ -139,18 +153,6 @@ export default function CreateTournamentForm() {
         <div>
           <label className="block text-sm font-medium">Max slots</label>
           <input name="maxSlots" type="number" min="1" className={inputClass} />
-        </div>
-        <div>
-          <label className="block text-sm font-medium">Hosting fee (₹)</label>
-          <input
-            name="hostingFee"
-            type="number"
-            min="0"
-            step="1"
-            value={hostingFee}
-            onChange={(e) => setHostingFee(e.target.value)}
-            className={inputClass}
-          />
         </div>
       </div>
 
@@ -165,10 +167,24 @@ export default function CreateTournamentForm() {
         </div>
       </div>
 
-      {Number(hostingFee || 0) > 0 && (
-        <div>
-          <label className="block text-sm font-medium">
-            Hosting fee payment screenshot (₹{hostingFee}) — required
+      {hostingFee > 0 && (
+        <div className="rounded-md border border-amber-300 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950">
+          <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
+            Hosting fee: ₹{hostingFee} — pay before submitting
+          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-4">
+            {settings?.upiId && (
+              <p className="text-sm text-amber-800 dark:text-amber-300">
+                UPI ID: <span className="font-mono font-semibold">{settings.upiId}</span>
+              </p>
+            )}
+            {settings?.qrCodeUrl && (
+              // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image
+              <img src={settings.qrCodeUrl} alt="Payment QR code" className="h-24 w-24 rounded-md border border-amber-300 bg-white object-contain" />
+            )}
+          </div>
+          <label className="mt-3 block text-sm font-medium">
+            Payment screenshot — required
           </label>
           <input
             type="file"
@@ -176,9 +192,8 @@ export default function CreateTournamentForm() {
             onChange={(e) => setProof(e.target.files?.[0] ?? null)}
             className="mt-1 w-full text-sm"
           />
-          <p className="mt-1 text-xs text-neutral-500">
-            We charge a hosting fee to list your tournament. Upload your payment screenshot;
-            an admin will manually verify it and approve your listing.
+          <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
+            Upload your payment screenshot; an admin will manually verify it and approve your listing.
           </p>
         </div>
       )}

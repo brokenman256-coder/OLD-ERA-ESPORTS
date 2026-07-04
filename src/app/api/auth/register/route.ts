@@ -25,6 +25,9 @@ export async function POST(req: NextRequest) {
   if (role === ROLES.ORGANIZER && !firmName?.trim()) {
     return NextResponse.json({ error: "Firm / company name is required for organizers" }, { status: 400 });
   }
+  if (role === ROLES.ORGANIZER && !phone?.trim()) {
+    return NextResponse.json({ error: "Phone number is required for organizers" }, { status: 400 });
+  }
 
   const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
   if (existing) {

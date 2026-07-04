@@ -59,7 +59,6 @@ export async function POST(req: NextRequest) {
     const rules = form.get("rules") ? String(form.get("rules")) : null;
     const prizePool = form.get("prizePool") ? String(form.get("prizePool")) : null;
     const entryFee = Number(form.get("entryFee") ?? 0);
-    const hostingFee = Number(form.get("hostingFee") ?? 0);
     const maxSlotsRaw = form.get("maxSlots");
     const maxSlots = maxSlotsRaw ? Number(maxSlotsRaw) : null;
     const startDateRaw = String(form.get("startDate") ?? "");
@@ -83,9 +82,16 @@ export async function POST(req: NextRequest) {
     if (endDate && isNaN(endDate.getTime())) {
       return NextResponse.json({ error: "Invalid end date" }, { status: 400 });
     }
-    if (Number.isNaN(entryFee) || entryFee < 0 || Number.isNaN(hostingFee) || hostingFee < 0) {
-      return NextResponse.json({ error: "Fees must be non-negative numbers" }, { status: 400 });
+    if (Number.isNaN(entryFee) || entryFee < 0) {
+      return NextResponse.json({ error: "Entry fee must be a non-negative number" }, { status: 400 });
     }
+
+    const settings = await prisma.siteSettings.upsert({
+      where: { id: "global" },
+      update: {},
+      create: { id: "global" },
+    });
+    const hostingFee = settings.hostingFeeAmount;
 
     let hostingFeeProof: string | null = null;
     const proofFile = form.get("hostingFeeProof");
