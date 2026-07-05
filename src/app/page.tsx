@@ -12,7 +12,7 @@ export default async function Home() {
       where: { status: APPROVAL.APPROVED },
       orderBy: { startDate: "asc" },
       take: 6,
-      include: { organizer: true },
+      include: { organizer: true, _count: { select: { registrations: true } } },
     }),
     prisma.tournament.count({ where: { status: APPROVAL.APPROVED } }),
     prisma.user.count({ where: { role: ROLES.PLAYER } }),
@@ -28,24 +28,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
-      <section className="relative overflow-hidden bg-gradient-to-b from-black via-neutral-900 to-neutral-950 px-6 py-28 text-center text-white">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-30"
-          style={{
-            backgroundImage:
-              "radial-gradient(circle at 15% 20%, #e11d48 0, transparent 38%), radial-gradient(circle at 85% 10%, #d97706 0, transparent 38%), radial-gradient(circle at 50% 90%, #06b6d4 0, transparent 40%)",
-          }}
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
+      <section className="relative overflow-hidden bg-gradient-to-b from-black/50 via-transparent to-neutral-950/60 px-6 py-28 text-center text-white">
         <div className="relative">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
             Old Era Esports
@@ -129,26 +112,26 @@ export default async function Home() {
       <section className="mx-auto w-full max-w-6xl px-6 pb-20">
         <h2 className="text-2xl font-bold">How it works</h2>
         <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3">
-          <div className="rounded-lg border-t-4 border-red-500 bg-white p-5 shadow-sm dark:bg-neutral-900">
+          <div className="rounded-lg border-t-4 border-red-500 bg-neutral-900/80 p-5 shadow-sm backdrop-blur-sm">
             <p className="text-2xl">🎮</p>
-            <p className="mt-2 text-sm font-semibold text-red-600 dark:text-red-400">For Players</p>
-            <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+            <p className="mt-2 text-sm font-semibold text-red-400">For Players</p>
+            <p className="mt-2 text-neutral-400">
               Browse live tournaments, register solo or as a squad, and upload a screenshot
               of your entry-fee payment. Your admin-verified slot is confirmed once we check it.
             </p>
           </div>
-          <div className="rounded-lg border-t-4 border-amber-500 bg-white p-5 shadow-sm dark:bg-neutral-900">
+          <div className="rounded-lg border-t-4 border-amber-500 bg-neutral-900/80 p-5 shadow-sm backdrop-blur-sm">
             <p className="text-2xl">🏆</p>
-            <p className="mt-2 text-sm font-semibold text-amber-600 dark:text-amber-400">For Organizers</p>
-            <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+            <p className="mt-2 text-sm font-semibold text-amber-400">For Organizers</p>
+            <p className="mt-2 text-neutral-400">
               Post your tournament with a banner, tags, Discord/stream links, and a hosting
               fee payment screenshot. It goes live after our admin verifies the payment.
             </p>
           </div>
-          <div className="rounded-lg border-t-4 border-cyan-500 bg-white p-5 shadow-sm dark:bg-neutral-900">
+          <div className="rounded-lg border-t-4 border-cyan-500 bg-neutral-900/80 p-5 shadow-sm backdrop-blur-sm">
             <p className="text-2xl">🛡️</p>
-            <p className="mt-2 text-sm font-semibold text-cyan-600 dark:text-cyan-400">For Admins</p>
-            <p className="mt-2 text-neutral-600 dark:text-neutral-400">
+            <p className="mt-2 text-sm font-semibold text-cyan-400">For Admins</p>
+            <p className="mt-2 text-neutral-400">
               Every payment screenshot — from players and organizers — is manually
               reviewed and approved or rejected before anything goes live.
             </p>

@@ -134,6 +134,10 @@ model SiteSettings {
   whatsappLink     String?
   instagramUrl     String?
 
+  supportEmail   String?
+  supportPhone   String?
+  supportMessage String?
+
   // Optional overrides for the homepage stat counters. When null, the real
   // database count is shown instead.
   displayLiveTournaments Int?

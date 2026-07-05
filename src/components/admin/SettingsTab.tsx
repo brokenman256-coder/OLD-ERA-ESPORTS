@@ -10,6 +10,9 @@ interface Settings {
   playerQrCodeUrl: string | null;
   whatsappLink: string | null;
   instagramUrl: string | null;
+  supportEmail: string | null;
+  supportPhone: string | null;
+  supportMessage: string | null;
   displayLiveTournaments: number | null;
   displayPlayers: number | null;
   displayOrganizers: number | null;
@@ -22,6 +25,9 @@ export default function SettingsTab() {
   const [playerUpiId, setPlayerUpiId] = useState("");
   const [whatsappLink, setWhatsappLink] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
+  const [supportEmail, setSupportEmail] = useState("");
+  const [supportPhone, setSupportPhone] = useState("");
+  const [supportMessage, setSupportMessage] = useState("");
   const [displayLiveTournaments, setDisplayLiveTournaments] = useState("");
   const [displayPlayers, setDisplayPlayers] = useState("");
   const [displayOrganizers, setDisplayOrganizers] = useState("");
@@ -39,6 +45,9 @@ export default function SettingsTab() {
     setPlayerUpiId(data.settings.playerUpiId ?? "");
     setWhatsappLink(data.settings.whatsappLink ?? "");
     setInstagramUrl(data.settings.instagramUrl ?? "");
+    setSupportEmail(data.settings.supportEmail ?? "");
+    setSupportPhone(data.settings.supportPhone ?? "");
+    setSupportMessage(data.settings.supportMessage ?? "");
     setDisplayLiveTournaments(data.settings.displayLiveTournaments?.toString() ?? "");
     setDisplayPlayers(data.settings.displayPlayers?.toString() ?? "");
     setDisplayOrganizers(data.settings.displayOrganizers?.toString() ?? "");
@@ -61,6 +70,9 @@ export default function SettingsTab() {
         playerUpiId,
         whatsappLink,
         instagramUrl,
+        supportEmail,
+        supportPhone,
+        supportMessage,
         displayLiveTournaments: displayLiveTournaments === "" ? null : Number(displayLiveTournaments),
         displayPlayers: displayPlayers === "" ? null : Number(displayPlayers),
         displayOrganizers: displayOrganizers === "" ? null : Number(displayOrganizers),
@@ -110,7 +122,7 @@ export default function SettingsTab() {
 
   return (
     <div className="max-w-xl space-y-6">
-      <div className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
         <h3 className="font-bold">Organizer payment details (hosting fee)</h3>
         <p className="mt-1 text-sm text-neutral-500">
           Shown to organizers when they post a tournament, so they know what to pay and where.
@@ -158,7 +170,7 @@ export default function SettingsTab() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
         <h3 className="font-bold">Player payment details (entry fee)</h3>
         <p className="mt-1 text-sm text-neutral-500">
           Shown to players when they register for a paid tournament.
@@ -196,7 +208,7 @@ export default function SettingsTab() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
         <h3 className="font-bold">Social links</h3>
         <div className="mt-4 space-y-4">
           <div>
@@ -220,7 +232,44 @@ export default function SettingsTab() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+        <h3 className="font-bold">Contact & support</h3>
+        <p className="mt-1 text-sm text-neutral-500">
+          Shown on the Contact &amp; Support page so players and organizers can reach you.
+        </p>
+        <div className="mt-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Support email</label>
+            <input
+              value={supportEmail}
+              onChange={(e) => setSupportEmail(e.target.value)}
+              placeholder="support@yoursite.com"
+              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Support phone</label>
+            <input
+              value={supportPhone}
+              onChange={(e) => setSupportPhone(e.target.value)}
+              placeholder="+91 90000 00000"
+              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Support message</label>
+            <textarea
+              value={supportMessage}
+              onChange={(e) => setSupportMessage(e.target.value)}
+              rows={3}
+              placeholder="e.g. We typically respond within 24 hours."
+              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
         <h3 className="font-bold">Homepage stats override</h3>
         <p className="mt-1 text-sm text-neutral-500">
           Leave blank to show real counts. Set a number here to display something else instead

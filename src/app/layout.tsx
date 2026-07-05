@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import SocialLinks from "@/components/SocialLinks";
 import Logo from "@/components/Logo";
+import AnimatedBackground from "@/components/AnimatedBackground";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -21,16 +23,6 @@ export const metadata: Metadata = {
     "Discover and register for gaming tournaments, or post your own tournament as an organizer.",
 };
 
-const THEME_INIT_SCRIPT = `
-(function () {
-  try {
-    var stored = localStorage.getItem("theme");
-    var dark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
-    document.documentElement.classList.toggle("dark", dark);
-  } catch (e) {}
-})();
-`;
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,18 +31,19 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
-      </head>
-      <body className="min-h-full flex flex-col bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100">
+      <body className="min-h-full flex flex-col text-neutral-100">
+        <AnimatedBackground />
         <Navbar />
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-black/10 bg-black py-8 text-center text-xs text-neutral-400 dark:border-white/10">
+        <footer className="border-t border-white/10 bg-black/60 py-8 text-center text-xs text-neutral-400 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-3">
             <Logo size={22} />
             <SocialLinks />
+            <Link href="/contact" className="text-cyan-400 hover:underline">
+              Contact & Support
+            </Link>
             <p>
               © {new Date().getFullYear()} Old Era Esports. All payments are verified manually by our admin team.
             </p>

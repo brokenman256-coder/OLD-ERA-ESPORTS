@@ -40,3 +40,26 @@ body {
 .animate-fade-in-up {
   animation: fade-in-up 0.4s ease both;
 }
+
+@keyframes drift-a {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, -50px) scale(1.15); }
+}
+@keyframes drift-b {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-70px, 60px) scale(1.2); }
+}
+@keyframes drift-c {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 40px) scale(0.9); }
+}
+
+.bg-orb-a {
+  animation: drift-a 22s ease-in-out infinite;
+}
+.bg-orb-b {
+  animation: drift-b 26s ease-in-out infinite;
+}
+.bg-orb-c {
+  animation: drift-c 30s ease-in-out infinite;
+}

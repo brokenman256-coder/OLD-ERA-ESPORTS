@@ -16,7 +16,7 @@ export default async function TournamentsPage({
       ...(q ? { OR: [{ title: { contains: q } }, { description: { contains: q } }] } : {}),
     },
     orderBy: { startDate: "asc" },
-    include: { organizer: true },
+    include: { organizer: true, _count: { select: { registrations: true } } },
   });
 
   return (
