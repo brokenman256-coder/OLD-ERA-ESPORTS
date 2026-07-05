@@ -57,3 +57,7 @@ export function savePromoBanner(file: File): Promise<string> {
 export function saveResultScreenshot(file: File): Promise<string> {
   return uploadImage(file, "results");
 }
+
+export function saveWalletTopUpProof(file: File): Promise<string> {
+  return uploadImage(file, "wallet-topups");
+}

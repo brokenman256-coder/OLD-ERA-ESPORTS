@@ -8,11 +8,13 @@ import SettingsTab from "./SettingsTab";
 import PromosTab from "./PromosTab";
 import SupportTab from "./SupportTab";
 import PlayerMatchesTab from "./PlayerMatchesTab";
+import WalletTab from "./WalletTab";
 
 const TABS = [
   { key: "tournaments", label: "Tournaments & Hosting Fees" },
   { key: "registrations", label: "Player Payments" },
   { key: "matches", label: "Player Matches" },
+  { key: "wallet", label: "Wallet" },
   { key: "users", label: "Users" },
   { key: "support", label: "Support Chat" },
   { key: "settings", label: "Payment & Contact Settings" },
@@ -46,6 +48,7 @@ export default function AdminPanel({ currentAdminId }: { currentAdminId: string 
         {tab === "tournaments" && <TournamentsTab />}
         {tab === "registrations" && <RegistrationsTab />}
         {tab === "matches" && <PlayerMatchesTab />}
+        {tab === "wallet" && <WalletTab />}
         {tab === "users" && <UsersTab currentAdminId={currentAdminId} />}
         {tab === "support" && <SupportTab />}
         {tab === "settings" && <SettingsTab />}

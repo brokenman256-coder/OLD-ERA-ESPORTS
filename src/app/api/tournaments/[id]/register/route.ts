@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { savePaymentScreenshot, UploadError } from "@/lib/upload";
+import { debitWallet, InsufficientBalanceError } from "@/lib/wallet";
 import { APPROVAL, ROLES } from "@/lib/constants";
 import { publicRegistration } from "@/lib/serialize";
 
@@ -70,17 +71,32 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       );
     }
 
-    let paymentProof: string | null = null;
-    const proofFile = form.get("paymentProof");
-    if (proofFile instanceof File && proofFile.size > 0) {
-      paymentProof = await savePaymentScreenshot(proofFile);
-    }
+    const payWithWallet = form.get("payWithWallet") === "true";
 
-    if (tournament.entryFee > 0 && !paymentProof) {
-      return NextResponse.json(
-        { error: "Please upload a payment screenshot for the entry fee" },
-        { status: 400 }
-      );
+    let paymentProof: string | null = null;
+    let paidWithWallet = false;
+
+    if (tournament.entryFee > 0 && payWithWallet) {
+      try {
+        await debitWallet(user.id, tournament.entryFee, "ENTRY_FEE_PAYMENT", `Entry fee for "${tournament.title}"`);
+      } catch (err) {
+        if (err instanceof InsufficientBalanceError) {
+          return NextResponse.json({ error: "Insufficient wallet balance" }, { status: 400 });
+        }
+        throw err;
+      }
+      paidWithWallet = true;
+    } else {
+      const proofFile = form.get("paymentProof");
+      if (proofFile instanceof File && proofFile.size > 0) {
+        paymentProof = await savePaymentScreenshot(proofFile);
+      }
+      if (tournament.entryFee > 0 && !paymentProof) {
+        return NextResponse.json(
+          { error: "Please upload a payment screenshot for the entry fee, or pay with your wallet" },
+          { status: 400 }
+        );
+      }
     }
 
     const registration = await prisma.registration.create({
@@ -92,7 +108,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         contactPhone,
         squadMembers,
         paymentProof,
-        status: tournament.entryFee > 0 ? APPROVAL.PENDING : APPROVAL.APPROVED,
+        paidWithWallet,
+        status: tournament.entryFee > 0 && !paidWithWallet ? APPROVAL.PENDING : APPROVAL.APPROVED,
       },
       include: { team: true },
     });

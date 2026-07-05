@@ -44,6 +44,8 @@ export default function RegisterForm({
   const [squad, setSquad] = useState<SquadMember[]>(EMPTY_SQUAD);
   const [contactPhone, setContactPhone] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
+  const [payWithWallet, setPayWithWallet] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -58,6 +60,10 @@ export default function RegisterForm({
       .then((res) => res.json())
       .then((data) => setSettings(data.settings))
       .catch(() => setSettings(null));
+    fetch("/api/wallet")
+      .then((res) => res.json())
+      .then((data) => setWalletBalance(typeof data.balance === "number" ? data.balance : null))
+      .catch(() => setWalletBalance(null));
   }, []);
 
   function selectTeam(id: string) {
@@ -81,8 +87,8 @@ export default function RegisterForm({
     e.preventDefault();
     setError(null);
 
-    if (entryFee > 0 && !file) {
-      setError("Please upload a screenshot of your entry fee payment.");
+    if (entryFee > 0 && !payWithWallet && !file) {
+      setError("Please upload a screenshot of your entry fee payment, or pay with your wallet.");
       return;
     }
     if (!contactPhone.trim()) {
@@ -99,7 +105,11 @@ export default function RegisterForm({
     if (teamId) form.set("teamId", teamId);
     form.set("contactPhone", contactPhone.trim());
     form.set("squadMembers", JSON.stringify(squad.map((m) => ({ name: m.name.trim(), gameId: m.gameId.trim() }))));
-    if (file) form.set("paymentProof", file);
+    if (payWithWallet) {
+      form.set("payWithWallet", "true");
+    } else if (file) {
+      form.set("paymentProof", file);
+    }
 
     const res = await fetch(`/api/tournaments/${tournamentId}/register`, {
       method: "POST",
@@ -120,7 +130,7 @@ export default function RegisterForm({
   if (done) {
     return (
       <div className="rounded-md border border-green-300 bg-green-50 p-4 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-300">
-        You&apos;re registered! {entryFee > 0
+        You&apos;re registered! {entryFee > 0 && !payWithWallet
           ? "Your payment screenshot is pending admin verification."
           : "Your spot is confirmed."}
       </div>
@@ -196,30 +206,46 @@ export default function RegisterForm({
           <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
             Entry fee: ₹{entryFee} — pay before submitting
           </p>
-          <div className="mt-2 flex flex-wrap items-center gap-4">
-            {settings?.playerUpiId && (
-              <p className="text-sm text-amber-800 dark:text-amber-300">
-                UPI ID: <span className="font-mono font-semibold">{settings.playerUpiId}</span>
+
+          {walletBalance !== null && walletBalance >= entryFee && (
+            <label className="mt-3 flex items-center gap-2 text-sm text-amber-800 dark:text-amber-300">
+              <input
+                type="checkbox"
+                checked={payWithWallet}
+                onChange={(e) => setPayWithWallet(e.target.checked)}
+              />
+              Pay with wallet balance (₹{walletBalance} available) — instant confirmation
+            </label>
+          )}
+
+          {!payWithWallet && (
+            <>
+              <div className="mt-2 flex flex-wrap items-center gap-4">
+                {settings?.playerUpiId && (
+                  <p className="text-sm text-amber-800 dark:text-amber-300">
+                    UPI ID: <span className="font-mono font-semibold">{settings.playerUpiId}</span>
+                  </p>
+                )}
+                {settings?.playerQrCodeUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image
+                  <img src={settings.playerQrCodeUrl} alt="Payment QR code" className="h-24 w-24 rounded-md border border-amber-300 bg-white object-contain" />
+                )}
+              </div>
+              <label className="mt-3 block text-sm font-medium">
+                Payment screenshot — required
+              </label>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                className="mt-1 w-full text-sm"
+              />
+              <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
+                Upload a screenshot of your ₹{entryFee} payment. Our admin will verify it
+                manually before your registration is confirmed.
               </p>
-            )}
-            {settings?.playerQrCodeUrl && (
-              // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image
-              <img src={settings.playerQrCodeUrl} alt="Payment QR code" className="h-24 w-24 rounded-md border border-amber-300 bg-white object-contain" />
-            )}
-          </div>
-          <label className="mt-3 block text-sm font-medium">
-            Payment screenshot — required
-          </label>
-          <input
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="mt-1 w-full text-sm"
-          />
-          <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
-            Upload a screenshot of your ₹{entryFee} payment. Our admin will verify it
-            manually before your registration is confirmed.
-          </p>
+            </>
+          )}
         </div>
       )}
 

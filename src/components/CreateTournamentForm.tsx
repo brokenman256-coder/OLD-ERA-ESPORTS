@@ -20,6 +20,8 @@ export default function CreateTournamentForm() {
   const [proof, setProof] = useState<File | null>(null);
   const [banner, setBanner] = useState<File | null>(null);
   const [settings, setSettings] = useState<Settings | null>(null);
+  const [walletBalance, setWalletBalance] = useState<number | null>(null);
+  const [payWithWallet, setPayWithWallet] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -27,6 +29,10 @@ export default function CreateTournamentForm() {
       .then((res) => res.json())
       .then((data) => setSettings(data.settings))
       .catch(() => setSettings(null));
+    fetch("/api/wallet")
+      .then((res) => res.json())
+      .then((data) => setWalletBalance(typeof data.balance === "number" ? data.balance : null))
+      .catch(() => setWalletBalance(null));
   }, []);
 
   const hostingFee = settings?.hostingFeeAmount ?? 200;
@@ -35,14 +41,18 @@ export default function CreateTournamentForm() {
     e.preventDefault();
     setError(null);
 
-    if (hostingFee > 0 && !proof) {
-      setError("Please upload a screenshot of your hosting fee payment.");
+    if (hostingFee > 0 && !payWithWallet && !proof) {
+      setError("Please upload a screenshot of your hosting fee payment, or pay with your wallet.");
       return;
     }
 
     setLoading(true);
     const form = new FormData(e.currentTarget);
-    if (proof) form.set("hostingFeeProof", proof);
+    if (payWithWallet) {
+      form.set("payHostingFeeWithWallet", "true");
+    } else if (proof) {
+      form.set("hostingFeeProof", proof);
+    }
     if (banner) form.set("banner", banner);
 
     const res = await fetch("/api/tournaments", { method: "POST", body: form });
@@ -172,29 +182,45 @@ export default function CreateTournamentForm() {
           <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
             Hosting fee: ₹{hostingFee} — pay before submitting
           </p>
-          <div className="mt-2 flex flex-wrap items-center gap-4">
-            {settings?.upiId && (
-              <p className="text-sm text-amber-800 dark:text-amber-300">
-                UPI ID: <span className="font-mono font-semibold">{settings.upiId}</span>
+
+          {walletBalance !== null && walletBalance >= hostingFee && (
+            <label className="mt-3 flex items-center gap-2 text-sm text-amber-800 dark:text-amber-300">
+              <input
+                type="checkbox"
+                checked={payWithWallet}
+                onChange={(e) => setPayWithWallet(e.target.checked)}
+              />
+              Pay with wallet balance (₹{walletBalance} available) — no screenshot needed
+            </label>
+          )}
+
+          {!payWithWallet && (
+            <>
+              <div className="mt-2 flex flex-wrap items-center gap-4">
+                {settings?.upiId && (
+                  <p className="text-sm text-amber-800 dark:text-amber-300">
+                    UPI ID: <span className="font-mono font-semibold">{settings.upiId}</span>
+                  </p>
+                )}
+                {settings?.qrCodeUrl && (
+                  // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image
+                  <img src={settings.qrCodeUrl} alt="Payment QR code" className="h-24 w-24 rounded-md border border-amber-300 bg-white object-contain" />
+                )}
+              </div>
+              <label className="mt-3 block text-sm font-medium">
+                Payment screenshot — required
+              </label>
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={(e) => setProof(e.target.files?.[0] ?? null)}
+                className="mt-1 w-full text-sm"
+              />
+              <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
+                Upload your payment screenshot; an admin will manually verify it and approve your listing.
               </p>
-            )}
-            {settings?.qrCodeUrl && (
-              // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image
-              <img src={settings.qrCodeUrl} alt="Payment QR code" className="h-24 w-24 rounded-md border border-amber-300 bg-white object-contain" />
-            )}
-          </div>
-          <label className="mt-3 block text-sm font-medium">
-            Payment screenshot — required
-          </label>
-          <input
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            onChange={(e) => setProof(e.target.files?.[0] ?? null)}
-            className="mt-1 w-full text-sm"
-          />
-          <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
-            Upload your payment screenshot; an admin will manually verify it and approve your listing.
-          </p>
+            </>
+          )}
         </div>
       )}
 

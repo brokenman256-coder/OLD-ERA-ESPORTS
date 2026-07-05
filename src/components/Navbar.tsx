@@ -64,6 +64,9 @@ export default function Navbar() {
           <Link href={dashboardHref} className="hover:text-red-400" onClick={() => setMenuOpen(false)}>
             Dashboard
           </Link>
+          <Link href="/wallet" className="hover:text-red-400" onClick={() => setMenuOpen(false)}>
+            Wallet
+          </Link>
           {user.role === "PLAYER" && (
             <Link href="/teams" className="hover:text-red-400" onClick={() => setMenuOpen(false)}>
               Teams

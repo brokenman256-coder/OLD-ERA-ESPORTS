@@ -15,6 +15,7 @@ export function publicUser(user: User) {
     twitterUrl: user.twitterUrl,
     websiteUrl: user.websiteUrl,
     isVerified: user.isVerified,
+    walletBalance: user.walletBalance,
     createdAt: user.createdAt,
   };
 }
@@ -41,6 +42,7 @@ export function publicTournament(t: Tournament & { organizer?: User }) {
     reviewNote: t.reviewNote,
     hostingFeeProof: t.hostingFeeProof,
     hostingFeeVerified: t.hostingFeeVerified,
+    hostingFeePaidWithWallet: t.hostingFeePaidWithWallet,
     createdAt: t.createdAt,
     organizerId: t.organizerId,
     organizer: t.organizer
@@ -66,6 +68,7 @@ export function publicRegistration(r: Registration & { player?: User; team?: Tea
     squadMembers: r.squadMembers,
     paymentProof: r.paymentProof,
     resultProof: r.resultProof,
+    paidWithWallet: r.paidWithWallet,
     status: r.status,
     reviewNote: r.reviewNote,
     createdAt: r.createdAt,

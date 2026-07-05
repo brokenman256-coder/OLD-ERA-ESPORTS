@@ -31,15 +31,20 @@ model User {
   websiteUrl    String?
   isVerified    Boolean  @default(false) // verified-organizer / notable-player badge
 
+  walletBalance Float @default(0)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  tournaments      Tournament[]   @relation("OrganizerTournaments")
-  registrations    Registration[]
-  captainOfTeams   Team[]         @relation("TeamCaptain")
-  teamMemberships  TeamMember[]
-  supportMessages  SupportMessage[]
-  playerMatches    PlayerMatch[]  @relation("PlayerMatchCreator")
+  tournaments        Tournament[]        @relation("OrganizerTournaments")
+  registrations      Registration[]
+  captainOfTeams     Team[]              @relation("TeamCaptain")
+  teamMemberships    TeamMember[]
+  supportMessages    SupportMessage[]
+  playerMatches      PlayerMatch[]       @relation("PlayerMatchCreator")
+  walletTransactions WalletTransaction[]
+  walletTopUps       WalletTopUp[]
+  withdrawalRequests WithdrawalRequest[]
 }
 
 model Team {
@@ -98,6 +103,7 @@ model Tournament {
   reviewNote          String?
   hostingFeeProof     String? // path to payment screenshot for hosting fee
   hostingFeeVerified  Boolean @default(false)
+  hostingFeePaidWithWallet Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -123,6 +129,7 @@ model Registration {
   contactPhone  String? // mandatory contact number collected at registration
   squadMembers  Json?   // array of exactly 4 { name, gameId } entries
   resultProof   String? // screenshot of the match end result, submitted by the player after the match
+  paidWithWallet Boolean @default(false)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -195,4 +202,52 @@ model PlayerMatch {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+// WalletTransaction.type: "TOPUP" | "WITHDRAWAL" | "WITHDRAWAL_REVERSAL"
+//   | "ENTRY_FEE_PAYMENT" | "HOSTING_FEE_PAYMENT" | "ADMIN_CREDIT" | "ADMIN_DEBIT"
+model WalletTransaction {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type         String
+  amount       Float // signed: positive = credit, negative = debit
+  balanceAfter Float
+  note         String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model WalletTopUp {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  amount     Float
+  proof      String // payment screenshot uploaded by the user
+  status     String  @default("PENDING")
+  reviewNote String?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model WithdrawalRequest {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  amount     Float
+  payoutInfo String // UPI ID / bank details to send the payout to
+  status     String  @default("PENDING") // PENDING | APPROVED | REJECTED | PAID
+  reviewNote String?
+
+  createdAt   DateTime  @default(now())
+  processedAt DateTime?
+
+  @@index([userId])
 }

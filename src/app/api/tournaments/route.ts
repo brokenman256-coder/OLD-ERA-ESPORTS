@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser, AuthError } from "@/lib/auth";
 import { savePaymentScreenshot, saveTournamentBanner, UploadError } from "@/lib/upload";
+import { debitWallet, InsufficientBalanceError } from "@/lib/wallet";
 import { APPROVAL, ROLES, TOURNAMENT_FORMATS } from "@/lib/constants";
 import { publicTournament } from "@/lib/serialize";
 
@@ -93,17 +94,34 @@ export async function POST(req: NextRequest) {
     });
     const hostingFee = settings.hostingFeeAmount;
 
-    let hostingFeeProof: string | null = null;
-    const proofFile = form.get("hostingFeeProof");
-    if (proofFile instanceof File && proofFile.size > 0) {
-      hostingFeeProof = await savePaymentScreenshot(proofFile);
-    }
+    const payHostingFeeWithWallet = form.get("payHostingFeeWithWallet") === "true";
 
-    if (hostingFee > 0 && !hostingFeeProof) {
-      return NextResponse.json(
-        { error: "Please upload a payment screenshot for the hosting fee" },
-        { status: 400 }
-      );
+    let hostingFeeProof: string | null = null;
+    let hostingFeePaidWithWallet = false;
+    let hostingFeeVerified = false;
+
+    if (hostingFee > 0 && payHostingFeeWithWallet) {
+      try {
+        await debitWallet(user.id, hostingFee, "HOSTING_FEE_PAYMENT", `Hosting fee for "${title}"`);
+      } catch (err) {
+        if (err instanceof InsufficientBalanceError) {
+          return NextResponse.json({ error: "Insufficient wallet balance" }, { status: 400 });
+        }
+        throw err;
+      }
+      hostingFeePaidWithWallet = true;
+      hostingFeeVerified = true;
+    } else {
+      const proofFile = form.get("hostingFeeProof");
+      if (proofFile instanceof File && proofFile.size > 0) {
+        hostingFeeProof = await savePaymentScreenshot(proofFile);
+      }
+      if (hostingFee > 0 && !hostingFeeProof) {
+        return NextResponse.json(
+          { error: "Please upload a payment screenshot for the hosting fee, or pay with your wallet" },
+          { status: 400 }
+        );
+      }
     }
 
     let bannerUrl: string | null = null;
@@ -131,6 +149,8 @@ export async function POST(req: NextRequest) {
         format,
         organizerId: user.id,
         hostingFeeProof,
+        hostingFeePaidWithWallet,
+        hostingFeeVerified,
         status: APPROVAL.PENDING,
       },
     });
