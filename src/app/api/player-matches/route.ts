@@ -39,8 +39,8 @@ export async function POST(req: NextRequest) {
   try {
     const user = await getCurrentUser();
     if (!user) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
-    if (user.role !== ROLES.PLAYER) {
-      return NextResponse.json({ error: "Only players can create matches" }, { status: 403 });
+    if (user.role !== ROLES.PLAYER && user.role !== ROLES.ADMIN) {
+      return NextResponse.json({ error: "Only players or admins can create matches" }, { status: 403 });
     }
 
     const body = await req.json().catch(() => null);

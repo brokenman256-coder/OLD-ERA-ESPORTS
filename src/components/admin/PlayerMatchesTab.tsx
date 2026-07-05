@@ -19,11 +19,24 @@ interface PlayerMatch {
 }
 
 const FILTERS = ["ALL", "PENDING", "APPROVED", "REJECTED"] as const;
+const inputClass =
+  "rounded-md border border-neutral-300 px-3 py-2 text-sm dark:border-neutral-700 dark:bg-neutral-950";
 
 export default function PlayerMatchesTab() {
   const [matches, setMatches] = useState<PlayerMatch[]>([]);
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("PENDING");
   const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
+
+  const [mode, setMode] = useState<"WOW" | "TDM">("WOW");
+  const [title, setTitle] = useState("");
+  const [matchCode, setMatchCode] = useState("");
+  const [description, setDescription] = useState("");
+  const [entryFee, setEntryFee] = useState("0");
+  const [maxSlots, setMaxSlots] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   async function load() {
     const qs = filter === "ALL" ? "" : `?status=${filter}`;
@@ -57,23 +70,106 @@ export default function PlayerMatchesTab() {
     load();
   }
 
+  async function handleCreate(e: React.FormEvent) {
+    e.preventDefault();
+    setCreateError(null);
+    setSubmitting(true);
+
+    const res = await fetch("/api/player-matches", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        mode,
+        title,
+        matchCode,
+        description,
+        entryFee: Number(entryFee),
+        maxSlots: maxSlots || undefined,
+        startDate,
+      }),
+    });
+    const data = await res.json();
+    setSubmitting(false);
+
+    if (!res.ok) {
+      setCreateError(data.error ?? "Something went wrong");
+      return;
+    }
+
+    setTitle("");
+    setMatchCode("");
+    setDescription("");
+    setEntryFee("0");
+    setMaxSlots("");
+    setStartDate("");
+    setCreating(false);
+    setFilter("PENDING");
+    load();
+  }
+
   return (
     <div>
-      <div className="flex gap-2">
-        {FILTERS.map((f) => (
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex gap-2">
+          {FILTERS.map((f) => (
+            <button
+              key={f}
+              onClick={() => setFilter(f)}
+              className={`rounded-md px-3 py-1.5 text-sm font-medium ${
+                filter === f
+                  ? "bg-black text-white dark:bg-white dark:text-black"
+                  : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
+              }`}
+            >
+              {f}
+            </button>
+          ))}
+        </div>
+        {!creating && (
           <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-              filter === f
-                ? "bg-black text-white dark:bg-white dark:text-black"
-                : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
-            }`}
+            onClick={() => setCreating(true)}
+            className="rounded-md bg-cyan-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-cyan-500"
           >
-            {f}
+            + Create match
           </button>
-        ))}
+        )}
       </div>
+
+      {creating && (
+        <form onSubmit={handleCreate} className="mt-4 space-y-3 rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+          <div className="flex gap-2">
+            {(["WOW", "TDM"] as const).map((m) => (
+              <button
+                key={m}
+                type="button"
+                onClick={() => setMode(m)}
+                className={`rounded-md px-3 py-1.5 text-sm font-semibold ${
+                  mode === m ? "bg-cyan-600 text-white" : "bg-neutral-800 text-neutral-300"
+                }`}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+          <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Match title" required className={`w-full ${inputClass}`} />
+          <input value={matchCode} onChange={(e) => setMatchCode(e.target.value)} placeholder="Match / room code" required className={`w-full ${inputClass}`} />
+          <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Description (optional)" rows={2} className={`w-full ${inputClass}`} />
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <input type="datetime-local" value={startDate} onChange={(e) => setStartDate(e.target.value)} required className={inputClass} />
+            <input type="number" min="0" value={entryFee} onChange={(e) => setEntryFee(e.target.value)} placeholder="Entry fee (₹)" className={inputClass} />
+            <input type="number" min="1" value={maxSlots} onChange={(e) => setMaxSlots(e.target.value)} placeholder="Max players (optional)" className={inputClass} />
+          </div>
+          {createError && <p className="text-sm text-red-500">{createError}</p>}
+          <div className="flex gap-2">
+            <button disabled={submitting} className="rounded-md bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-500 disabled:opacity-50">
+              {submitting ? "Creating..." : "Create match"}
+            </button>
+            <button type="button" onClick={() => setCreating(false)} className="rounded-md bg-neutral-800 px-4 py-2 text-sm font-semibold hover:bg-neutral-700">
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
 
       {loading ? (
         <p className="mt-6 text-neutral-500">Loading...</p>
