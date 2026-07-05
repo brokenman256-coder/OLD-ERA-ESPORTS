@@ -6,6 +6,8 @@ interface Settings {
   hostingFeeAmount: number;
   upiId: string | null;
   qrCodeUrl: string | null;
+  playerUpiId: string | null;
+  playerQrCodeUrl: string | null;
   whatsappLink: string | null;
   instagramUrl: string | null;
   displayLiveTournaments: number | null;
@@ -17,6 +19,7 @@ export default function SettingsTab() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [hostingFeeAmount, setHostingFeeAmount] = useState("200");
   const [upiId, setUpiId] = useState("");
+  const [playerUpiId, setPlayerUpiId] = useState("");
   const [whatsappLink, setWhatsappLink] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
   const [displayLiveTournaments, setDisplayLiveTournaments] = useState("");
@@ -24,6 +27,7 @@ export default function SettingsTab() {
   const [displayOrganizers, setDisplayOrganizers] = useState("");
   const [saving, setSaving] = useState(false);
   const [qrUploading, setQrUploading] = useState(false);
+  const [playerQrUploading, setPlayerQrUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
   async function load() {
@@ -32,6 +36,7 @@ export default function SettingsTab() {
     setSettings(data.settings);
     setHostingFeeAmount(String(data.settings.hostingFeeAmount));
     setUpiId(data.settings.upiId ?? "");
+    setPlayerUpiId(data.settings.playerUpiId ?? "");
     setWhatsappLink(data.settings.whatsappLink ?? "");
     setInstagramUrl(data.settings.instagramUrl ?? "");
     setDisplayLiveTournaments(data.settings.displayLiveTournaments?.toString() ?? "");
@@ -53,6 +58,7 @@ export default function SettingsTab() {
       body: JSON.stringify({
         hostingFeeAmount: Number(hostingFeeAmount),
         upiId,
+        playerUpiId,
         whatsappLink,
         instagramUrl,
         displayLiveTournaments: displayLiveTournaments === "" ? null : Number(displayLiveTournaments),
@@ -80,12 +86,32 @@ export default function SettingsTab() {
     load();
   }
 
+  async function uploadPlayerQr(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPlayerQrUploading(true);
+    const form = new FormData();
+    form.set("qr", file);
+    await fetch("/api/admin/settings/qr-player", { method: "POST", body: form });
+    setPlayerQrUploading(false);
+    load();
+  }
+
+  async function clearField(field: "qrCodeUrl" | "playerQrCodeUrl") {
+    await fetch("/api/admin/settings", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ [field]: "" }),
+    });
+    load();
+  }
+
   if (!settings) return <p className="text-neutral-500">Loading...</p>;
 
   return (
     <div className="max-w-xl space-y-6">
       <div className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
-        <h3 className="font-bold">Hosting fee & payment details</h3>
+        <h3 className="font-bold">Organizer payment details (hosting fee)</h3>
         <p className="mt-1 text-sm text-neutral-500">
           Shown to organizers when they post a tournament, so they know what to pay and where.
         </p>
@@ -102,7 +128,7 @@ export default function SettingsTab() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">UPI ID</label>
+            <label className="block text-sm font-medium">Organizer UPI ID</label>
             <input
               value={upiId}
               onChange={(e) => setUpiId(e.target.value)}
@@ -111,23 +137,12 @@ export default function SettingsTab() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium">Payment QR code</label>
+            <label className="block text-sm font-medium">Organizer payment QR code</label>
             {settings.qrCodeUrl && (
               <div className="mt-2 flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image */}
-                <img src={settings.qrCodeUrl} alt="Payment QR" className="h-32 w-32 rounded-md border border-neutral-200 object-contain dark:border-neutral-700" />
-                <button
-                  type="button"
-                  onClick={async () => {
-                    await fetch("/api/admin/settings", {
-                      method: "PATCH",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ qrCodeUrl: "" }),
-                    });
-                    load();
-                  }}
-                  className="text-sm text-red-600 hover:underline"
-                >
+                <img src={settings.qrCodeUrl} alt="Organizer payment QR" className="h-32 w-32 rounded-md border border-neutral-200 object-contain dark:border-neutral-700" />
+                <button type="button" onClick={() => clearField("qrCodeUrl")} className="text-sm text-red-600 hover:underline">
                   Remove
                 </button>
               </div>
@@ -139,6 +154,44 @@ export default function SettingsTab() {
               className="mt-2 w-full text-sm"
             />
             {qrUploading && <p className="mt-1 text-xs text-neutral-500">Uploading...</p>}
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+        <h3 className="font-bold">Player payment details (entry fee)</h3>
+        <p className="mt-1 text-sm text-neutral-500">
+          Shown to players when they register for a paid tournament.
+        </p>
+
+        <div className="mt-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium">Player UPI ID</label>
+            <input
+              value={playerUpiId}
+              onChange={(e) => setPlayerUpiId(e.target.value)}
+              placeholder="yourname@upi"
+              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Player payment QR code</label>
+            {settings.playerQrCodeUrl && (
+              <div className="mt-2 flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image */}
+                <img src={settings.playerQrCodeUrl} alt="Player payment QR" className="h-32 w-32 rounded-md border border-neutral-200 object-contain dark:border-neutral-700" />
+                <button type="button" onClick={() => clearField("playerQrCodeUrl")} className="text-sm text-red-600 hover:underline">
+                  Remove
+                </button>
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={uploadPlayerQr}
+              className="mt-2 w-full text-sm"
+            />
+            {playerQrUploading && <p className="mt-1 text-xs text-neutral-500">Uploading...</p>}
           </div>
         </div>
       </div>

@@ -13,6 +13,8 @@ export async function GET() {
       hostingFeeAmount: settings.hostingFeeAmount,
       upiId: settings.upiId,
       qrCodeUrl: settings.qrCodeUrl,
+      playerUpiId: settings.playerUpiId,
+      playerQrCodeUrl: settings.playerQrCodeUrl,
       whatsappLink: settings.whatsappLink,
       instagramUrl: settings.instagramUrl,
       displayLiveTournaments: settings.displayLiveTournaments,

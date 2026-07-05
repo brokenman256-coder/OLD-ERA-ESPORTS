@@ -62,6 +62,26 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
     load();
   }
 
+  async function resetPassword(id: string, email: string) {
+    const newPassword = window.prompt(`Set a new password for ${email} (min 8 characters):`);
+    if (!newPassword) return;
+    if (newPassword.length < 8) {
+      window.alert("Password must be at least 8 characters.");
+      return;
+    }
+    const res = await fetch(`/api/admin/users/${id}/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ newPassword }),
+    });
+    if (res.ok) {
+      window.alert(`Password updated. Share it with ${email} directly — it can't be viewed again after this.`);
+    } else {
+      const data = await res.json().catch(() => ({}));
+      window.alert(data.error ?? "Something went wrong");
+    }
+  }
+
   if (loading) return <p className="text-neutral-500">Loading...</p>;
 
   return (
@@ -107,6 +127,12 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
                   }`}
                 >
                   {u.isVerified ? "Verified ✓" : "Verify"}
+                </button>
+                <button
+                  onClick={() => resetPassword(u.id, u.email)}
+                  className="rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                >
+                  Reset password
                 </button>
                 <button
                   disabled={u.id === currentAdminId}

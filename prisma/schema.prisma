@@ -127,8 +127,10 @@ model Registration {
 model SiteSettings {
   id               String   @id @default("global")
   hostingFeeAmount Float    @default(200)
-  upiId            String?
-  qrCodeUrl        String?
+  upiId            String? // organizer-facing UPI ID, for hosting fee payments
+  qrCodeUrl        String? // organizer-facing payment QR code
+  playerUpiId      String? // player-facing UPI ID, for entry fee payments
+  playerQrCodeUrl  String? // player-facing payment QR code
   whatsappLink     String?
   instagramUrl     String?
 

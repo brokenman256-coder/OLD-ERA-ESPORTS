@@ -11,6 +11,11 @@ interface Team {
   members?: { name: string }[];
 }
 
+interface Settings {
+  playerUpiId: string | null;
+  playerQrCodeUrl: string | null;
+}
+
 interface SquadMember {
   name: string;
   gameId: string;
@@ -35,6 +40,7 @@ export default function RegisterForm({
 }) {
   const [teams, setTeams] = useState<Team[]>([]);
   const [teamId, setTeamId] = useState("");
+  const [settings, setSettings] = useState<Settings | null>(null);
   const [squad, setSquad] = useState<SquadMember[]>(EMPTY_SQUAD);
   const [contactPhone, setContactPhone] = useState("");
   const [file, setFile] = useState<File | null>(null);
@@ -48,6 +54,10 @@ export default function RegisterForm({
       .then((res) => res.json())
       .then((data) => setTeams(data.teams ?? []))
       .catch(() => setTeams([]));
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => setSettings(data.settings))
+      .catch(() => setSettings(null));
   }, []);
 
   function selectTeam(id: string) {
@@ -182,9 +192,23 @@ export default function RegisterForm({
       </div>
 
       {entryFee > 0 && (
-        <div>
-          <label className="block text-sm font-medium">
-            Entry fee payment screenshot (₹{entryFee}) — required
+        <div className="rounded-md border border-amber-300 bg-amber-50 p-4 dark:border-amber-800 dark:bg-amber-950">
+          <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">
+            Entry fee: ₹{entryFee} — pay before submitting
+          </p>
+          <div className="mt-2 flex flex-wrap items-center gap-4">
+            {settings?.playerUpiId && (
+              <p className="text-sm text-amber-800 dark:text-amber-300">
+                UPI ID: <span className="font-mono font-semibold">{settings.playerUpiId}</span>
+              </p>
+            )}
+            {settings?.playerQrCodeUrl && (
+              // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image
+              <img src={settings.playerQrCodeUrl} alt="Payment QR code" className="h-24 w-24 rounded-md border border-amber-300 bg-white object-contain" />
+            )}
+          </div>
+          <label className="mt-3 block text-sm font-medium">
+            Payment screenshot — required
           </label>
           <input
             type="file"
@@ -192,7 +216,7 @@ export default function RegisterForm({
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
             className="mt-1 w-full text-sm"
           />
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
             Upload a screenshot of your ₹{entryFee} payment. Our admin will verify it
             manually before your registration is confirmed.
           </p>
