@@ -16,11 +16,11 @@ interface CardTournament {
 }
 
 const FALLBACK_GRADIENTS = [
-  "from-rose-600 via-red-700 to-neutral-950",
-  "from-violet-600 via-fuchsia-700 to-neutral-950",
-  "from-cyan-500 via-blue-700 to-neutral-950",
-  "from-amber-500 via-orange-700 to-neutral-950",
-  "from-emerald-500 via-teal-700 to-neutral-950",
+  "from-red-600 via-red-800 to-neutral-950",
+  "from-neutral-700 via-neutral-900 to-black",
+  "from-cyan-600 via-blue-800 to-neutral-950",
+  "from-amber-500 via-orange-800 to-neutral-950",
+  "from-emerald-600 via-teal-800 to-neutral-950",
 ];
 
 function gradientFor(game: string) {

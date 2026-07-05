@@ -62,7 +62,7 @@ export default function CreateTournamentForm() {
     return (
       <button
         onClick={() => setOpen(true)}
-        className="rounded-md bg-gradient-to-r from-red-600 to-fuchsia-600 px-4 py-2 font-semibold text-white shadow-md shadow-red-900/20 transition hover:from-red-500 hover:to-fuchsia-500"
+        className="rounded-md bg-gradient-to-r from-red-600 to-red-800 px-4 py-2 font-semibold text-white shadow-md shadow-red-900/20 transition hover:from-red-500 hover:to-red-700"
       >
         + Post a new tournament
       </button>
@@ -202,7 +202,7 @@ export default function CreateTournamentForm() {
 
       <button
         disabled={loading}
-        className="w-full rounded-md bg-gradient-to-r from-red-600 to-fuchsia-600 px-4 py-2 font-semibold text-white shadow-md shadow-red-900/20 transition hover:from-red-500 hover:to-fuchsia-500 disabled:opacity-50"
+        className="w-full rounded-md bg-gradient-to-r from-red-600 to-red-800 px-4 py-2 font-semibold text-white shadow-md shadow-red-900/20 transition hover:from-red-500 hover:to-red-700 disabled:opacity-50"
       >
         {loading ? "Submitting..." : "Submit for review"}
       </button>

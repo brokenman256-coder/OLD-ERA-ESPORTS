@@ -34,7 +34,7 @@ export default async function Home() {
           className="pointer-events-none absolute inset-0 opacity-30"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 15% 20%, #e11d48 0, transparent 38%), radial-gradient(circle at 85% 10%, #7c3aed 0, transparent 38%), radial-gradient(circle at 50% 90%, #06b6d4 0, transparent 40%)",
+              "radial-gradient(circle at 15% 20%, #e11d48 0, transparent 38%), radial-gradient(circle at 85% 10%, #d97706 0, transparent 38%), radial-gradient(circle at 50% 90%, #06b6d4 0, transparent 40%)",
           }}
         />
         <div
@@ -47,12 +47,12 @@ export default async function Home() {
           }}
         />
         <div className="relative">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-400 to-violet-400">
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
             Old Era Esports
           </p>
           <h1 className="mx-auto mt-3 max-w-3xl text-4xl font-bold tracking-tight sm:text-6xl">
             Compete. Organize.{" "}
-            <span className="bg-gradient-to-r from-red-500 via-fuchsia-500 to-cyan-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-red-500 to-amber-400 bg-clip-text text-transparent">
               Get Verified.
             </span>
           </h1>
@@ -64,7 +64,7 @@ export default async function Home() {
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Link
               href="/register"
-              className="rounded-md bg-gradient-to-r from-red-600 to-fuchsia-600 px-6 py-3 font-semibold shadow-lg shadow-red-900/40 transition hover:scale-105 hover:shadow-red-900/60"
+              className="rounded-md bg-gradient-to-r from-red-600 to-red-800 px-6 py-3 font-semibold shadow-lg shadow-red-900/40 transition hover:scale-105 hover:shadow-red-900/60"
             >
               Register as a Player
             </Link>
@@ -92,7 +92,7 @@ export default async function Home() {
               <p className="text-xs uppercase tracking-wide text-neutral-400">Players</p>
             </div>
             <div>
-              <p className="text-2xl font-bold text-violet-400 sm:text-3xl">
+              <p className="text-2xl font-bold text-amber-400 sm:text-3xl">
                 <StatCounter value={stats.organizers} />
               </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Organizers</p>
@@ -137,9 +137,9 @@ export default async function Home() {
               of your entry-fee payment. Your admin-verified slot is confirmed once we check it.
             </p>
           </div>
-          <div className="rounded-lg border-t-4 border-fuchsia-500 bg-white p-5 shadow-sm dark:bg-neutral-900">
+          <div className="rounded-lg border-t-4 border-amber-500 bg-white p-5 shadow-sm dark:bg-neutral-900">
             <p className="text-2xl">🏆</p>
-            <p className="mt-2 text-sm font-semibold text-fuchsia-600 dark:text-fuchsia-400">For Organizers</p>
+            <p className="mt-2 text-sm font-semibold text-amber-600 dark:text-amber-400">For Organizers</p>
             <p className="mt-2 text-neutral-600 dark:text-neutral-400">
               Post your tournament with a banner, tags, Discord/stream links, and a hosting
               fee payment screenshot. It goes live after our admin verifies the payment.

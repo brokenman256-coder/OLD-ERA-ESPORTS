@@ -11,9 +11,9 @@ export default function Logo({ size = 28, className = "" }: { size?: number; cla
       >
         <defs>
           <linearGradient id="oeeMark" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#f43f5e" />
-            <stop offset="55%" stopColor="#e11d48" />
-            <stop offset="100%" stopColor="#7c3aed" />
+            <stop offset="0%" stopColor="#f87171" />
+            <stop offset="55%" stopColor="#dc2626" />
+            <stop offset="100%" stopColor="#111111" />
           </linearGradient>
         </defs>
         <path
@@ -27,7 +27,7 @@ export default function Logo({ size = 28, className = "" }: { size?: number; cla
         />
       </svg>
       <span
-        className="bg-gradient-to-r from-red-500 via-rose-500 to-violet-500 bg-clip-text font-black tracking-tight text-transparent"
+        className="bg-gradient-to-r from-red-500 to-neutral-100 bg-clip-text font-black tracking-tight text-transparent"
         style={{ fontSize: size * 0.62 }}
       >
         OLD ERA ESPORTS
