@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import StatusBadge from "@/components/StatusBadge";
+import RoomDetailsForm from "@/components/RoomDetailsForm";
 
 interface Tournament {
   id: string;
@@ -21,6 +22,8 @@ interface Tournament {
   registrationCount: number;
   organizerEmail: string;
   organizer?: { name: string; firmName: string | null };
+  roomId: string | null;
+  roomPassword: string | null;
 }
 
 const FILTERS = ["ALL", "PENDING", "APPROVED", "REJECTED"] as const;
@@ -151,6 +154,14 @@ export default function TournamentsTab() {
 
               {editingId === t.id && (
                 <EditTournamentInline tournament={t} onSaved={() => { setEditingId(null); load(); }} />
+              )}
+
+              {t.status === "APPROVED" && (
+                <RoomDetailsForm
+                  tournamentId={t.id}
+                  initialRoomId={t.roomId}
+                  initialRoomPassword={t.roomPassword}
+                />
               )}
             </div>
           ))}

@@ -21,6 +21,8 @@ export async function GET(req: NextRequest) {
         ...publicTournament(t),
         registrationCount: t._count.registrations,
         organizerEmail: t.organizer.email,
+        roomId: t.roomId,
+        roomPassword: t.roomPassword,
       })),
     });
   } catch (err) {
