@@ -13,7 +13,7 @@ const TABS = [
   { key: "registrations", label: "Player Payments" },
   { key: "users", label: "Users" },
   { key: "support", label: "Support Chat" },
-  { key: "settings", label: "Payment Settings" },
+  { key: "settings", label: "Payment & Contact Settings" },
   { key: "promos", label: "Promotions" },
 ] as const;
 
