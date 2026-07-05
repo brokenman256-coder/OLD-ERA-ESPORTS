@@ -4,7 +4,6 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import SocialLinks from "@/components/SocialLinks";
 import Logo from "@/components/Logo";
-import AnimatedBackground from "@/components/AnimatedBackground";
 import SupportChatWidget from "@/components/SupportChatWidget";
 import "./globals.css";
 
@@ -34,8 +33,7 @@ export default function RootLayout({
       lang="en"
       className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col text-neutral-100">
-        <AnimatedBackground />
+      <body className="min-h-full flex flex-col bg-neutral-950 text-neutral-100">
         <Navbar />
         <main className="flex-1">{children}</main>
         <SupportChatWidget />

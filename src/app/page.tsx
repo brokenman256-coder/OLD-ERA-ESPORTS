@@ -5,6 +5,7 @@ import TournamentCard from "@/components/TournamentCard";
 import PromoCarousel from "@/components/PromoCarousel";
 import StatCounter from "@/components/StatCounter";
 import SocialLinks from "@/components/SocialLinks";
+import AnimatedBackground from "@/components/AnimatedBackground";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +31,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
+      <AnimatedBackground />
       <section className="relative overflow-hidden bg-gradient-to-b from-black/50 via-transparent to-neutral-950/60 px-6 py-28 text-center text-white">
         <div className="relative">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
