@@ -38,6 +38,7 @@ model User {
   registrations    Registration[]
   captainOfTeams   Team[]         @relation("TeamCaptain")
   teamMemberships  TeamMember[]
+  supportMessages  SupportMessage[]
 }
 
 model Team {
@@ -155,4 +156,18 @@ model PromoBanner {
   order     Int      @default(0)
   active    Boolean  @default(true)
   createdAt DateTime @default(now())
+}
+
+model SupportMessage {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  body      String
+  fromAdmin Boolean @default(false) // false = message from the user, true = reply from admin
+  read      Boolean @default(false) // read by the recipient (the user, if fromAdmin; admin, if not)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }

@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import SocialLinks from "@/components/SocialLinks";
 import Logo from "@/components/Logo";
 import AnimatedBackground from "@/components/AnimatedBackground";
+import SupportChatWidget from "@/components/SupportChatWidget";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,6 +38,7 @@ export default function RootLayout({
         <AnimatedBackground />
         <Navbar />
         <main className="flex-1">{children}</main>
+        <SupportChatWidget />
         <footer className="border-t border-white/10 bg-black/60 py-8 text-center text-xs text-neutral-400 backdrop-blur-sm">
           <div className="flex flex-col items-center gap-3">
             <Logo size={22} />
