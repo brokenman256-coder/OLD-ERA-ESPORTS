@@ -8,6 +8,7 @@ interface UserRow {
   email: string;
   role: string;
   firmName: string | null;
+  phone: string | null;
   isBanned: boolean;
   isVerified: boolean;
   createdAt: string;
@@ -86,11 +87,12 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full min-w-[700px] text-left text-sm">
+      <table className="w-full min-w-[800px] text-left text-sm">
         <thead>
           <tr className="border-b border-neutral-200 text-neutral-500 dark:border-neutral-800">
             <th className="py-2 pr-4">Name</th>
             <th className="py-2 pr-4">Email</th>
+            <th className="py-2 pr-4">Phone</th>
             <th className="py-2 pr-4">Role</th>
             <th className="py-2 pr-4">Status</th>
             <th className="py-2 pr-4">Actions</th>
@@ -104,6 +106,15 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
                 {u.firmName && <span className="text-neutral-500"> ({u.firmName})</span>}
               </td>
               <td className="py-2 pr-4">{u.email}</td>
+              <td className="py-2 pr-4">
+                {u.phone ? (
+                  <a href={`tel:${u.phone}`} className="text-cyan-400 hover:underline">
+                    {u.phone}
+                  </a>
+                ) : (
+                  <span className="text-neutral-500">—</span>
+                )}
+              </td>
               <td className="py-2 pr-4">
                 <select
                   value={u.role}
