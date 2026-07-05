@@ -1,0 +1,100 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
+const COLORS = ["#22d3ee", "#3b82f6", "#a855f7", "#facc15"];
+const FOCAL = 320;
+const COUNT = 130;
+
+interface Particle {
+  x: number;
+  y: number;
+  z: number;
+  color: string;
+}
+
+export default function Particles3D() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    let width = 0;
+    let height = 0;
+
+    function spawn(): Particle {
+      return {
+        x: (Math.random() - 0.5) * width * 2.2,
+        y: (Math.random() - 0.5) * height * 2.2,
+        z: Math.random() * FOCAL + 1,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+      };
+    }
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas!.width = width * dpr;
+      canvas!.height = height * dpr;
+      canvas!.style.width = `${width}px`;
+      canvas!.style.height = `${height}px`;
+      ctx!.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    const particles: Particle[] = Array.from({ length: COUNT }, spawn);
+
+    if (reduceMotion) {
+      ctx.globalCompositeOperation = "lighter";
+      for (const p of particles) {
+        const scale = FOCAL / p.z;
+        const sx = width / 2 + p.x * scale * 0.02;
+        const sy = height / 2 + p.y * scale * 0.02;
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = Math.min(0.5, scale * 0.25);
+        ctx.arc(sx, sy, Math.max(0.5, scale * 0.7), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      return () => window.removeEventListener("resize", resize);
+    }
+
+    let raf: number;
+    function frame() {
+      ctx!.clearRect(0, 0, width, height);
+      ctx!.globalCompositeOperation = "lighter";
+      for (const p of particles) {
+        p.z -= 1.15;
+        if (p.z <= 1) Object.assign(p, spawn(), { z: FOCAL });
+
+        const scale = FOCAL / p.z;
+        const sx = width / 2 + p.x * scale * 0.02;
+        const sy = height / 2 + p.y * scale * 0.02;
+        if (sx < -20 || sx > width + 20 || sy < -20 || sy > height + 20) continue;
+
+        ctx!.beginPath();
+        ctx!.fillStyle = p.color;
+        ctx!.globalAlpha = Math.min(0.85, scale * 0.32);
+        ctx!.arc(sx, sy, Math.max(0.4, scale * 0.85), 0, Math.PI * 2);
+        ctx!.fill();
+      }
+      ctx!.globalAlpha = 1;
+      raf = requestAnimationFrame(frame);
+    }
+    frame();
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} aria-hidden className="absolute inset-0" />;
+}

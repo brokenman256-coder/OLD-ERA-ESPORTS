@@ -63,3 +63,28 @@ body {
 .bg-orb-c {
   animation: drift-c 30s ease-in-out infinite;
 }
+
+@keyframes fly-plane {
+  0% { transform: translate3d(-20vw, 6vh, 0) rotateZ(-6deg); }
+  50% { transform: translate3d(60vw, -2vh, 40px) rotateZ(-3deg); }
+  100% { transform: translate3d(120vw, 8vh, 0) rotateZ(-6deg); }
+}
+
+@keyframes parachute-fall {
+  0% { transform: translate3d(0, -15vh, 60px) rotate3d(0, 1, 0, 0deg) rotateZ(-4deg); }
+  50% { transform: translate3d(6vw, 45vh, -20px) rotate3d(0, 1, 0, 180deg) rotateZ(4deg); }
+  100% { transform: translate3d(-4vw, 110vh, 60px) rotate3d(0, 1, 0, 360deg) rotateZ(-4deg); }
+}
+
+.bg-plane {
+  animation: fly-plane 34s linear infinite;
+}
+.bg-parachute {
+  animation: parachute-fall 26s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-orb-a, .bg-orb-b, .bg-orb-c, .bg-plane, .bg-parachute {
+    animation: none;
+  }
+}
