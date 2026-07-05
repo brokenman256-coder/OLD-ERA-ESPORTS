@@ -83,8 +83,27 @@ body {
   animation: parachute-fall 26s linear infinite;
 }
 
+@keyframes zone-shrink {
+  0% { transform: translate(-50%, -50%) scale(1); border-color: rgba(34, 211, 238, 0.25); }
+  70% { transform: translate(-50%, -50%) scale(0.35); border-color: rgba(239, 68, 68, 0.35); }
+  85% { transform: translate(-50%, -50%) scale(0.3); border-color: rgba(239, 68, 68, 0.4); }
+  100% { transform: translate(-50%, -50%) scale(1); border-color: rgba(34, 211, 238, 0.25); }
+}
+
+@keyframes crosshair-drift {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  50% { transform: translate(-24px, 18px) rotate(25deg); }
+}
+
+.bg-zone {
+  animation: zone-shrink 40s ease-in-out infinite;
+}
+.bg-crosshair {
+  animation: crosshair-drift 18s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .bg-orb-a, .bg-orb-b, .bg-orb-c, .bg-plane, .bg-parachute {
+  .bg-orb-a, .bg-orb-b, .bg-orb-c, .bg-plane, .bg-parachute, .bg-zone, .bg-crosshair {
     animation: none;
   }
 }
