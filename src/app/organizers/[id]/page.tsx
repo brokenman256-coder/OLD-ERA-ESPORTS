@@ -5,6 +5,8 @@ import { ROLES, APPROVAL } from "@/lib/constants";
 import Avatar from "@/components/Avatar";
 import VerifiedBadge from "@/components/VerifiedBadge";
 
+export const dynamic = "force-dynamic";
+
 export default async function OrganizerProfilePage({
   params,
 }: {

@@ -5,6 +5,8 @@ import Avatar from "@/components/Avatar";
 import VerifiedBadge from "@/components/VerifiedBadge";
 import StatusBadge from "@/components/StatusBadge";
 
+export const dynamic = "force-dynamic";
+
 export default async function PlayerProfilePage({
   params,
 }: {

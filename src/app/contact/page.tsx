@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/db";
 import SocialLinks from "@/components/SocialLinks";
 
+export const dynamic = "force-dynamic";
+
 export default async function ContactPage() {
   const settings = await prisma.siteSettings.upsert({
     where: { id: "global" },

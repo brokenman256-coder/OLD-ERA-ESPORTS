@@ -6,6 +6,8 @@ import PromoCarousel from "@/components/PromoCarousel";
 import StatCounter from "@/components/StatCounter";
 import SocialLinks from "@/components/SocialLinks";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const [tournaments, liveCount, playerCount, organizerCount, settings] = await Promise.all([
     prisma.tournament.findMany({
