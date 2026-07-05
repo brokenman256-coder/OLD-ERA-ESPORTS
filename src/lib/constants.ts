@@ -32,4 +32,11 @@ export const TOURNAMENT_FORMAT_LABELS: Record<string, string> = {
   BATTLE_ROYALE: "Battle Royale",
 };
 
+export const PLAYER_MATCH_MODES = {
+  WOW: "WOW",
+  TDM: "TDM",
+} as const;
+
+export type PlayerMatchMode = (typeof PLAYER_MATCH_MODES)[keyof typeof PLAYER_MATCH_MODES];
+
 export const SESSION_COOKIE = "oee_session";

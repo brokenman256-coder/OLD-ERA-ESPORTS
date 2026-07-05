@@ -1,4 +1,4 @@
-import type { Tournament, Registration, User, Team, TeamMember } from "@prisma/client";
+import type { Tournament, Registration, User, Team, TeamMember, PlayerMatch } from "@prisma/client";
 
 export function publicUser(user: User) {
   return {
@@ -71,6 +71,27 @@ export function publicRegistration(r: Registration & { player?: User; team?: Tea
     createdAt: r.createdAt,
     player: r.player ? { id: r.player.id, name: r.player.name, email: r.player.email } : undefined,
     team: r.team ? { id: r.team.id, name: r.team.name, tag: r.team.tag } : undefined,
+  };
+}
+
+export function publicPlayerMatch(
+  m: PlayerMatch & { creator?: User },
+  { includeCode }: { includeCode: boolean }
+) {
+  return {
+    id: m.id,
+    mode: m.mode,
+    title: m.title,
+    description: m.description,
+    matchCode: includeCode ? m.matchCode : null,
+    entryFee: m.entryFee,
+    maxSlots: m.maxSlots,
+    startDate: m.startDate,
+    status: m.status,
+    reviewNote: m.reviewNote,
+    createdAt: m.createdAt,
+    creatorId: m.creatorId,
+    creator: m.creator ? { id: m.creator.id, name: m.creator.name, avatarUrl: m.creator.avatarUrl } : undefined,
   };
 }
 

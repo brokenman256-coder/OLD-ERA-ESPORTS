@@ -39,6 +39,7 @@ model User {
   captainOfTeams   Team[]         @relation("TeamCaptain")
   teamMemberships  TeamMember[]
   supportMessages  SupportMessage[]
+  playerMatches    PlayerMatch[]  @relation("PlayerMatchCreator")
 }
 
 model Team {
@@ -174,4 +175,24 @@ model SupportMessage {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+model PlayerMatch {
+  id          String @id @default(cuid())
+  mode        String // "WOW" | "TDM"
+  title       String
+  description String?
+  matchCode   String // room / WOW code other players use to join in-game
+  entryFee    Float   @default(0)
+  maxSlots    Int?
+  startDate   DateTime
+
+  creatorId String
+  creator   User   @relation("PlayerMatchCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+
+  status     String  @default("PENDING")
+  reviewNote String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

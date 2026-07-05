@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ROLES } from "@/lib/constants";
 import StatusBadge from "@/components/StatusBadge";
+import PlayerMatchesSection from "@/components/PlayerMatchesSection";
 
 export default async function PlayerDashboard() {
   const user = await getCurrentUser();
@@ -82,6 +83,8 @@ export default async function PlayerDashboard() {
           ))}
         </div>
       )}
+
+      <PlayerMatchesSection />
     </div>
   );
 }

@@ -53,6 +53,9 @@ export default function Navbar() {
       <Link href="/leaderboard" className="hover:text-cyan-400" onClick={() => setMenuOpen(false)}>
         Leaderboard
       </Link>
+      <Link href="/player-matches" className="hover:text-cyan-400" onClick={() => setMenuOpen(false)}>
+        Player Matches
+      </Link>
       <Link href="/contact" className="hover:text-cyan-400" onClick={() => setMenuOpen(false)}>
         Contact
       </Link>
