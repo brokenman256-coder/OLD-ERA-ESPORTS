@@ -203,7 +203,7 @@ export default function RegisterForm({
 
       <button
         disabled={loading}
-        className="w-full rounded-md bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-500 disabled:opacity-50"
+        className="w-full rounded-md bg-gradient-to-r from-red-600 to-fuchsia-600 px-4 py-2 font-semibold text-white shadow-md shadow-red-900/20 transition hover:from-red-500 hover:to-fuchsia-500 disabled:opacity-50"
       >
         {loading ? "Submitting..." : "Register"}
       </button>

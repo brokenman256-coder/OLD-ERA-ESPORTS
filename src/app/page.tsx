@@ -7,7 +7,7 @@ import StatCounter from "@/components/StatCounter";
 import SocialLinks from "@/components/SocialLinks";
 
 export default async function Home() {
-  const [tournaments, liveCount, playerCount, organizerCount] = await Promise.all([
+  const [tournaments, liveCount, playerCount, organizerCount, settings] = await Promise.all([
     prisma.tournament.findMany({
       where: { status: APPROVAL.APPROVED },
       orderBy: { startDate: "asc" },
@@ -17,23 +17,44 @@ export default async function Home() {
     prisma.tournament.count({ where: { status: APPROVAL.APPROVED } }),
     prisma.user.count({ where: { role: ROLES.PLAYER } }),
     prisma.user.count({ where: { role: ROLES.ORGANIZER } }),
+    prisma.siteSettings.upsert({ where: { id: "global" }, update: {}, create: { id: "global" } }),
   ]);
+
+  const stats = {
+    live: settings.displayLiveTournaments ?? liveCount,
+    players: settings.displayPlayers ?? playerCount,
+    organizers: settings.displayOrganizers ?? organizerCount,
+  };
 
   return (
     <div className="flex flex-col">
       <section className="relative overflow-hidden bg-gradient-to-b from-black via-neutral-900 to-neutral-950 px-6 py-28 text-center text-white">
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 opacity-20"
+          className="pointer-events-none absolute inset-0 opacity-30"
           style={{
             backgroundImage:
-              "radial-gradient(circle at 20% 20%, #dc2626 0, transparent 35%), radial-gradient(circle at 80% 0%, #7c3aed 0, transparent 35%)",
+              "radial-gradient(circle at 15% 20%, #e11d48 0, transparent 38%), radial-gradient(circle at 85% 10%, #7c3aed 0, transparent 38%), radial-gradient(circle at 50% 90%, #06b6d4 0, transparent 40%)",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
           }}
         />
         <div className="relative">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">Old Era Esports</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-rose-400 to-violet-400">
+            Old Era Esports
+          </p>
           <h1 className="mx-auto mt-3 max-w-3xl text-4xl font-bold tracking-tight sm:text-6xl">
-            Compete. Organize. <span className="text-red-500">Get Verified.</span>
+            Compete. Organize.{" "}
+            <span className="bg-gradient-to-r from-red-500 via-fuchsia-500 to-cyan-400 bg-clip-text text-transparent">
+              Get Verified.
+            </span>
           </h1>
           <p className="mx-auto mt-5 max-w-2xl text-neutral-300">
             Players register for tournaments, organizers post their own events, and every
@@ -43,13 +64,13 @@ export default async function Home() {
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Link
               href="/register"
-              className="rounded-md bg-red-600 px-6 py-3 font-semibold transition hover:scale-105 hover:bg-red-500"
+              className="rounded-md bg-gradient-to-r from-red-600 to-fuchsia-600 px-6 py-3 font-semibold shadow-lg shadow-red-900/40 transition hover:scale-105 hover:shadow-red-900/60"
             >
               Register as a Player
             </Link>
             <Link
               href="/register"
-              className="rounded-md border border-white/30 px-6 py-3 font-semibold transition hover:scale-105 hover:bg-white/10"
+              className="rounded-md border border-cyan-400/40 bg-cyan-400/5 px-6 py-3 font-semibold text-cyan-300 transition hover:scale-105 hover:bg-cyan-400/15"
             >
               Post a Tournament
             </Link>
@@ -59,20 +80,20 @@ export default async function Home() {
 
           <div className="mx-auto mt-14 grid max-w-lg grid-cols-3 gap-4 text-center">
             <div>
-              <p className="text-2xl font-bold sm:text-3xl">
-                <StatCounter value={liveCount} />
+              <p className="text-2xl font-bold text-red-400 sm:text-3xl">
+                <StatCounter value={stats.live} />
               </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Live tournaments</p>
             </div>
             <div>
-              <p className="text-2xl font-bold sm:text-3xl">
-                <StatCounter value={playerCount} />
+              <p className="text-2xl font-bold text-cyan-400 sm:text-3xl">
+                <StatCounter value={stats.players} />
               </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Players</p>
             </div>
             <div>
-              <p className="text-2xl font-bold sm:text-3xl">
-                <StatCounter value={organizerCount} />
+              <p className="text-2xl font-bold text-violet-400 sm:text-3xl">
+                <StatCounter value={stats.organizers} />
               </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Organizers</p>
             </div>
@@ -84,8 +105,10 @@ export default async function Home() {
 
       <section className="mx-auto w-full max-w-6xl px-6 py-16">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold">Live Tournaments</h2>
-          <Link href="/tournaments" className="text-sm font-medium text-red-600 hover:underline">
+          <h2 className="text-2xl font-bold">
+            <span className="border-b-4 border-red-500 pb-1">Live Tournaments</span>
+          </h2>
+          <Link href="/tournaments" className="text-sm font-medium text-red-600 hover:underline dark:text-red-400">
             View all →
           </Link>
         </div>
@@ -106,25 +129,25 @@ export default async function Home() {
       <section className="mx-auto w-full max-w-6xl px-6 pb-20">
         <h2 className="text-2xl font-bold">How it works</h2>
         <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3">
-          <div className="rounded-lg border border-neutral-200 p-5 dark:border-neutral-800">
+          <div className="rounded-lg border-t-4 border-red-500 bg-white p-5 shadow-sm dark:bg-neutral-900">
             <p className="text-2xl">🎮</p>
-            <p className="mt-2 text-sm font-semibold text-red-600">For Players</p>
+            <p className="mt-2 text-sm font-semibold text-red-600 dark:text-red-400">For Players</p>
             <p className="mt-2 text-neutral-600 dark:text-neutral-400">
               Browse live tournaments, register solo or as a squad, and upload a screenshot
               of your entry-fee payment. Your admin-verified slot is confirmed once we check it.
             </p>
           </div>
-          <div className="rounded-lg border border-neutral-200 p-5 dark:border-neutral-800">
+          <div className="rounded-lg border-t-4 border-fuchsia-500 bg-white p-5 shadow-sm dark:bg-neutral-900">
             <p className="text-2xl">🏆</p>
-            <p className="mt-2 text-sm font-semibold text-red-600">For Organizers</p>
+            <p className="mt-2 text-sm font-semibold text-fuchsia-600 dark:text-fuchsia-400">For Organizers</p>
             <p className="mt-2 text-neutral-600 dark:text-neutral-400">
               Post your tournament with a banner, tags, Discord/stream links, and a hosting
               fee payment screenshot. It goes live after our admin verifies the payment.
             </p>
           </div>
-          <div className="rounded-lg border border-neutral-200 p-5 dark:border-neutral-800">
+          <div className="rounded-lg border-t-4 border-cyan-500 bg-white p-5 shadow-sm dark:bg-neutral-900">
             <p className="text-2xl">🛡️</p>
-            <p className="mt-2 text-sm font-semibold text-red-600">For Admins</p>
+            <p className="mt-2 text-sm font-semibold text-cyan-600 dark:text-cyan-400">For Admins</p>
             <p className="mt-2 text-neutral-600 dark:text-neutral-400">
               Every payment screenshot — from players and organizers — is manually
               reviewed and approved or rejected before anything goes live.

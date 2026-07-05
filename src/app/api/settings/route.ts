@@ -15,6 +15,9 @@ export async function GET() {
       qrCodeUrl: settings.qrCodeUrl,
       whatsappLink: settings.whatsappLink,
       instagramUrl: settings.instagramUrl,
+      displayLiveTournaments: settings.displayLiveTournaments,
+      displayPlayers: settings.displayPlayers,
+      displayOrganizers: settings.displayOrganizers,
     },
   });
 }

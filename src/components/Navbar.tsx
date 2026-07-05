@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Avatar from "@/components/Avatar";
 import ThemeToggle from "@/components/ThemeToggle";
+import Logo from "@/components/Logo";
 
 interface Me {
   id: string;
@@ -44,13 +45,13 @@ export default function Navbar() {
     user?.role === "ORGANIZER" ? `/organizers/${user.id}` : user?.role === "PLAYER" ? `/players/${user.id}` : null;
 
   return (
-    <header className="sticky top-0 z-10 border-b border-black/10 bg-black text-white dark:border-white/10">
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="text-lg font-bold tracking-tight">
-          OLD ERA ESPORTS
+    <header className="sticky top-0 z-10 border-b border-white/10 bg-black text-white shadow-[0_1px_0_0_rgba(244,63,94,0.3)]">
+      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3.5">
+        <Link href="/" className="transition hover:opacity-90">
+          <Logo />
         </Link>
         <div className="flex items-center gap-5 text-sm">
-          <Link href="/tournaments" className="hover:text-red-400">
+          <Link href="/tournaments" className="hover:text-cyan-400">
             Tournaments
           </Link>
           {user !== undefined && <ThemeToggle />}

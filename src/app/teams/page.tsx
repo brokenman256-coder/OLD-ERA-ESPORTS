@@ -128,7 +128,7 @@ export default function TeamsPage() {
         </div>
         <button
           disabled={creating}
-          className="rounded-md bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-500 disabled:opacity-50"
+          className="rounded-md bg-gradient-to-r from-red-600 to-fuchsia-600 px-4 py-2 font-semibold text-white shadow-md shadow-red-900/20 transition hover:from-red-500 hover:to-fuchsia-500 disabled:opacity-50"
         >
           {creating ? "Creating..." : "Create team"}
         </button>

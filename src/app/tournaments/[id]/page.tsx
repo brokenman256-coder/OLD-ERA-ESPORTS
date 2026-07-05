@@ -59,10 +59,12 @@ export default async function TournamentDetailPage({
           </div>
         )}
 
-        <p className="text-xs font-semibold uppercase tracking-wide text-red-600">
+        <p className="text-xs font-semibold uppercase tracking-wide text-red-600 dark:text-red-400">
           {gameIcon(tournament.game)} {tournament.game} · {TOURNAMENT_FORMAT_LABELS[tournament.format] ?? tournament.format}
         </p>
-        <h1 className="mt-1 text-3xl font-bold">{tournament.title}</h1>
+        <h1 className="mt-1 bg-gradient-to-r from-neutral-900 to-neutral-700 bg-clip-text text-3xl font-bold text-transparent dark:from-white dark:to-neutral-300">
+          {tournament.title}
+        </h1>
         <p className="mt-1 text-neutral-500">
           Hosted by{" "}
           <Link href={`/organizers/${tournament.organizer.id}`} className="hover:underline">
@@ -119,12 +121,14 @@ export default async function TournamentDetailPage({
           )}
           <div>
             <p className="text-xs text-neutral-500">Entry fee</p>
-            <p className="font-medium">{tournament.entryFee > 0 ? `₹${tournament.entryFee}` : "Free"}</p>
+            <p className="font-medium text-emerald-600 dark:text-emerald-400">
+              {tournament.entryFee > 0 ? `₹${tournament.entryFee}` : "Free"}
+            </p>
           </div>
           {tournament.prizePool && (
             <div>
               <p className="text-xs text-neutral-500">Prize pool</p>
-              <p className="font-medium">{tournament.prizePool}</p>
+              <p className="font-medium text-amber-600 dark:text-amber-400">{tournament.prizePool}</p>
             </div>
           )}
           {tournament.maxSlots && (

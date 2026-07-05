@@ -23,6 +23,19 @@ export async function PATCH(req: NextRequest) {
     if (typeof body.instagramUrl === "string") data.instagramUrl = body.instagramUrl.trim() || null;
     if (typeof body.qrCodeUrl === "string" && body.qrCodeUrl === "") data.qrCodeUrl = null;
 
+    for (const field of ["displayLiveTournaments", "displayPlayers", "displayOrganizers"] as const) {
+      if (typeof body[field] === "undefined") continue;
+      if (body[field] === null || body[field] === "") {
+        data[field] = null;
+        continue;
+      }
+      const n = Number(body[field]);
+      if (Number.isNaN(n) || n < 0) {
+        return NextResponse.json({ error: `${field} must be a non-negative number` }, { status: 400 });
+      }
+      data[field] = Math.round(n);
+    }
+
     const settings = await prisma.siteSettings.upsert({
       where: { id: "global" },
       update: data,

@@ -8,6 +8,9 @@ interface Settings {
   qrCodeUrl: string | null;
   whatsappLink: string | null;
   instagramUrl: string | null;
+  displayLiveTournaments: number | null;
+  displayPlayers: number | null;
+  displayOrganizers: number | null;
 }
 
 export default function SettingsTab() {
@@ -16,6 +19,9 @@ export default function SettingsTab() {
   const [upiId, setUpiId] = useState("");
   const [whatsappLink, setWhatsappLink] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
+  const [displayLiveTournaments, setDisplayLiveTournaments] = useState("");
+  const [displayPlayers, setDisplayPlayers] = useState("");
+  const [displayOrganizers, setDisplayOrganizers] = useState("");
   const [saving, setSaving] = useState(false);
   const [qrUploading, setQrUploading] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -28,6 +34,9 @@ export default function SettingsTab() {
     setUpiId(data.settings.upiId ?? "");
     setWhatsappLink(data.settings.whatsappLink ?? "");
     setInstagramUrl(data.settings.instagramUrl ?? "");
+    setDisplayLiveTournaments(data.settings.displayLiveTournaments?.toString() ?? "");
+    setDisplayPlayers(data.settings.displayPlayers?.toString() ?? "");
+    setDisplayOrganizers(data.settings.displayOrganizers?.toString() ?? "");
   }
 
   useEffect(() => {
@@ -46,6 +55,9 @@ export default function SettingsTab() {
         upiId,
         whatsappLink,
         instagramUrl,
+        displayLiveTournaments: displayLiveTournaments === "" ? null : Number(displayLiveTournaments),
+        displayPlayers: displayPlayers === "" ? null : Number(displayPlayers),
+        displayOrganizers: displayOrganizers === "" ? null : Number(displayOrganizers),
       }),
     });
     setSaving(false);
@@ -149,6 +161,49 @@ export default function SettingsTab() {
               value={instagramUrl}
               onChange={(e) => setInstagramUrl(e.target.value)}
               placeholder="https://instagram.com/..."
+              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+        <h3 className="font-bold">Homepage stats override</h3>
+        <p className="mt-1 text-sm text-neutral-500">
+          Leave blank to show real counts. Set a number here to display something else instead
+          (e.g. while the platform is new).
+        </p>
+        <div className="mt-4 grid grid-cols-3 gap-3">
+          <div>
+            <label className="block text-sm font-medium">Live tournaments</label>
+            <input
+              type="number"
+              min="0"
+              value={displayLiveTournaments}
+              onChange={(e) => setDisplayLiveTournaments(e.target.value)}
+              placeholder="auto"
+              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Players</label>
+            <input
+              type="number"
+              min="0"
+              value={displayPlayers}
+              onChange={(e) => setDisplayPlayers(e.target.value)}
+              placeholder="auto"
+              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Organizers</label>
+            <input
+              type="number"
+              min="0"
+              value={displayOrganizers}
+              onChange={(e) => setDisplayOrganizers(e.target.value)}
+              placeholder="auto"
               className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
             />
           </div>

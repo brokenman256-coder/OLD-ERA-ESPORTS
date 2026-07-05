@@ -131,7 +131,14 @@ model SiteSettings {
   qrCodeUrl        String?
   whatsappLink     String?
   instagramUrl     String?
-  updatedAt        DateTime @updatedAt
+
+  // Optional overrides for the homepage stat counters. When null, the real
+  // database count is shown instead.
+  displayLiveTournaments Int?
+  displayPlayers         Int?
+  displayOrganizers      Int?
+
+  updatedAt DateTime @updatedAt
 }
 
 model PromoBanner {
