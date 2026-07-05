@@ -65,6 +65,7 @@ export function publicRegistration(r: Registration & { player?: User; team?: Tea
     contactPhone: r.contactPhone,
     squadMembers: r.squadMembers,
     paymentProof: r.paymentProof,
+    resultProof: r.resultProof,
     status: r.status,
     reviewNote: r.reviewNote,
     createdAt: r.createdAt,

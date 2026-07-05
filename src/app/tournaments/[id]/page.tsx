@@ -6,6 +6,7 @@ import { APPROVAL, ROLES, TOURNAMENT_FORMAT_LABELS } from "@/lib/constants";
 import { gameIcon } from "@/lib/gameIcons";
 import StatusBadge from "@/components/StatusBadge";
 import RegisterForm from "@/components/RegisterForm";
+import ResultSubmitForm from "@/components/ResultSubmitForm";
 import Countdown from "@/components/Countdown";
 import TagPills from "@/components/TagPills";
 import VerifiedBadge from "@/components/VerifiedBadge";
@@ -40,6 +41,8 @@ export default async function TournamentDetailPage({
   const isFull = tournament.maxSlots ? tournament._count.registrations >= tournament.maxSlots : false;
   // eslint-disable-next-line react-hooks/purity -- server component; freshly computed per request, not memoized
   const upcoming = new Date(tournament.startDate).getTime() > Date.now();
+  // eslint-disable-next-line react-hooks/purity -- server component; freshly computed per request, not memoized
+  const matchStarted = new Date(tournament.startDate).getTime() <= Date.now();
 
   return (
     <div>
@@ -177,6 +180,35 @@ export default async function TournamentDetailPage({
               {existingRegistration.reviewNote && (
                 <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
                   Admin note: {existingRegistration.reviewNote}
+                </p>
+              )}
+
+              {existingRegistration.status === APPROVAL.APPROVED &&
+                (tournament.roomId || tournament.roomPassword) && (
+                  <div className="mt-4 rounded-md border border-cyan-800 bg-cyan-950 p-4">
+                    <p className="text-sm font-semibold text-cyan-300">Room details</p>
+                    {tournament.roomId && (
+                      <p className="mt-1 text-sm text-cyan-200">
+                        Room ID: <span className="font-mono font-semibold">{tournament.roomId}</span>
+                      </p>
+                    )}
+                    {tournament.roomPassword && (
+                      <p className="mt-1 text-sm text-cyan-200">
+                        Password: <span className="font-mono font-semibold">{tournament.roomPassword}</span>
+                      </p>
+                    )}
+                  </div>
+                )}
+
+              {existingRegistration.status === APPROVAL.APPROVED &&
+                matchStarted &&
+                !existingRegistration.resultProof && (
+                  <ResultSubmitForm registrationId={existingRegistration.id} />
+                )}
+
+              {existingRegistration.resultProof && (
+                <p className="mt-4 text-sm text-emerald-600 dark:text-emerald-400">
+                  ✓ Match result screenshot submitted.
                 </p>
               )}
             </div>

@@ -9,6 +9,7 @@ interface Registration {
   contactPhone: string | null;
   squadMembers: { name: string; gameId: string }[] | null;
   paymentProof: string | null;
+  resultProof: string | null;
   status: string;
   reviewNote: string | null;
   player?: { name: string; email: string };
@@ -106,6 +107,20 @@ export default function RegistrationsTab() {
                     <img
                       src={r.paymentProof}
                       alt="Entry fee payment proof"
+                      className="mt-1 max-h-48 rounded-md border border-neutral-200"
+                    />
+                  </a>
+                </div>
+              )}
+
+              {r.resultProof && (
+                <div className="mt-3">
+                  <p className="text-xs font-medium text-neutral-500">Match result screenshot:</p>
+                  <a href={r.resultProof} target="_blank" rel="noreferrer">
+                    {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary-sized user-uploaded screenshot */}
+                    <img
+                      src={r.resultProof}
+                      alt="Match result"
                       className="mt-1 max-h-48 rounded-md border border-neutral-200"
                     />
                   </a>

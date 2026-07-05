@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db";
 import { ROLES } from "@/lib/constants";
 import StatusBadge from "@/components/StatusBadge";
 import CreateTournamentForm from "@/components/CreateTournamentForm";
+import RoomDetailsForm from "@/components/RoomDetailsForm";
+import { APPROVAL } from "@/lib/constants";
 
 export default async function OrganizerDashboard() {
   const user = await getCurrentUser();
@@ -70,6 +72,13 @@ export default async function OrganizerDashboard() {
                 >
                   View my hosting fee screenshot
                 </a>
+              )}
+              {t.status === APPROVAL.APPROVED && (
+                <RoomDetailsForm
+                  tournamentId={t.id}
+                  initialRoomId={t.roomId}
+                  initialRoomPassword={t.roomPassword}
+                />
               )}
             </div>
           ))}

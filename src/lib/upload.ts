@@ -53,3 +53,7 @@ export function saveQrCode(file: File): Promise<string> {
 export function savePromoBanner(file: File): Promise<string> {
   return uploadImage(file, "promos");
 }
+
+export function saveResultScreenshot(file: File): Promise<string> {
+  return uploadImage(file, "results");
+}

@@ -87,6 +87,9 @@ model Tournament {
   streamUrl  String?
   format     String  @default("SINGLE_ELIMINATION")
 
+  roomId       String? // custom-match room ID, shared with approved players before start
+  roomPassword String?
+
   organizerId String
   organizer   User   @relation("OrganizerTournaments", fields: [organizerId], references: [id], onDelete: Cascade)
 
@@ -118,6 +121,7 @@ model Registration {
 
   contactPhone  String? // mandatory contact number collected at registration
   squadMembers  Json?   // array of exactly 4 { name, gameId } entries
+  resultProof   String? // screenshot of the match end result, submitted by the player after the match
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
