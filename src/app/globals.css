@@ -59,8 +59,17 @@ body {
   animation: sun-pulse 5s ease-in-out infinite;
 }
 
+@keyframes hud-pulse {
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(1.04); }
+}
+
+.hud-pulse {
+  animation: hud-pulse 4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .bg-grid-floor, .bg-sun {
+  .bg-grid-floor, .bg-sun, .hud-pulse {
     animation: none;
   }
 }
