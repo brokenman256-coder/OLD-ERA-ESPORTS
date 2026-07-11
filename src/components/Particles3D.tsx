@@ -2,9 +2,9 @@
 
 import { useEffect, useRef } from "react";
 
-const COLORS = ["#22d3ee", "#3b82f6", "#a855f7", "#facc15"];
-const FOCAL = 320;
-const COUNT = 130;
+const COLORS = ["#e8e6df", "#9fd8e8", "#c9a869"];
+const FOCAL = 340;
+const COUNT = 60;
 
 interface Particle {
   x: number;
@@ -71,7 +71,7 @@ export default function Particles3D() {
       ctx!.clearRect(0, 0, width, height);
       ctx!.globalCompositeOperation = "lighter";
       for (const p of particles) {
-        p.z -= 1.15;
+        p.z -= 0.55;
         if (p.z <= 1) Object.assign(p, spawn(), { z: FOCAL });
 
         const scale = FOCAL / p.z;
@@ -81,8 +81,8 @@ export default function Particles3D() {
 
         ctx!.beginPath();
         ctx!.fillStyle = p.color;
-        ctx!.globalAlpha = Math.min(0.85, scale * 0.32);
-        ctx!.arc(sx, sy, Math.max(0.4, scale * 0.85), 0, Math.PI * 2);
+        ctx!.globalAlpha = Math.min(0.45, scale * 0.16);
+        ctx!.arc(sx, sy, Math.max(0.3, scale * 0.55), 0, Math.PI * 2);
         ctx!.fill();
       }
       ctx!.globalAlpha = 1;
