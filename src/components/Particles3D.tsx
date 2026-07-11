@@ -79,12 +79,16 @@ export default function Particles3D() {
         const sy = height / 2 + p.y * scale * 0.02;
         if (sx < -20 || sx > width + 20 || sy < -20 || sy > height + 20) continue;
 
+        const r = Math.max(0.3, scale * 0.55);
         ctx!.beginPath();
         ctx!.fillStyle = p.color;
+        ctx!.shadowColor = p.color;
+        ctx!.shadowBlur = r * 4;
         ctx!.globalAlpha = Math.min(0.45, scale * 0.16);
-        ctx!.arc(sx, sy, Math.max(0.3, scale * 0.55), 0, Math.PI * 2);
+        ctx!.arc(sx, sy, r, 0, Math.PI * 2);
         ctx!.fill();
       }
+      ctx!.shadowBlur = 0;
       ctx!.globalAlpha = 1;
       raf = requestAnimationFrame(frame);
     }

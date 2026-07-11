@@ -49,10 +49,11 @@ body {
 .bg-sweep {
   background: linear-gradient(
     100deg,
-    transparent 30%,
-    rgba(201, 168, 105, 0.5) 47%,
-    rgba(159, 216, 232, 0.5) 53%,
-    transparent 70%
+    transparent 44%,
+    rgba(201, 168, 105, 0.55) 48.5%,
+    rgba(255, 255, 255, 0.9) 50%,
+    rgba(159, 216, 232, 0.55) 51.5%,
+    transparent 56%
   );
   animation: sweep 26s ease-in-out infinite alternate;
 }
