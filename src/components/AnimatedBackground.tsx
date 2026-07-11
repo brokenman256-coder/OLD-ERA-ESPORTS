@@ -1,14 +1,14 @@
 import Particles3D from "@/components/Particles3D";
 import HudOverlay from "@/components/HudOverlay";
+import GeometricShapes from "@/components/GeometricShapes";
+import EnergyWaves from "@/components/EnergyWaves";
+import MouseTracker from "@/components/MouseTracker";
 
 const GRAIN =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
 
 const GRID_LINES =
-  "linear-gradient(rgba(201,168,105,0.55) 1px, transparent 1px), linear-gradient(90deg, rgba(159,216,232,0.5) 1px, transparent 1px)";
-
-const SUN_SCANLINES =
-  "repeating-linear-gradient(to bottom, black 0, black 3px, transparent 3px, transparent 7px)";
+  "linear-gradient(rgba(34,211,238,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,0.35) 1px, transparent 1px)";
 
 export default function AnimatedBackground() {
   return (
@@ -17,42 +17,57 @@ export default function AnimatedBackground() {
         className="absolute inset-0"
         style={{
           background:
-            "linear-gradient(to bottom, #050507 0%, #0a0a10 45%, #120c14 62%, #050505 100%)",
+            "linear-gradient(to bottom, #030308 0%, #070a1c 35%, #0e0a24 60%, #05040d 100%)",
         }}
       />
 
-      <div className="absolute inset-0 opacity-70">
-        <Particles3D />
-      </div>
-
       <div
-        className="absolute left-1/2 top-[56%] h-[46vh] w-[150vw] -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
+        className="absolute inset-0 opacity-90"
         style={{
           background:
-            "radial-gradient(ellipse, rgba(201,168,105,0.32) 0%, rgba(159,216,232,0.2) 45%, transparent 72%)",
+            "radial-gradient(ellipse 90% 60% at 50% 0%, rgba(59,60,150,0.28) 0%, transparent 60%), radial-gradient(ellipse 70% 50% at 85% 100%, rgba(126,34,206,0.22) 0%, transparent 60%), radial-gradient(ellipse 70% 50% at 10% 90%, rgba(8,145,178,0.2) 0%, transparent 60%)",
         }}
       />
 
-      <div
-        className="bg-sun absolute left-1/2 top-[56%] h-[26vh] w-[26vh] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full"
-        style={{
-          background: "linear-gradient(to bottom, #f3d99b 0%, #c9a869 38%, #b3557a 62%, #6fb8d1 82%, #9fd8e8 100%)",
-          boxShadow: "0 0 80px 10px rgba(201,168,105,0.35), 0 0 140px 40px rgba(159,216,232,0.15)",
-        }}
-      >
+      <MouseTracker className="absolute inset-0">
         <div
-          className="absolute inset-x-0 bottom-0 h-[55%]"
+          className="absolute inset-0"
           style={{
-            background: "#050507",
-            WebkitMaskImage: SUN_SCANLINES,
-            maskImage: SUN_SCANLINES,
+            background: "radial-gradient(circle at var(--mx-pct) var(--my-pct), rgba(34,211,238,0.12), transparent 35%)",
+          }}
+        />
+        <div
+          className="absolute inset-[-8%]"
+          style={{ transform: "translate3d(calc(var(--mx) * -10px), calc(var(--my) * -10px), 0)" }}
+        >
+          <GeometricShapes animated />
+        </div>
+        <div
+          className="absolute inset-[-4%] opacity-70"
+          style={{ transform: "translate3d(calc(var(--mx) * -18px), calc(var(--my) * -18px), 0)" }}
+        >
+          <Particles3D />
+        </div>
+      </MouseTracker>
+
+      <EnergyWaves animated />
+
+      <div className="bg-holo absolute inset-[-25%] opacity-[0.07] mix-blend-screen">
+        <div
+          className="h-full w-full"
+          style={{
+            background:
+              "linear-gradient(100deg, transparent 40%, rgba(34,211,238,0.6) 48%, rgba(168,85,247,0.7) 51%, rgba(99,102,241,0.5) 54%, transparent 62%)",
           }}
         />
       </div>
 
       <div
-        className="absolute inset-x-0 bottom-0 h-[46vh] overflow-hidden"
-        style={{ maskImage: "linear-gradient(to top, black 55%, transparent 100%)", WebkitMaskImage: "linear-gradient(to top, black 55%, transparent 100%)" }}
+        className="absolute inset-x-0 bottom-0 h-[42vh] overflow-hidden"
+        style={{
+          maskImage: "linear-gradient(to top, black 55%, transparent 100%)",
+          WebkitMaskImage: "linear-gradient(to top, black 55%, transparent 100%)",
+        }}
       >
         <div
           className="bg-grid-floor absolute inset-x-[-60%] bottom-0 h-[220%]"
@@ -65,6 +80,14 @@ export default function AnimatedBackground() {
         />
       </div>
 
+      <div
+        className="absolute inset-x-0 bottom-[38vh] h-px"
+        style={{
+          background: "linear-gradient(90deg, transparent, rgba(34,211,238,0.6) 45%, rgba(168,85,247,0.6) 55%, transparent)",
+          boxShadow: "0 0 20px 2px rgba(34,211,238,0.3)",
+        }}
+      />
+
       <HudOverlay animated />
 
       <div
@@ -75,14 +98,14 @@ export default function AnimatedBackground() {
       <div
         className="absolute inset-x-0 top-0 h-px"
         style={{
-          background: "linear-gradient(90deg, transparent, rgba(201,168,105,0.7) 45%, rgba(159,216,232,0.7) 55%, transparent)",
-          boxShadow: "0 0 12px 1px rgba(201,168,105,0.35)",
+          background: "linear-gradient(90deg, transparent, rgba(34,211,238,0.7) 45%, rgba(168,85,247,0.7) 55%, transparent)",
+          boxShadow: "0 0 12px 1px rgba(34,211,238,0.35)",
         }}
       />
 
       <div
         className="absolute inset-0"
-        style={{ boxShadow: "inset 0 0 18vmax 2vmax rgba(0,0,0,0.7)" }}
+        style={{ boxShadow: "inset 0 0 20vmax 3vmax rgba(0,0,0,0.75)" }}
       />
     </div>
   );

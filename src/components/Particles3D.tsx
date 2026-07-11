@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-const COLORS = ["#e8e6df", "#9fd8e8", "#c9a869"];
+const COLORS = ["#22d3ee", "#818cf8", "#a855f7", "#e0f2fe"];
 const FOCAL = 340;
 const COUNT = 60;
 
