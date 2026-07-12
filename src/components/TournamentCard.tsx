@@ -17,11 +17,11 @@ interface CardTournament {
 }
 
 const FALLBACK_GRADIENTS = [
-  "from-red-600 via-red-800 to-neutral-950",
-  "from-neutral-700 via-neutral-900 to-black",
   "from-cyan-600 via-blue-800 to-neutral-950",
-  "from-amber-500 via-orange-800 to-neutral-950",
-  "from-emerald-600 via-teal-800 to-neutral-950",
+  "from-purple-600 via-fuchsia-800 to-neutral-950",
+  "from-pink-600 via-rose-800 to-neutral-950",
+  "from-neutral-700 via-neutral-900 to-black",
+  "from-indigo-600 via-purple-800 to-neutral-950",
 ];
 
 function gradientFor(game: string) {
@@ -47,7 +47,7 @@ export default function TournamentCard({ t }: { t: CardTournament }) {
   return (
     <Link
       href={`/tournaments/${t.id}`}
-      className="group overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900 shadow-sm transition hover:-translate-y-1 hover:border-red-500/40 hover:shadow-xl hover:shadow-red-900/10"
+      className="clip-corner group overflow-hidden border border-neutral-800 bg-neutral-900 shadow-sm transition hover:-translate-y-1 hover:border-purple-500/40 hover:shadow-xl hover:shadow-purple-900/20"
     >
       <div className="relative">
         {t.bannerUrl ? (
@@ -65,10 +65,10 @@ export default function TournamentCard({ t }: { t: CardTournament }) {
         )}
       </div>
       <div className="p-5">
-        <p className="text-xs font-semibold uppercase tracking-wide text-red-400">
+        <p className="text-xs font-bold uppercase tracking-wide text-cyan-400">
           {gameIcon(t.game)} {t.game}
         </p>
-        <h3 className="mt-1 text-lg font-bold group-hover:text-red-400">{t.title}</h3>
+        <h3 className="mt-1 text-lg font-bold group-hover:text-purple-400">{t.title}</h3>
         <p className="mt-1 flex items-center gap-1 text-sm text-neutral-500">
           by {t.organizer.firmName || t.organizer.name}
           {t.organizer.isVerified && <VerifiedBadge label="Verified" />}

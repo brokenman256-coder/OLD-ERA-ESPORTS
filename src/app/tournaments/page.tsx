@@ -21,7 +21,7 @@ export default async function TournamentsPage({
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="text-3xl font-bold">Browse Tournaments</h1>
+      <h1 className="section-title text-3xl font-black uppercase tracking-wide">Browse Tournaments</h1>
 
       <form className="mt-6 flex flex-wrap gap-3" method="get">
         <input
@@ -29,16 +29,16 @@ export default async function TournamentsPage({
           name="q"
           defaultValue={q}
           placeholder="Search by title or description"
-          className="w-full flex-1 rounded-md border border-neutral-300 px-3 py-2 sm:w-auto dark:border-neutral-700 dark:bg-neutral-900"
+          className="w-full flex-1 rounded-md border border-neutral-700 bg-neutral-900 px-3 py-2 sm:w-auto"
         />
         <input
           type="text"
           name="game"
           defaultValue={game}
           placeholder="Filter by game"
-          className="rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+          className="rounded-md border border-neutral-700 bg-neutral-900 px-3 py-2"
         />
-        <button className="rounded-md bg-black px-4 py-2 text-white hover:bg-neutral-800 dark:bg-white dark:text-black dark:hover:bg-neutral-200">
+        <button className="clip-corner-sm bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 px-5 py-2 font-bold uppercase tracking-wide hover:brightness-110">
           Search
         </button>
       </form>

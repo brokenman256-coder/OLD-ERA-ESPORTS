@@ -55,3 +55,29 @@ body {
     animation: none;
   }
 }
+
+/* Bold-esports design system: angular cut corners + accented headings */
+
+.clip-corner {
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+
+.clip-corner-sm {
+  clip-path: polygon(0 0, calc(100% - 11px) 0, 100% 11px, 100% 100%, 11px 100%, 0 calc(100% - 11px));
+}
+
+.section-title {
+  position: relative;
+  padding-left: 1.1rem;
+}
+
+.section-title::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.08em;
+  bottom: 0.08em;
+  width: 6px;
+  background: linear-gradient(180deg, #22d3ee, #a855f7, #ec4899);
+  transform: skewX(-12deg);
+}
