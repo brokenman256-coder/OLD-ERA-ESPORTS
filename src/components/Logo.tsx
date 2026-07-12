@@ -10,24 +10,38 @@ export default function Logo({ size = 28, className = "" }: { size?: number; cla
         aria-hidden
       >
         <defs>
-          <linearGradient id="oeeMark" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#f87171" />
-            <stop offset="55%" stopColor="#dc2626" />
-            <stop offset="100%" stopColor="#111111" />
+          <linearGradient id="vantixMark" x1="6" y1="5" x2="34" y2="33" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#22d3ee" />
+            <stop offset="50%" stopColor="#a855f7" />
+            <stop offset="100%" stopColor="#ec4899" />
           </linearGradient>
+          <linearGradient id="vantixSpark" x1="10" y1="8" x2="27" y2="16" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#67e8f9" />
+            <stop offset="100%" stopColor="#f0abfc" />
+          </linearGradient>
+          <filter id="vantixGlow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="1.6" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
         </defs>
-        <path
-          d="M20 2 L36 10 V22 C36 30.5 29.3 36.8 20 39 C10.7 36.8 4 30.5 4 22 V10 Z"
-          fill="url(#oeeMark)"
-        />
-        <path
-          d="M20 10 L22.9 16.6 L30 17.3 L24.7 22.1 L26.2 29.1 L20 25.5 L13.8 29.1 L15.3 22.1 L10 17.3 L17.1 16.6 Z"
-          fill="white"
-          fillOpacity="0.95"
-        />
+        <g filter="url(#vantixGlow)">
+          <path
+            d="M6 5 L20 33 L34 5"
+            stroke="url(#vantixMark)"
+            strokeWidth="7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+          <line x1="11" y1="9" x2="26.5" y2="16.5" stroke="url(#vantixSpark)" strokeWidth="2.5" strokeLinecap="round" />
+          <circle cx="20" cy="33" r="2.6" fill="#f0abfc" />
+        </g>
       </svg>
       <span
-        className="bg-gradient-to-r from-red-500 to-neutral-100 bg-clip-text font-black tracking-tight text-transparent"
+        className="skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text font-black italic tracking-tight text-transparent"
         style={{ fontSize: size * 0.62 }}
       >
         VANTIX
