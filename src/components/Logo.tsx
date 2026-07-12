@@ -30,7 +30,7 @@ export default function Logo({ size = 28, className = "" }: { size?: number; cla
         className="bg-gradient-to-r from-red-500 to-neutral-100 bg-clip-text font-black tracking-tight text-transparent"
         style={{ fontSize: size * 0.62 }}
       >
-        OLD ERA ESPORTS
+        VANTIX
       </span>
     </span>
   );

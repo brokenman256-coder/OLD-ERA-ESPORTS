@@ -1,4 +1,4 @@
-# Old Era Esports — Tournament Platform
+# Vantix — Tournament Platform
 
 A gaming tournament platform built with Next.js 16 (App Router), Prisma, and PostgreSQL.
 Deployed on Vercel with Neon Postgres and Vercel Blob for payment-screenshot storage.

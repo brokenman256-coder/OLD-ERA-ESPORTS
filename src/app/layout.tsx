@@ -19,7 +19,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Old Era Esports | Tournament Platform",
+  title: "Vantix | Tournament Platform",
   description:
     "Discover and register for gaming tournaments, or post your own tournament as an organizer.",
 };
@@ -47,7 +47,7 @@ export default function RootLayout({
               Contact & Support
             </Link>
             <p>
-              © {new Date().getFullYear()} Old Era Esports. All payments are verified manually by our admin team.
+              © {new Date().getFullYear()} Vantix. All payments are verified manually by our admin team.
             </p>
           </div>
         </footer>

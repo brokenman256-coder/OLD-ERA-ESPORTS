@@ -1,4 +1,4 @@
-// Prisma schema for Old Era Esports tournament platform
+// Prisma schema for Vantix tournament platform
 
 generator client {
   provider = "prisma-client-js"

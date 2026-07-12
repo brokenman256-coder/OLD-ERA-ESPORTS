@@ -33,7 +33,7 @@ export default async function Home() {
       <section className="relative overflow-hidden bg-gradient-to-b from-black/50 via-transparent to-neutral-950/60 px-6 py-28 text-center text-white">
         <div className="relative">
           <p className="text-sm font-semibold uppercase tracking-[0.3em] text-red-500">
-            Old Era Esports
+            Vantix
           </p>
           <h1 className="mx-auto mt-3 max-w-3xl text-4xl font-bold tracking-tight sm:text-6xl">
             Compete. Organize.{" "}
