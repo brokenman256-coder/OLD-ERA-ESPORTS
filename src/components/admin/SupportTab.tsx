@@ -114,7 +114,7 @@ export default function SupportTab() {
                   {t.user.firmName && <span className="text-neutral-500"> ({t.user.firmName})</span>}
                 </p>
                 {t.unreadCount > 0 && (
-                  <span className="rounded-full bg-red-600 px-2 py-0.5 text-xs font-bold text-white">
+                  <span className="rounded-full bg-pink-500 px-2 py-0.5 text-xs font-bold text-white">
                     {t.unreadCount}
                   </span>
                 )}
@@ -137,7 +137,7 @@ export default function SupportTab() {
         {!activeUser ? (
           <p className="text-neutral-500">Select a conversation to view and reply.</p>
         ) : (
-          <div className="flex h-[32rem] flex-col overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900">
+          <div className="flex h-[32rem] flex-col overflow-hidden glass-panel clip-corner">
             <div className="border-b border-neutral-800 px-4 py-3">
               <p className="font-bold">
                 {activeUser.name}
@@ -173,7 +173,7 @@ export default function SupportTab() {
               />
               <button
                 disabled={sending || !text.trim()}
-                className="rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white hover:bg-cyan-500 disabled:opacity-50"
+                className="clip-corner-sm premium-btn px-3 py-2 text-sm font-bold uppercase tracking-wide disabled:cursor-not-allowed"
               >
                 Send
               </button>

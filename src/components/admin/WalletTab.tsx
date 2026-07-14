@@ -61,8 +61,8 @@ export default function WalletTab() {
             onClick={() => setSubTab(t)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
               subTab === t
-                ? "bg-black text-white dark:bg-white dark:text-black"
-                : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
+                ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white"
+                : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >
             {t}
@@ -118,7 +118,7 @@ function TopUpsPanel() {
             key={f}
             onClick={() => setFilter(f)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-              filter === f ? "bg-cyan-600 text-white" : "bg-neutral-800 text-neutral-300"
+              filter === f ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >
             {f}
@@ -133,7 +133,7 @@ function TopUpsPanel() {
       ) : (
         <div className="mt-4 space-y-3">
           {topUps.map((t) => (
-            <div key={t.id} className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+            <div key={t.id} className="glass-panel clip-corner p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-bold">₹{t.amount}</p>
@@ -161,7 +161,7 @@ function TopUpsPanel() {
                   </button>
                   <button
                     onClick={() => verify(t.id, "REJECTED")}
-                    className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-500"
+                    className="clip-corner-sm premium-btn px-3 py-1.5 text-sm font-bold uppercase tracking-wide"
                   >
                     Reject
                   </button>
@@ -213,7 +213,7 @@ function WithdrawalsPanel() {
             key={f}
             onClick={() => setFilter(f)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-              filter === f ? "bg-cyan-600 text-white" : "bg-neutral-800 text-neutral-300"
+              filter === f ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >
             {f}
@@ -228,7 +228,7 @@ function WithdrawalsPanel() {
       ) : (
         <div className="mt-4 space-y-3">
           {withdrawals.map((w) => (
-            <div key={w.id} className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+            <div key={w.id} className="glass-panel clip-corner p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-bold">₹{w.amount}</p>
@@ -253,7 +253,7 @@ function WithdrawalsPanel() {
                   </button>
                   <button
                     onClick={() => verify(w.id, "REJECTED")}
-                    className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-500"
+                    className="clip-corner-sm premium-btn px-3 py-1.5 text-sm font-bold uppercase tracking-wide"
                   >
                     Reject &amp; refund
                   </button>
@@ -311,7 +311,7 @@ function BalancesPanel() {
   return (
     <div className="mt-4 space-y-3">
       {users.map((u) => (
-        <div key={u.id} className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+        <div key={u.id} className="glass-panel clip-corner p-4">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="font-medium">
@@ -355,7 +355,7 @@ function BalancesPanel() {
               />
               <button
                 onClick={() => submitAdjust(u.id)}
-                className="rounded-md bg-cyan-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-cyan-500"
+                className="clip-corner-sm premium-btn px-3 py-1.5 text-sm font-bold uppercase tracking-wide"
               >
                 Apply
               </button>

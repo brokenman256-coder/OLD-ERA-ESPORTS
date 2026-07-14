@@ -120,7 +120,7 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
                   value={u.role}
                   disabled={u.id === currentAdminId}
                   onChange={(e) => setRole(u.id, e.target.value)}
-                  className="rounded-md border border-neutral-300 px-2 py-1 dark:border-neutral-700 dark:bg-neutral-900"
+                  className="rounded-md premium-input px-2 py-1"
                 >
                   <option value="PLAYER">PLAYER</option>
                   <option value="ORGANIZER">ORGANIZER</option>
@@ -134,28 +134,28 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
                   className={`rounded-md px-3 py-1 text-xs font-medium hover:opacity-80 ${
                     u.isVerified
                       ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
-                      : "bg-neutral-100 dark:bg-neutral-800"
+                      : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
                   }`}
                 >
                   {u.isVerified ? "Verified ✓" : "Verify"}
                 </button>
                 <button
                   onClick={() => resetPassword(u.id, u.email)}
-                  className="rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                  className="rounded-md border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-neutral-300 transition hover:bg-white/10 hover:text-white"
                 >
                   Reset password
                 </button>
                 <button
                   disabled={u.id === currentAdminId}
                   onClick={() => toggleBan(u.id, u.isBanned)}
-                  className="rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium hover:bg-neutral-200 disabled:opacity-40 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                  className="rounded-md border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-neutral-300 transition hover:bg-white/10 hover:text-white disabled:opacity-40"
                 >
                   {u.isBanned ? "Unban" : "Ban"}
                 </button>
                 <button
                   disabled={u.id === currentAdminId}
                   onClick={() => removeUser(u.id)}
-                  className="rounded-md bg-neutral-100 px-3 py-1 text-xs font-medium text-red-600 hover:bg-neutral-200 disabled:opacity-40 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                  className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1 text-xs font-medium text-red-400 transition hover:bg-red-500/20 disabled:opacity-40"
                 >
                   Delete
                 </button>

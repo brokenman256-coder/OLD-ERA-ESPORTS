@@ -41,7 +41,7 @@ export default async function LeaderboardPage() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-16">
-      <h1 className="text-3xl font-bold">Leaderboard</h1>
+      <h1 className="section-title text-3xl font-black uppercase tracking-wide">Leaderboard</h1>
       <p className="mt-2 text-neutral-400">Ranked by confirmed tournament activity.</p>
 
       <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-2">
@@ -55,7 +55,7 @@ export default async function LeaderboardPage() {
                 <Link
                   key={row.user.id}
                   href={`/players/${row.user.id}`}
-                  className="flex items-center gap-3 rounded-lg border border-neutral-800 bg-neutral-900/80 p-3 backdrop-blur-sm transition hover:border-cyan-500/40"
+                  className="flex items-center gap-3 glass-panel clip-corner p-3 transition hover-glow"
                 >
                   <span className="w-8 text-center text-lg font-bold text-cyan-400">{medal(i)}</span>
                   <Avatar name={row.user.name} src={row.user.avatarUrl} size={32} />
@@ -79,7 +79,7 @@ export default async function LeaderboardPage() {
                 <Link
                   key={row.user.id}
                   href={`/organizers/${row.user.id}`}
-                  className="flex items-center gap-3 rounded-lg border border-neutral-800 bg-neutral-900/80 p-3 backdrop-blur-sm transition hover:border-amber-500/40"
+                  className="flex items-center gap-3 glass-panel clip-corner p-3 transition hover-glow"
                 >
                   <span className="w-8 text-center text-lg font-bold text-amber-400">{medal(i)}</span>
                   <Avatar name={row.user.firmName || row.user.name} src={row.user.avatarUrl} size={32} />

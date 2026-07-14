@@ -41,7 +41,7 @@ export default function RoomDetailsForm({
             setSaved(false);
           }}
           placeholder="Room ID"
-          className="rounded-md border border-neutral-700 bg-neutral-900 px-3 py-1.5 text-sm"
+          className="rounded-md premium-input px-3 py-1.5 text-sm"
         />
         <input
           value={roomPassword}
@@ -50,14 +50,14 @@ export default function RoomDetailsForm({
             setSaved(false);
           }}
           placeholder="Room password"
-          className="rounded-md border border-neutral-700 bg-neutral-900 px-3 py-1.5 text-sm"
+          className="rounded-md premium-input px-3 py-1.5 text-sm"
         />
       </div>
       <div className="mt-2 flex items-center gap-3">
         <button
           onClick={save}
           disabled={saving}
-          className="rounded-md bg-cyan-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-cyan-500 disabled:opacity-50"
+          className="clip-corner-sm premium-btn px-3 py-1.5 text-xs font-bold uppercase tracking-wide disabled:cursor-not-allowed"
         >
           {saving ? "Saving..." : "Save room details"}
         </button>

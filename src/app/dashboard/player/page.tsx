@@ -18,12 +18,15 @@ export default async function PlayerDashboard() {
   });
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="text-3xl font-bold">My Registrations</h1>
+    <div className="mx-auto max-w-4xl px-6 py-12 animate-fade-in-up">
+      <p className="skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
+        Player Dashboard
+      </p>
+      <h1 className="section-title mt-2 text-3xl font-black uppercase tracking-wide">My Registrations</h1>
       <p className="mt-1 text-neutral-500">Welcome back, {user.name}.</p>
 
       <div className="mt-4">
-        <Link href="/tournaments" className="text-sm font-medium text-red-600 hover:underline">
+        <Link href="/tournaments" className="text-sm font-bold text-cyan-400 hover:underline">
           Browse tournaments →
         </Link>
       </div>
@@ -35,7 +38,7 @@ export default async function PlayerDashboard() {
       ) : (
         <div className="mt-8 space-y-4">
           {registrations.map((r) => (
-            <div key={r.id} className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+            <div key={r.id} className="glass-panel clip-corner p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <Link
@@ -74,7 +77,7 @@ export default async function PlayerDashboard() {
                   href={r.paymentProof}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 inline-block text-sm text-red-600 hover:underline"
+                  className="mt-3 inline-block text-sm font-semibold text-cyan-400 hover:underline"
                 >
                   View my payment screenshot
                 </a>

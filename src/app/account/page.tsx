@@ -112,11 +112,11 @@ export default function AccountPage() {
 
   return (
     <div className="mx-auto max-w-lg px-6 py-16">
-      <h1 className="text-2xl font-bold">Account settings</h1>
+      <h1 className="section-title text-2xl font-black uppercase tracking-wide">Account settings</h1>
 
       <div className="mt-6 flex items-center gap-4">
         <Avatar name={me.firmName || me.name} src={me.avatarUrl} size={64} />
-        <label className="cursor-pointer text-sm font-medium text-red-600 hover:underline">
+        <label className="cursor-pointer text-sm font-medium text-cyan-400 hover:underline">
           {avatarUploading ? "Uploading..." : "Change avatar"}
           <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleAvatarChange} />
         </label>
@@ -129,7 +129,7 @@ export default function AccountPage() {
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+            className="mt-1 w-full rounded-md premium-input px-3 py-2"
           />
         </div>
         {me.role === "ORGANIZER" && (
@@ -138,7 +138,7 @@ export default function AccountPage() {
             <input
               value={firmName}
               onChange={(e) => setFirmName(e.target.value)}
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
         )}
@@ -148,7 +148,7 @@ export default function AccountPage() {
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             rows={3}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+            className="mt-1 w-full rounded-md premium-input px-3 py-2"
           />
         </div>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -158,7 +158,7 @@ export default function AccountPage() {
               value={discordHandle}
               onChange={(e) => setDiscordHandle(e.target.value)}
               placeholder="username"
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
           <div>
@@ -167,7 +167,7 @@ export default function AccountPage() {
               value={twitterUrl}
               onChange={(e) => setTwitterUrl(e.target.value)}
               placeholder="https://x.com/..."
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
         </div>
@@ -178,7 +178,7 @@ export default function AccountPage() {
               value={websiteUrl}
               onChange={(e) => setWebsiteUrl(e.target.value)}
               placeholder="https://..."
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
         )}
@@ -187,7 +187,7 @@ export default function AccountPage() {
         )}
         <button
           disabled={profileSaving}
-          className="w-full rounded-md bg-black px-4 py-2 font-semibold text-white hover:bg-neutral-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+          className="w-full clip-corner-sm premium-btn px-4 py-2 font-bold uppercase tracking-wide"
         >
           {profileSaving ? "Saving..." : "Save profile"}
         </button>
@@ -202,7 +202,7 @@ export default function AccountPage() {
             required
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+            className="mt-1 w-full rounded-md premium-input px-3 py-2"
           />
         </div>
         <div>
@@ -213,7 +213,7 @@ export default function AccountPage() {
             minLength={8}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+            className="mt-1 w-full rounded-md premium-input px-3 py-2"
           />
         </div>
         {pwMessage && (
@@ -221,7 +221,7 @@ export default function AccountPage() {
         )}
         <button
           disabled={pwLoading}
-          className="w-full rounded-md bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-500 disabled:opacity-50"
+          className="w-full clip-corner-sm premium-btn px-4 py-2 font-bold uppercase tracking-wide"
         >
           {pwLoading ? "Saving..." : "Update password"}
         </button>

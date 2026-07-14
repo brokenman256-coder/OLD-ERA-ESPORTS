@@ -12,12 +12,12 @@ export default async function ContactPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-16">
-      <h1 className="text-3xl font-bold">Contact & Support</h1>
+      <h1 className="section-title text-3xl font-black uppercase tracking-wide">Contact & Support</h1>
       <p className="mt-2 text-neutral-400">
         Have a question about a tournament, a payment, or your account? Reach out.
       </p>
 
-      <div className="mt-8 space-y-5 rounded-lg border border-neutral-800 bg-neutral-900/80 p-6 backdrop-blur-sm">
+      <div className="mt-8 space-y-5 glass-panel clip-corner p-6">
         {settings.supportMessage && <p className="text-neutral-300">{settings.supportMessage}</p>}
 
         {settings.supportEmail && (

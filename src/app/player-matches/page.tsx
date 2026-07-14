@@ -21,7 +21,7 @@ export default async function PlayerMatchesPage({
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="text-3xl font-bold">Player Matches</h1>
+      <h1 className="section-title text-3xl font-black uppercase tracking-wide">Player Matches</h1>
       <p className="mt-2 text-neutral-400">
         WOW and TDM matches created and organised by players — admin-approved before listing.
       </p>
@@ -30,7 +30,7 @@ export default async function PlayerMatchesPage({
         <a
           href="/player-matches"
           className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-            !mode ? "bg-cyan-600 text-white" : "bg-neutral-800 text-neutral-300"
+            !mode ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
           }`}
         >
           All
@@ -38,7 +38,7 @@ export default async function PlayerMatchesPage({
         <a
           href="/player-matches?mode=WOW"
           className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-            mode === "WOW" ? "bg-cyan-600 text-white" : "bg-neutral-800 text-neutral-300"
+            mode === "WOW" ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
           }`}
         >
           WOW
@@ -46,7 +46,7 @@ export default async function PlayerMatchesPage({
         <a
           href="/player-matches?mode=TDM"
           className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-            mode === "TDM" ? "bg-cyan-600 text-white" : "bg-neutral-800 text-neutral-300"
+            mode === "TDM" ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
           }`}
         >
           TDM
@@ -67,7 +67,7 @@ export default async function PlayerMatchesPage({
       ) : (
         <div className="mt-8 space-y-4">
           {matches.map((m) => (
-            <div key={m.id} className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+            <div key={m.id} className="glass-panel clip-corner p-5">
               <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">{m.mode}</p>
               <h3 className="mt-1 text-lg font-bold">{m.title}</h3>
               <p className="mt-1 text-sm text-neutral-500">

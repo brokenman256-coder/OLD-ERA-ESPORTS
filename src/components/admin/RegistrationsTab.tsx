@@ -58,8 +58,8 @@ export default function RegistrationsTab() {
             onClick={() => setFilter(f)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
               filter === f
-                ? "bg-black text-white dark:bg-white dark:text-black"
-                : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
+                ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white"
+                : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >
             {f}
@@ -74,7 +74,7 @@ export default function RegistrationsTab() {
       ) : (
         <div className="mt-6 space-y-4">
           {registrations.map((r) => (
-            <div key={r.id} className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+            <div key={r.id} className="glass-panel clip-corner p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h3 className="text-lg font-bold">{r.tournament.title}</h3>
@@ -139,7 +139,7 @@ export default function RegistrationsTab() {
                 {r.status !== "REJECTED" && (
                   <button
                     onClick={() => verify(r.id, "REJECTED")}
-                    className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-500"
+                    className="clip-corner-sm premium-btn px-3 py-1.5 text-sm font-bold uppercase tracking-wide"
                   >
                     Reject
                   </button>

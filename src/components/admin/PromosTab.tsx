@@ -74,7 +74,7 @@ export default function PromosTab() {
     <div className="max-w-2xl">
       <form
         onSubmit={createPromo}
-        className="space-y-3 rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900"
+        className="space-y-3 glass-panel clip-corner p-5"
       >
         <h3 className="font-bold">Add a promo banner</h3>
         <p className="text-sm text-neutral-500">
@@ -85,13 +85,13 @@ export default function PromosTab() {
           onChange={(e) => setTitle(e.target.value)}
           required
           placeholder="Title, e.g. BGMI Live Cup"
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+          className="w-full rounded-md premium-input px-3 py-2"
         />
         <input
           value={linkUrl}
           onChange={(e) => setLinkUrl(e.target.value)}
           placeholder="Link when clicked (optional)"
-          className="w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+          className="w-full rounded-md premium-input px-3 py-2"
         />
         <input
           type="file"
@@ -102,7 +102,7 @@ export default function PromosTab() {
         {error && <p className="text-sm text-red-600">{error}</p>}
         <button
           disabled={creating}
-          className="rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-500 disabled:opacity-50"
+          className="clip-corner-sm premium-btn px-4 py-2 text-sm font-bold uppercase tracking-wide"
         >
           {creating ? "Adding..." : "Add banner"}
         </button>
@@ -112,7 +112,7 @@ export default function PromosTab() {
         {promos.map((p) => (
           <div
             key={p.id}
-            className="flex items-center gap-4 rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900"
+            className="flex items-center gap-4 glass-panel clip-corner p-4"
           >
             {/* eslint-disable-next-line @next/next/no-img-element -- admin-uploaded promo banner */}
             <img src={p.imageUrl} alt={p.title} className="h-16 w-28 rounded-md object-cover" />
@@ -125,7 +125,7 @@ export default function PromosTab() {
               className={`rounded-md px-3 py-1 text-xs font-medium ${
                 p.active
                   ? "bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300"
-                  : "bg-neutral-100 dark:bg-neutral-800"
+                  : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
               }`}
             >
               {p.active ? "Active" : "Hidden"}

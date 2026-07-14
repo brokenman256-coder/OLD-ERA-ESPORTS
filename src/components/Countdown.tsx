@@ -32,7 +32,7 @@ export default function Countdown({ startDate }: { startDate: string | Date }) {
   );
 
   return (
-    <div className="flex items-center gap-4 rounded-lg border border-neutral-200 bg-white px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900">
+    <div className="flex items-center gap-4 glass-panel clip-corner px-4 py-3">
       <span className="text-sm font-medium text-neutral-500">Starts in</span>
       <div className="flex gap-3">
         {unit(parts.days, "days")}

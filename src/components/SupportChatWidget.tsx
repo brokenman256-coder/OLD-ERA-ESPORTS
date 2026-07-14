@@ -106,11 +106,11 @@ export default function SupportChatWidget() {
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Type a message..."
-              className="flex-1 rounded-md border border-neutral-700 bg-neutral-900 px-3 py-2 text-sm"
+              className="flex-1 rounded-md premium-input px-3 py-2 text-sm"
             />
             <button
               disabled={sending || !text.trim()}
-              className="rounded-md bg-cyan-600 px-3 py-2 text-sm font-semibold text-white hover:bg-cyan-500 disabled:opacity-50"
+              className="clip-corner-sm premium-btn px-3 py-2 text-sm font-bold uppercase tracking-wide disabled:cursor-not-allowed"
             >
               Send
             </button>

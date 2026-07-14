@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { TOURNAMENT_FORMAT_LABELS } from "@/lib/constants";
 
 const inputClass =
-  "mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950";
+  "mt-1 w-full rounded-md premium-input px-3 py-2";
 
 interface Settings {
   hostingFeeAmount: number;
@@ -82,7 +82,7 @@ export default function CreateTournamentForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-lg border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900"
+      className="space-y-4 glass-panel clip-corner p-6"
     >
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-bold">Post a new tournament</h3>

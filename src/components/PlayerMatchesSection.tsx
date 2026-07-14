@@ -16,7 +16,7 @@ interface Match {
 }
 
 const inputClass =
-  "mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950";
+  "mt-1 w-full rounded-md premium-input px-3 py-2";
 
 export default function PlayerMatchesSection() {
   const [matches, setMatches] = useState<Match[]>([]);
@@ -94,7 +94,7 @@ export default function PlayerMatchesSection() {
         {!open && (
           <button
             onClick={() => setOpen(true)}
-            className="rounded-md bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-500"
+            className="clip-corner-sm premium-btn px-4 py-2 text-sm font-bold uppercase tracking-wide"
           >
             + Create a match
           </button>
@@ -104,7 +104,7 @@ export default function PlayerMatchesSection() {
       {open && (
         <form
           onSubmit={handleSubmit}
-          className="mt-4 space-y-3 rounded-lg border border-neutral-800 bg-neutral-900 p-5"
+          className="mt-4 space-y-3 glass-panel clip-corner p-5"
         >
           <div className="flex gap-2">
             {(["WOW", "TDM"] as const).map((m) => (
@@ -113,7 +113,7 @@ export default function PlayerMatchesSection() {
                 type="button"
                 onClick={() => setMode(m)}
                 className={`rounded-md px-3 py-1.5 text-sm font-semibold ${
-                  mode === m ? "bg-cyan-600 text-white" : "bg-neutral-800 text-neutral-300"
+                  mode === m ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
                 }`}
               >
                 {m}
@@ -173,7 +173,7 @@ export default function PlayerMatchesSection() {
           <div className="flex gap-2">
             <button
               disabled={submitting}
-              className="rounded-md bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-500 disabled:opacity-50"
+              className="clip-corner-sm premium-btn px-4 py-2 text-sm font-bold uppercase tracking-wide disabled:cursor-not-allowed"
             >
               {submitting ? "Submitting..." : "Submit for admin approval"}
             </button>
@@ -195,7 +195,7 @@ export default function PlayerMatchesSection() {
       ) : (
         <div className="mt-4 space-y-3">
           {matches.map((m) => (
-            <div key={m.id} className="rounded-lg border border-neutral-800 bg-neutral-900 p-4">
+            <div key={m.id} className="glass-panel clip-corner p-4">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-semibold uppercase text-cyan-400">{m.mode}</p>

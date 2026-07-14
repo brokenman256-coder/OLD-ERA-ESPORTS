@@ -40,40 +40,45 @@ function LoginForm() {
   }
 
   return (
-    <div className="mx-auto max-w-md px-6 py-16">
-      <h1 className="text-2xl font-bold">Log in</h1>
-      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+    <div className="mx-auto flex max-w-md flex-col items-center px-6 py-16 sm:py-24">
+      <p className="skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
+        Vantix
+      </p>
+      <h1 className="mt-2 text-3xl font-black uppercase tracking-tight">Welcome back</h1>
+
+      <form onSubmit={handleSubmit} className="glass-panel clip-corner mt-8 w-full space-y-4 p-6 sm:p-8">
         <div>
-          <label className="block text-sm font-medium">Email</label>
+          <label className="block text-xs font-bold uppercase tracking-wide text-neutral-400">Email</label>
           <input
             type="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+            className="mt-1.5 w-full rounded-md premium-input px-3 py-2"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium">Password</label>
+          <label className="block text-xs font-bold uppercase tracking-wide text-neutral-400">Password</label>
           <input
             type="password"
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-900"
+            className="mt-1.5 w-full rounded-md premium-input px-3 py-2"
           />
         </div>
-        {error && <p className="text-sm text-red-600">{error}</p>}
+        {error && <p className="text-sm text-red-400">{error}</p>}
         <button
           disabled={loading}
-          className="w-full rounded-md bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-500 disabled:opacity-50"
+          className="w-full clip-corner-sm premium-btn px-4 py-2.5 font-bold uppercase tracking-wide"
         >
-          {loading ? "Logging in..." : "Log in"}
+          {loading ? "Logging in…" : "Log in"}
         </button>
       </form>
-      <p className="mt-4 text-sm text-neutral-500">
+
+      <p className="mt-6 text-sm text-neutral-500">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-medium text-red-600 hover:underline">
+        <Link href="/register" className="font-bold text-cyan-400 hover:underline">
           Sign up
         </Link>
       </p>

@@ -39,7 +39,7 @@ export default async function PlayerProfilePage({
           <div className="mt-3 flex flex-wrap gap-3 text-sm">
             {player.discordHandle && <span className="text-neutral-500">Discord: {player.discordHandle}</span>}
             {player.twitterUrl && (
-              <a href={player.twitterUrl} target="_blank" rel="noreferrer" className="text-red-600 hover:underline">
+              <a href={player.twitterUrl} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">
                 Twitter/X
               </a>
             )}
@@ -57,7 +57,7 @@ export default async function PlayerProfilePage({
           {registrations.map((r) => (
             <div
               key={r.id}
-              className="flex items-center justify-between rounded-lg border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900"
+              className="flex items-center justify-between glass-panel clip-corner p-4"
             >
               <div>
                 <p className="font-bold">{r.tournament.title}</p>

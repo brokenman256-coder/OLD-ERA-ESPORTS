@@ -49,7 +49,7 @@ export default function PromoCarousel() {
         )}
         <div className="absolute bottom-0 left-0 flex w-full items-center justify-between bg-gradient-to-t from-black/80 to-transparent px-4 py-3">
           <p className="text-sm font-semibold text-white">{current.title}</p>
-          <span className="rounded-full bg-red-600 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
+          <span className="rounded-full bg-pink-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white">
             Live
           </span>
         </div>

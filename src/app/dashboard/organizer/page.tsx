@@ -24,24 +24,26 @@ export default async function OrganizerDashboard() {
   });
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-12">
-      <h1 className="text-3xl font-bold">Organizer Dashboard</h1>
-      <p className="mt-1 text-neutral-500">
-        {user.firmName ? `${user.firmName} · ` : ""}
-        {user.name}
+    <div className="mx-auto max-w-4xl px-6 py-12 animate-fade-in-up">
+      <p className="skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
+        Organizer Dashboard
       </p>
+      <h1 className="section-title mt-2 text-3xl font-black uppercase tracking-wide">
+        {user.firmName || user.name}
+      </h1>
+      <p className="mt-1 text-neutral-500">{user.firmName ? user.name : ""}</p>
 
       <div className="mt-6">
         <CreateTournamentForm />
       </div>
 
-      <h2 className="mt-10 text-xl font-bold">Your tournaments</h2>
+      <h2 className="section-title mt-10 text-xl font-black uppercase tracking-wide">Your tournaments</h2>
       {tournaments.length === 0 ? (
         <p className="mt-4 text-neutral-500">You haven&apos;t posted any tournaments yet.</p>
       ) : (
         <div className="mt-4 space-y-4">
           {tournaments.map((t) => (
-            <div key={t.id} className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+            <div key={t.id} className="glass-panel clip-corner p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <Link href={`/tournaments/${t.id}`} className="text-lg font-bold hover:underline">
@@ -68,7 +70,7 @@ export default async function OrganizerDashboard() {
                   href={t.hostingFeeProof}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 inline-block text-sm text-red-600 hover:underline"
+                  className="mt-3 inline-block text-sm font-semibold text-cyan-400 hover:underline"
                 >
                   View my hosting fee screenshot
                 </a>

@@ -75,8 +75,8 @@ export default function TournamentsTab() {
             onClick={() => setFilter(f)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
               filter === f
-                ? "bg-black text-white dark:bg-white dark:text-black"
-                : "bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
+                ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white"
+                : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >
             {f}
@@ -91,10 +91,10 @@ export default function TournamentsTab() {
       ) : (
         <div className="mt-6 space-y-4">
           {tournaments.map((t) => (
-            <div key={t.id} className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900">
+            <div key={t.id} className="glass-panel clip-corner p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase text-red-600">{t.game}</p>
+                  <p className="text-xs font-bold uppercase text-cyan-400">{t.game}</p>
                   <h3 className="text-lg font-bold">{t.title}</h3>
                   <p className="text-sm text-neutral-500">
                     Organizer: {t.organizer?.firmName || t.organizer?.name} ({t.organizerEmail})
@@ -133,20 +133,20 @@ export default function TournamentsTab() {
                 {t.status !== "REJECTED" && (
                   <button
                     onClick={() => verify(t.id, "REJECTED")}
-                    className="rounded-md bg-red-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-red-500"
+                    className="clip-corner-sm premium-btn px-3 py-1.5 text-sm font-bold uppercase tracking-wide"
                   >
                     Reject
                   </button>
                 )}
                 <button
                   onClick={() => setEditingId(editingId === t.id ? null : t.id)}
-                  className="rounded-md bg-neutral-100 px-3 py-1.5 text-sm font-medium hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                  className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-neutral-300 transition hover:bg-white/10 hover:text-white"
                 >
                   {editingId === t.id ? "Close editor" : "Edit"}
                 </button>
                 <button
                   onClick={() => remove(t.id)}
-                  className="rounded-md bg-neutral-100 px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                  className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-400 transition hover:bg-red-500/20"
                 >
                   Delete
                 </button>
@@ -206,7 +206,7 @@ function EditTournamentInline({
     onSaved();
   }
 
-  const fieldClass = "rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950";
+  const fieldClass = "rounded-md premium-input px-3 py-2";
 
   return (
     <div className="mt-4 space-y-3 rounded-md border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-950/50">
@@ -230,7 +230,7 @@ function EditTournamentInline({
       <button
         onClick={save}
         disabled={saving}
-        className="rounded-md bg-black px-4 py-2 text-sm font-semibold text-white hover:bg-neutral-800 disabled:opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-200"
+        className="clip-corner-sm premium-btn px-4 py-2 text-sm font-bold uppercase tracking-wide"
       >
         {saving ? "Saving..." : "Save changes"}
       </button>

@@ -98,14 +98,14 @@ export default function TeamsPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-6 py-12">
-      <h1 className="text-3xl font-bold">My Teams</h1>
+      <h1 className="section-title text-3xl font-black uppercase tracking-wide">My Teams</h1>
       <p className="mt-1 text-neutral-500 dark:text-neutral-400">
         Squad up with teammates so you can register for tournaments together.
       </p>
 
       <form
         onSubmit={createTeam}
-        className="mt-6 flex flex-wrap items-end gap-3 rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900"
+        className="mt-6 flex flex-wrap items-end gap-3 glass-panel clip-corner p-5"
       >
         <div className="flex-1">
           <label className="block text-sm font-medium">Team name</label>
@@ -113,7 +113,7 @@ export default function TeamsPage() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            className="mt-1 w-full rounded-md premium-input px-3 py-2"
           />
         </div>
         <div>
@@ -123,7 +123,7 @@ export default function TeamsPage() {
             onChange={(e) => setTag(e.target.value)}
             maxLength={10}
             placeholder="TSM"
-            className="mt-1 w-28 rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            className="mt-1 w-28 rounded-md premium-input px-3 py-2"
           />
         </div>
         <button
@@ -144,7 +144,7 @@ export default function TeamsPage() {
             return (
               <div
                 key={team.id}
-                className="rounded-lg border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900"
+                className="glass-panel clip-corner p-5"
               >
                 <div className="flex items-center justify-between">
                   <h2 className="text-lg font-bold">
@@ -188,11 +188,11 @@ export default function TeamsPage() {
                       placeholder="Invite by email"
                       value={inviteEmail[team.id] ?? ""}
                       onChange={(e) => setInviteEmail((p) => ({ ...p, [team.id]: e.target.value }))}
-                      className="flex-1 rounded-md border border-neutral-300 px-3 py-1.5 text-sm dark:border-neutral-700 dark:bg-neutral-950"
+                      className="flex-1 rounded-md premium-input px-3 py-1.5 text-sm"
                     />
                     <button
                       onClick={() => inviteMember(team.id)}
-                      className="rounded-md bg-neutral-100 px-3 py-1.5 text-sm font-medium hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
+                      className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-neutral-300 transition hover:bg-white/10 hover:text-white"
                     >
                       Add
                     </button>

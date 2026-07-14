@@ -9,8 +9,11 @@ export default async function AdminDashboard() {
   if (user.role !== ROLES.ADMIN) redirect("/");
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+    <div className="mx-auto max-w-6xl px-6 py-12 animate-fade-in-up">
+      <p className="skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
+        Vantix
+      </p>
+      <h1 className="section-title mt-2 text-3xl font-black uppercase tracking-wide">Admin Dashboard</h1>
       <p className="mt-1 text-neutral-500">
         Verify payment screenshots, manage tournaments, and manage users.
       </p>

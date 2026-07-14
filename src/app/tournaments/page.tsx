@@ -32,14 +32,14 @@ export default async function TournamentsPage({
           name="q"
           defaultValue={q}
           placeholder="Search by title or description"
-          className="w-full flex-1 rounded-md border border-neutral-700 bg-neutral-900 px-3 py-2 sm:w-auto"
+          className="w-full flex-1 rounded-md premium-input px-3 py-2 sm:w-auto"
         />
         <input
           type="text"
           name="game"
           defaultValue={game}
           placeholder="Filter by game"
-          className="rounded-md border border-neutral-700 bg-neutral-900 px-3 py-2"
+          className="rounded-md premium-input px-3 py-2"
         />
         <button className="clip-corner-sm bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 px-5 py-2 font-bold uppercase tracking-wide hover:brightness-110">
           Search

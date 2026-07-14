@@ -29,7 +29,7 @@ const EMPTY_SQUAD: SquadMember[] = [
 ];
 
 const inputClass =
-  "mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950";
+  "mt-1 w-full rounded-md premium-input px-3 py-2";
 
 export default function RegisterForm({
   tournamentId,
@@ -140,7 +140,7 @@ export default function RegisterForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-lg border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900"
+      className="space-y-4 glass-panel clip-corner p-6"
     >
       <h3 className="text-lg font-bold">Register for this tournament</h3>
       <p className="text-sm text-neutral-500">
@@ -160,7 +160,7 @@ export default function RegisterForm({
           </select>
           <p className="mt-1 text-xs text-neutral-500">
             Manage your squads on the{" "}
-            <Link href="/teams" className="text-red-600 hover:underline">
+            <Link href="/teams" className="text-cyan-400 hover:underline">
               Teams
             </Link>{" "}
             page.

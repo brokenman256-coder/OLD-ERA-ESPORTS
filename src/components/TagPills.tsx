@@ -11,7 +11,7 @@ export default function TagPills({ tags }: { tags?: string | null }) {
       {list.map((tag) => (
         <span
           key={tag}
-          className="rounded-full bg-neutral-100 px-2 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300"
+          className="rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-xs font-medium text-neutral-300"
         >
           #{tag}
         </span>

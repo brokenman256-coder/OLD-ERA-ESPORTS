@@ -35,7 +35,7 @@ interface Settings {
 }
 
 const inputClass =
-  "mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950";
+  "mt-1 w-full rounded-md premium-input px-3 py-2";
 
 function StatusPill({ status }: { status: string }) {
   const color =
@@ -135,19 +135,22 @@ export default function WalletDashboard() {
 
   return (
     <div className="mt-8 space-y-8">
-      <div className="rounded-lg border border-cyan-800 bg-cyan-950/40 p-6">
-        <p className="text-xs uppercase tracking-wide text-cyan-400">Available balance</p>
-        <p className="mt-1 text-4xl font-bold">₹{balance}</p>
-        <div className="mt-4 flex flex-wrap gap-2">
+      <div className="glass-panel clip-corner relative overflow-hidden p-6">
+        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan-500/20 blur-3xl" />
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-400">Available balance</p>
+        <p className="mt-1 bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-4xl font-black text-transparent">
+          ₹{balance}
+        </p>
+        <div className="relative mt-4 flex flex-wrap gap-2">
           <button
             onClick={() => { setShowTopUp((v) => !v); setShowWithdraw(false); }}
-            className="rounded-md bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-500"
+            className="clip-corner-sm premium-btn px-4 py-2 text-sm font-bold uppercase tracking-wide"
           >
             Add funds
           </button>
           <button
             onClick={() => { setShowWithdraw((v) => !v); setShowTopUp(false); }}
-            className="rounded-md bg-neutral-800 px-4 py-2 text-sm font-semibold hover:bg-neutral-700"
+            className="clip-corner-sm border border-white/10 bg-white/5 px-4 py-2 text-sm font-bold uppercase tracking-wide text-neutral-300 transition hover:bg-white/10 hover:text-white"
           >
             Request withdrawal
           </button>
@@ -155,7 +158,7 @@ export default function WalletDashboard() {
       </div>
 
       {showTopUp && (
-        <form onSubmit={submitTopUp} className="space-y-3 rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+        <form onSubmit={submitTopUp} className="space-y-3 glass-panel clip-corner p-5">
           <h3 className="font-bold">Add funds</h3>
           {settings?.playerUpiId && (
             <p className="text-sm text-neutral-400">
@@ -182,18 +185,18 @@ export default function WalletDashboard() {
             onChange={(e) => setTopUpFile(e.target.files?.[0] ?? null)}
             className="mt-1 w-full text-sm"
           />
-          {topUpError && <p className="text-sm text-red-500">{topUpError}</p>}
+          {topUpError && <p className="text-sm text-red-400">{topUpError}</p>}
           <button
             disabled={topUpLoading}
-            className="rounded-md bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-500 disabled:opacity-50"
+            className="clip-corner-sm premium-btn px-4 py-2 text-sm font-bold uppercase tracking-wide"
           >
-            {topUpLoading ? "Submitting..." : "Submit for approval"}
+            {topUpLoading ? "Submitting…" : "Submit for approval"}
           </button>
         </form>
       )}
 
       {showWithdraw && (
-        <form onSubmit={submitWithdraw} className="space-y-3 rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+        <form onSubmit={submitWithdraw} className="space-y-3 glass-panel clip-corner p-5">
           <h3 className="font-bold">Request withdrawal</h3>
           <p className="text-sm text-neutral-400">
             Your balance is deducted immediately. Payouts are processed manually within 2–3 business days.
@@ -215,12 +218,12 @@ export default function WalletDashboard() {
             required
             className={inputClass}
           />
-          {withdrawError && <p className="text-sm text-red-500">{withdrawError}</p>}
+          {withdrawError && <p className="text-sm text-red-400">{withdrawError}</p>}
           <button
             disabled={withdrawLoading}
-            className="rounded-md bg-neutral-100 px-4 py-2 text-sm font-semibold text-black hover:bg-neutral-200 disabled:opacity-50"
+            className="clip-corner-sm premium-btn px-4 py-2 text-sm font-bold uppercase tracking-wide"
           >
-            {withdrawLoading ? "Submitting..." : "Request withdrawal"}
+            {withdrawLoading ? "Submitting…" : "Request withdrawal"}
           </button>
         </form>
       )}
@@ -232,7 +235,7 @@ export default function WalletDashboard() {
               <h3 className="font-bold">Top-up requests</h3>
               <div className="mt-3 space-y-2">
                 {topUps.map((t) => (
-                  <div key={t.id} className="rounded-md border border-neutral-800 bg-neutral-900 p-3">
+                  <div key={t.id} className="glass-panel clip-corner p-3">
                     <div className="flex items-center justify-between">
                       <span className="font-semibold">₹{t.amount}</span>
                       <StatusPill status={t.status} />
@@ -249,7 +252,7 @@ export default function WalletDashboard() {
               <h3 className="font-bold">Withdrawal requests</h3>
               <div className="mt-3 space-y-2">
                 {withdrawals.map((w) => (
-                  <div key={w.id} className="rounded-md border border-neutral-800 bg-neutral-900 p-3">
+                  <div key={w.id} className="glass-panel clip-corner p-3">
                     <div className="flex items-center justify-between">
                       <span className="font-semibold">₹{w.amount}</span>
                       <StatusPill status={w.status} />

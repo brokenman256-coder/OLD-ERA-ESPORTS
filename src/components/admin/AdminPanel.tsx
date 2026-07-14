@@ -28,15 +28,15 @@ export default function AdminPanel({ currentAdminId }: { currentAdminId: string 
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2 border-b border-neutral-200 dark:border-neutral-800">
+      <div className="flex flex-wrap gap-2 border-b border-white/10">
         {TABS.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`-mb-px border-b-2 px-4 py-2 text-sm font-medium ${
+            className={`-mb-px border-b-2 px-4 py-2 text-sm font-bold uppercase tracking-wide transition ${
               tab === t.key
-                ? "border-red-600 text-red-600"
-                : "border-transparent text-neutral-500 hover:text-neutral-800 dark:hover:text-neutral-200"
+                ? "border-cyan-400 bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+                : "border-transparent text-neutral-500 hover:text-neutral-200"
             }`}
           >
             {t.label}

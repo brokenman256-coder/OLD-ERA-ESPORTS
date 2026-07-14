@@ -130,7 +130,7 @@ export default function SettingsTab() {
 
   return (
     <div className="max-w-xl space-y-6">
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+      <div className="glass-panel clip-corner p-5">
         <h3 className="font-bold">Organizer payment details (hosting fee)</h3>
         <p className="mt-1 text-sm text-neutral-500">
           Shown to organizers when they post a tournament, so they know what to pay and where.
@@ -144,7 +144,7 @@ export default function SettingsTab() {
               min="0"
               value={hostingFeeAmount}
               onChange={(e) => setHostingFeeAmount(e.target.value)}
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
           <div>
@@ -153,7 +153,7 @@ export default function SettingsTab() {
               value={upiId}
               onChange={(e) => setUpiId(e.target.value)}
               placeholder="yourname@upi"
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
           <div>
@@ -178,7 +178,7 @@ export default function SettingsTab() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+      <div className="glass-panel clip-corner p-5">
         <h3 className="font-bold">Player payment details (entry fee)</h3>
         <p className="mt-1 text-sm text-neutral-500">
           Shown to players when they register for a paid tournament.
@@ -191,7 +191,7 @@ export default function SettingsTab() {
               value={playerUpiId}
               onChange={(e) => setPlayerUpiId(e.target.value)}
               placeholder="yourname@upi"
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
           <div>
@@ -216,7 +216,7 @@ export default function SettingsTab() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+      <div className="glass-panel clip-corner p-5">
         <h3 className="font-bold">Social links</h3>
         <div className="mt-4 space-y-4">
           <div>
@@ -225,7 +225,7 @@ export default function SettingsTab() {
               value={whatsappLink}
               onChange={(e) => setWhatsappLink(e.target.value)}
               placeholder="https://wa.me/91..."
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
           <div>
@@ -234,13 +234,13 @@ export default function SettingsTab() {
               value={instagramUrl}
               onChange={(e) => setInstagramUrl(e.target.value)}
               placeholder="https://instagram.com/..."
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+      <div className="glass-panel clip-corner p-5">
         <h3 className="font-bold">Contact & support</h3>
         <p className="mt-1 text-sm text-neutral-500">
           Shown on the Contact &amp; Support page so players and organizers can reach you.
@@ -252,7 +252,7 @@ export default function SettingsTab() {
               value={supportEmail}
               onChange={(e) => setSupportEmail(e.target.value)}
               placeholder="support@yoursite.com"
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
           <div>
@@ -261,7 +261,7 @@ export default function SettingsTab() {
               value={supportPhone}
               onChange={(e) => setSupportPhone(e.target.value)}
               placeholder="+91 90000 00000"
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
           <div>
@@ -271,13 +271,13 @@ export default function SettingsTab() {
               onChange={(e) => setSupportMessage(e.target.value)}
               rows={3}
               placeholder="e.g. We typically respond within 24 hours."
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+      <div className="glass-panel clip-corner p-5">
         <h3 className="font-bold">Homepage stats override</h3>
         <p className="mt-1 text-sm text-neutral-500">
           Leave blank to show real counts. Set a number here to display something else instead
@@ -292,7 +292,7 @@ export default function SettingsTab() {
               value={displayLiveTournaments}
               onChange={(e) => setDisplayLiveTournaments(e.target.value)}
               placeholder="auto"
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
           <div>
@@ -303,7 +303,7 @@ export default function SettingsTab() {
               value={displayPlayers}
               onChange={(e) => setDisplayPlayers(e.target.value)}
               placeholder="auto"
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
           <div>
@@ -314,13 +314,13 @@ export default function SettingsTab() {
               value={displayOrganizers}
               onChange={(e) => setDisplayOrganizers(e.target.value)}
               placeholder="auto"
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>
         </div>
       </div>
 
-      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+      <div className="glass-panel clip-corner p-5">
         <h3 className="font-bold">Tournament bot</h3>
         <p className="mt-1 text-sm text-neutral-500">
           When enabled, an automated organizer account (&quot;Vantix Bot&quot;) posts a new tournament —
@@ -344,7 +344,7 @@ export default function SettingsTab() {
               min="1"
               value={botIntervalMinutes}
               onChange={(e) => setBotIntervalMinutes(e.target.value)}
-              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
             <p className="mt-1 text-xs text-neutral-500">e.g. 10 or 20</p>
           </div>

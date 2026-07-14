@@ -100,7 +100,7 @@ export default async function TournamentDetailPage({
           </div>
         )}
 
-        <p className="text-xs font-semibold uppercase tracking-wide text-red-600 dark:text-red-400">
+        <p className="text-xs font-bold uppercase tracking-wide text-cyan-400">
           {gameIcon(tournament.game)} {tournament.game} · {TOURNAMENT_FORMAT_LABELS[tournament.format] ?? tournament.format}
         </p>
         <h1 className="mt-1 bg-gradient-to-r from-neutral-900 to-neutral-700 bg-clip-text text-3xl font-bold text-transparent dark:from-white dark:to-neutral-300">
@@ -125,7 +125,7 @@ export default async function TournamentDetailPage({
                 href={tournament.discordUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500"
+                className="clip-corner-sm bg-indigo-600 px-4 py-2 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-indigo-500"
               >
                 Join Discord
               </a>
@@ -135,7 +135,7 @@ export default async function TournamentDetailPage({
                 href={tournament.streamUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-md bg-purple-600 px-4 py-2 text-sm font-semibold text-white hover:bg-purple-500"
+                className="clip-corner-sm bg-purple-600 px-4 py-2 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-purple-500"
               >
                 Watch Stream
               </a>
@@ -149,7 +149,7 @@ export default async function TournamentDetailPage({
           </div>
         )}
 
-        <div className="mt-6 grid grid-cols-2 gap-4 rounded-lg border border-neutral-200 bg-white p-5 sm:grid-cols-4 dark:border-neutral-800 dark:bg-neutral-900">
+        <div className="mt-6 grid grid-cols-2 gap-4 glass-panel clip-corner p-5 sm:grid-cols-4">
           <div>
             <p className="text-xs text-neutral-500">Starts</p>
             <p className="font-medium">{new Date(tournament.startDate).toLocaleString()}</p>
@@ -213,13 +213,13 @@ export default async function TournamentDetailPage({
 
         <div className="mt-10">
           {tournament.status !== APPROVAL.APPROVED ? null : !user ? (
-            <div className="rounded-md border border-neutral-200 bg-white p-6 text-center dark:border-neutral-800 dark:bg-neutral-900">
+            <div className="glass-panel clip-corner p-6 text-center">
               <p>
-                <Link href="/login" className="font-medium text-red-600 hover:underline">
+                <Link href="/login" className="font-medium text-cyan-400 hover:underline">
                   Log in
                 </Link>{" "}
                 or{" "}
-                <Link href="/register" className="font-medium text-red-600 hover:underline">
+                <Link href="/register" className="font-medium text-cyan-400 hover:underline">
                   sign up
                 </Link>{" "}
                 as a player to register for this tournament.
@@ -228,7 +228,7 @@ export default async function TournamentDetailPage({
           ) : user.role !== ROLES.PLAYER ? (
             <p className="text-sm text-neutral-500">Only player accounts can register for tournaments.</p>
           ) : existingRegistration ? (
-            <div className="rounded-md border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900">
+            <div className="glass-panel clip-corner p-6">
               <p className="font-medium">
                 You&apos;re registered. Status: <StatusBadge status={existingRegistration.status} />
               </p>
