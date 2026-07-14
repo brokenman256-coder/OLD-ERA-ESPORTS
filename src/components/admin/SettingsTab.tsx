@@ -16,6 +16,8 @@ interface Settings {
   displayLiveTournaments: number | null;
   displayPlayers: number | null;
   displayOrganizers: number | null;
+  botEnabled: boolean;
+  botIntervalMinutes: number;
 }
 
 export default function SettingsTab() {
@@ -31,6 +33,8 @@ export default function SettingsTab() {
   const [displayLiveTournaments, setDisplayLiveTournaments] = useState("");
   const [displayPlayers, setDisplayPlayers] = useState("");
   const [displayOrganizers, setDisplayOrganizers] = useState("");
+  const [botEnabled, setBotEnabled] = useState(false);
+  const [botIntervalMinutes, setBotIntervalMinutes] = useState("20");
   const [saving, setSaving] = useState(false);
   const [qrUploading, setQrUploading] = useState(false);
   const [playerQrUploading, setPlayerQrUploading] = useState(false);
@@ -51,6 +55,8 @@ export default function SettingsTab() {
     setDisplayLiveTournaments(data.settings.displayLiveTournaments?.toString() ?? "");
     setDisplayPlayers(data.settings.displayPlayers?.toString() ?? "");
     setDisplayOrganizers(data.settings.displayOrganizers?.toString() ?? "");
+    setBotEnabled(Boolean(data.settings.botEnabled));
+    setBotIntervalMinutes(String(data.settings.botIntervalMinutes ?? 20));
   }
 
   useEffect(() => {
@@ -76,6 +82,8 @@ export default function SettingsTab() {
         displayLiveTournaments: displayLiveTournaments === "" ? null : Number(displayLiveTournaments),
         displayPlayers: displayPlayers === "" ? null : Number(displayPlayers),
         displayOrganizers: displayOrganizers === "" ? null : Number(displayOrganizers),
+        botEnabled,
+        botIntervalMinutes: Number(botIntervalMinutes),
       }),
     });
     setSaving(false);
@@ -312,11 +320,42 @@ export default function SettingsTab() {
         </div>
       </div>
 
+      <div className="rounded-lg border border-neutral-800 bg-neutral-900 p-5">
+        <h3 className="font-bold">Tournament bot</h3>
+        <p className="mt-1 text-sm text-neutral-500">
+          When enabled, an automated organizer account (&quot;Vantix Bot&quot;) posts a new tournament —
+          random game, title, and a generated poster — every N minutes to keep the lobby active.
+          The check runs opportunistically whenever someone loads the homepage or tournaments
+          page, so timing follows traffic rather than a strict clock.
+        </p>
+        <div className="mt-4 space-y-4">
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              checked={botEnabled}
+              onChange={(e) => setBotEnabled(e.target.checked)}
+            />
+            Enable tournament bot
+          </label>
+          <div>
+            <label className="block text-sm font-medium">Interval (minutes)</label>
+            <input
+              type="number"
+              min="1"
+              value={botIntervalMinutes}
+              onChange={(e) => setBotIntervalMinutes(e.target.value)}
+              className="mt-1 w-full rounded-md border border-neutral-300 px-3 py-2 dark:border-neutral-700 dark:bg-neutral-950"
+            />
+            <p className="mt-1 text-xs text-neutral-500">e.g. 10 or 20</p>
+          </div>
+        </div>
+      </div>
+
       {message && <p className="text-sm text-green-600">{message}</p>}
       <button
         onClick={save}
         disabled={saving}
-        className="rounded-md bg-red-600 px-4 py-2 font-semibold text-white hover:bg-red-500 disabled:opacity-50"
+        className="clip-corner-sm bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 px-4 py-2 font-bold uppercase tracking-wide hover:brightness-110 disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save settings"}
       </button>

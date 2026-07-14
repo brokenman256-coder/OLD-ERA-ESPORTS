@@ -41,6 +41,15 @@ export async function PATCH(req: NextRequest) {
       data[field] = Math.round(n);
     }
 
+    if (typeof body.botEnabled === "boolean") data.botEnabled = body.botEnabled;
+    if (typeof body.botIntervalMinutes !== "undefined") {
+      const n = Number(body.botIntervalMinutes);
+      if (Number.isNaN(n) || n < 1) {
+        return NextResponse.json({ error: "Bot interval must be at least 1 minute" }, { status: 400 });
+      }
+      data.botIntervalMinutes = Math.round(n);
+    }
+
     const settings = await prisma.siteSettings.upsert({
       where: { id: "global" },
       update: data,

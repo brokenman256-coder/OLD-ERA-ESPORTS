@@ -23,6 +23,8 @@ export async function GET() {
       displayLiveTournaments: settings.displayLiveTournaments,
       displayPlayers: settings.displayPlayers,
       displayOrganizers: settings.displayOrganizers,
+      botEnabled: settings.botEnabled,
+      botIntervalMinutes: settings.botIntervalMinutes,
     },
   });
 }

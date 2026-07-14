@@ -157,6 +157,11 @@ model SiteSettings {
   displayPlayers         Int?
   displayOrganizers      Int?
 
+  // Automated tournament-creation bot
+  botEnabled         Boolean   @default(false)
+  botIntervalMinutes Int       @default(20)
+  botLastRunAt       DateTime?
+
   updatedAt DateTime @updatedAt
 }
 

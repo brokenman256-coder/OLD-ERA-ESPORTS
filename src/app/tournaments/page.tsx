@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { APPROVAL } from "@/lib/constants";
 import TournamentCard from "@/components/TournamentCard";
+import { maybeRunBot } from "@/lib/bot";
 
 export default async function TournamentsPage({
   searchParams,
@@ -8,6 +9,8 @@ export default async function TournamentsPage({
   searchParams: Promise<{ q?: string; game?: string }>;
 }) {
   const { q, game } = await searchParams;
+
+  await maybeRunBot();
 
   const tournaments = await prisma.tournament.findMany({
     where: {
