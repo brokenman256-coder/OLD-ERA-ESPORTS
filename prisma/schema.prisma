@@ -109,6 +109,7 @@ model Tournament {
   updatedAt DateTime @updatedAt
 
   registrations Registration[]
+  matches       Match[]
 }
 
 model Registration {
@@ -134,7 +135,54 @@ model Registration {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  matchesAsP1 Match[] @relation("MatchReg1")
+  matchesAsP2 Match[] @relation("MatchReg2")
+  matchesWon  Match[] @relation("MatchWinner")
+
   @@unique([tournamentId, playerId])
+}
+
+// Bracket: "MAIN" (single elim / round robin) | "WB" | "LB" | "GRAND_FINAL" (double elim)
+// MatchStatus: "PENDING" (waiting on a participant) | "READY" (both set, unplayed) | "COMPLETED"
+model Match {
+  id           String     @id @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  bracket String @default("MAIN")
+  round   Int
+  slot    Int
+
+  registration1Id String?
+  registration1    Registration? @relation("MatchReg1", fields: [registration1Id], references: [id], onDelete: SetNull)
+  registration2Id String?
+  registration2    Registration? @relation("MatchReg2", fields: [registration2Id], references: [id], onDelete: SetNull)
+
+  score1                Int?
+  score2                Int?
+  winnerRegistrationId  String?
+  winnerRegistration    Registration? @relation("MatchWinner", fields: [winnerRegistrationId], references: [id], onDelete: SetNull)
+
+  isBye  Boolean @default(false)
+  status String  @default("PENDING")
+
+  // structural links to the skeleton generated at bracket-creation time; not enforced FKs
+  // so the skeleton can be built bottom-up without relation-ordering constraints
+  nextMatchId        String?
+  nextMatchSlot      Int?
+  loserNextMatchId   String?
+  loserNextMatchSlot Int?
+
+  // double-elimination only: marks a losers-bracket slot as structurally unfillable
+  // (its feeder winners-bracket match was a bye, so it produced no loser); lets a
+  // real opponent auto-advance past it without waiting for a match that can never happen
+  slot1Phantom Boolean @default(false)
+  slot2Phantom Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tournamentId, bracket, round, slot])
 }
 
 model SiteSettings {
