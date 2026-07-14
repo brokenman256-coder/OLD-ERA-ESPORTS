@@ -10,6 +10,10 @@ import ResultSubmitForm from "@/components/ResultSubmitForm";
 import Countdown from "@/components/Countdown";
 import TagPills from "@/components/TagPills";
 import VerifiedBadge from "@/components/VerifiedBadge";
+import BracketView from "@/components/BracketView";
+import GenerateBracketButton from "@/components/GenerateBracketButton";
+import { publicMatch } from "@/lib/serialize";
+import { computeRoundRobinStandings } from "@/lib/bracket";
 
 export default async function TournamentDetailPage({
   params,
@@ -43,6 +47,40 @@ export default async function TournamentDetailPage({
   const upcoming = new Date(tournament.startDate).getTime() > Date.now();
   // eslint-disable-next-line react-hooks/purity -- server component; freshly computed per request, not memoized
   const matchStarted = new Date(tournament.startDate).getTime() <= Date.now();
+
+  const canManageBracket = user?.id === tournament.organizerId || user?.role === ROLES.ADMIN;
+  const matches =
+    tournament.status === APPROVAL.APPROVED
+      ? await prisma.match.findMany({
+          where: { tournamentId: id },
+          include: {
+            registration1: { include: { player: true } },
+            registration2: { include: { player: true } },
+          },
+          orderBy: [{ bracket: "asc" }, { round: "asc" }, { slot: "asc" }],
+        })
+      : [];
+  const standings =
+    tournament.format === "ROUND_ROBIN" && matches.length > 0
+      ? (() => {
+          const registrationIds = [
+            ...new Set(matches.flatMap((m) => [m.registration1Id, m.registration2Id].filter((x): x is string => !!x))),
+          ];
+          const nameById = new Map<string, string>();
+          for (const m of matches) {
+            if (m.registration1Id && m.registration1) {
+              nameById.set(m.registration1Id, m.registration1.teamName || m.registration1.player?.name || "Unknown");
+            }
+            if (m.registration2Id && m.registration2) {
+              nameById.set(m.registration2Id, m.registration2.teamName || m.registration2.player?.name || "Unknown");
+            }
+          }
+          return computeRoundRobinStandings(registrationIds, matches).map((r) => ({
+            ...r,
+            name: nameById.get(r.registrationId) ?? "Unknown",
+          }));
+        })()
+      : null;
 
   return (
     <div>
@@ -153,6 +191,23 @@ export default async function TournamentDetailPage({
           <div className="mt-8">
             <h2 className="text-xl font-bold">Rules</h2>
             <p className="mt-2 whitespace-pre-wrap text-neutral-700 dark:text-neutral-300">{tournament.rules}</p>
+          </div>
+        )}
+
+        {tournament.status === APPROVAL.APPROVED && (
+          <div className="mt-10">
+            <h2 className="section-title text-xl font-black uppercase tracking-wide">Bracket</h2>
+            <div className="mt-4">
+              {matches.length === 0 ? (
+                canManageBracket ? (
+                  <GenerateBracketButton tournamentId={tournament.id} />
+                ) : (
+                  <p className="text-sm text-neutral-500">The bracket hasn&apos;t been generated yet.</p>
+                )
+              ) : (
+                <BracketView matches={matches.map(publicMatch)} standings={standings} canManage={canManageBracket} />
+              )}
+            </div>
           </div>
         )}
 

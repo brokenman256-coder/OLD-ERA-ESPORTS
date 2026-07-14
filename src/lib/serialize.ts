@@ -1,4 +1,4 @@
-import type { Tournament, Registration, User, Team, TeamMember, PlayerMatch } from "@prisma/client";
+import type { Tournament, Registration, User, Team, TeamMember, PlayerMatch, Match } from "@prisma/client";
 
 export function publicUser(user: User) {
   return {
@@ -95,6 +95,34 @@ export function publicPlayerMatch(
     createdAt: m.createdAt,
     creatorId: m.creatorId,
     creator: m.creator ? { id: m.creator.id, name: m.creator.name, avatarUrl: m.creator.avatarUrl } : undefined,
+  };
+}
+
+function participantLabel(r: (Registration & { player?: User }) | null | undefined) {
+  if (!r) return null;
+  return { registrationId: r.id, name: r.teamName || r.player?.name || "Unknown" };
+}
+
+export function publicMatch(
+  m: Match & {
+    registration1?: (Registration & { player?: User }) | null;
+    registration2?: (Registration & { player?: User }) | null;
+  },
+) {
+  return {
+    id: m.id,
+    bracket: m.bracket,
+    round: m.round,
+    slot: m.slot,
+    participant1: participantLabel(m.registration1),
+    participant2: participantLabel(m.registration2),
+    score1: m.score1,
+    score2: m.score2,
+    winnerRegistrationId: m.winnerRegistrationId,
+    isBye: m.isBye,
+    status: m.status,
+    nextMatchId: m.nextMatchId,
+    loserNextMatchId: m.loserNextMatchId,
   };
 }
 

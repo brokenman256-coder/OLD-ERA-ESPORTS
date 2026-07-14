@@ -32,6 +32,19 @@ export const TOURNAMENT_FORMAT_LABELS: Record<string, string> = {
   BATTLE_ROYALE: "Battle Royale",
 };
 
+export const MATCH_BRACKET = {
+  MAIN: "MAIN",
+  WB: "WB",
+  LB: "LB",
+  GRAND_FINAL: "GRAND_FINAL",
+} as const;
+
+export const MATCH_STATUS = {
+  PENDING: "PENDING",
+  READY: "READY",
+  COMPLETED: "COMPLETED",
+} as const;
+
 export const PLAYER_MATCH_MODES = {
   WOW: "WOW",
   TDM: "TDM",
