@@ -34,16 +34,37 @@ function wrapTitle(title: string): string[] {
   return line2 ? [line1, line2] : [line1];
 }
 
+function formatDate(d: Date): string {
+  return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", timeZone: "Asia/Kolkata" }).toUpperCase();
+}
+
+function formatTime(d: Date): string {
+  return d
+    .toLocaleTimeString("en-IN", { hour: "numeric", minute: "2-digit", hour12: true, timeZone: "Asia/Kolkata" })
+    .toUpperCase();
+}
+
+function pill(x: number, xEnd: number, y: number, height: number, label: string, color: string): string {
+  return `<polygon points="${x},${y} ${xEnd},${y} ${xEnd + 10},${y + height} ${x + 10},${y + height}" fill="#ffffff" opacity="0.08" />
+  <text x="${x + 20}" y="${y + height - 14}" font-family="Arial, sans-serif" font-weight="800" font-size="18" letter-spacing="1" fill="${color}">${escapeXml(label)}</text>`;
+}
+
 export function generatePosterDataUri({
   title,
   game,
   entryFee,
   prizePool,
+  startDate,
+  map,
+  mode,
 }: {
   title: string;
   game: string;
   entryFee: number;
   prizePool: string | null;
+  startDate?: Date;
+  map?: string | null;
+  mode?: string | null;
 }): string {
   const theme = THEMES[Math.floor(Math.random() * THEMES.length)];
   const lines = wrapTitle(title.toUpperCase());
@@ -52,6 +73,21 @@ export function generatePosterDataUri({
 
   const feeLabel = entryFee > 0 ? `ENTRY ₹${entryFee}` : "FREE ENTRY";
   const prizeLabel = prizePool ? `PRIZE ${prizePool}` : "AUTO-HOSTED MATCH";
+  const dateTimeLabel = startDate ? `${formatDate(startDate)} · ${formatTime(startDate)} IST` : null;
+
+  const row2Labels: { label: string; color: string }[] = [];
+  if (mode) row2Labels.push({ label: mode.toUpperCase(), color: theme.accentA });
+  if (map) row2Labels.push({ label: `MAP: ${map.toUpperCase()}`, color: theme.accentB });
+
+  let x = 55;
+  const row2Pills = row2Labels
+    .map(({ label, color }) => {
+      const width = 40 + label.length * 11;
+      const svgPart = pill(x, x + width, 355, 40, label, color);
+      x += width + 20;
+      return svgPart;
+    })
+    .join("\n  ");
 
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="420" viewBox="0 0 1000 420">
   <defs>
@@ -70,16 +106,16 @@ export function generatePosterDataUri({
   <rect x="0" y="0" width="1000" height="6" fill="url(#accent)" />
   <rect x="0" y="414" width="1000" height="6" fill="url(#accent)" />
   <text x="60" y="110" font-family="Arial, sans-serif" font-weight="900" font-size="22" letter-spacing="6" fill="${theme.accentA}">${escapeXml(game.toUpperCase())}</text>
+  ${dateTimeLabel ? `<text x="940" y="110" text-anchor="end" font-family="Arial, sans-serif" font-weight="800" font-size="18" letter-spacing="1" fill="#f5f5f7">${escapeXml(dateTimeLabel)}</text>` : ""}
   ${lines
     .map(
       (line, i) =>
         `<text x="58" y="${titleY[i]}" font-family="Arial, sans-serif" font-weight="900" font-size="${titleFontSize}" fill="#f5f5f7">${escapeXml(line)}</text>`
     )
     .join("\n  ")}
-  <polygon points="55,300 235,300 245,340 65,340" fill="#ffffff" opacity="0.08" />
-  <text x="75" y="326" font-family="Arial, sans-serif" font-weight="800" font-size="18" letter-spacing="1" fill="${theme.accentA}">${escapeXml(feeLabel)}</text>
-  <polygon points="260,300 480,300 490,340 270,340" fill="#ffffff" opacity="0.08" />
-  <text x="280" y="326" font-family="Arial, sans-serif" font-weight="800" font-size="18" letter-spacing="1" fill="${theme.accentB}">${escapeXml(prizeLabel)}</text>
+  ${pill(55, 235, 300, 40, feeLabel, theme.accentA)}
+  ${pill(260, 480, 300, 40, prizeLabel, theme.accentB)}
+  ${row2Pills}
   <text x="940" y="395" text-anchor="end" font-family="Arial, sans-serif" font-weight="900" font-size="16" letter-spacing="2" fill="#ffffff" opacity="0.4">VANTIX</text>
 </svg>`;
 
