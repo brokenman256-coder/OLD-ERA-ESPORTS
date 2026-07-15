@@ -49,7 +49,7 @@ export default async function PlayerDashboard() {
                   </Link>
                   <p className="text-sm text-neutral-500">
                     {r.tournament.game} · hosted by{" "}
-                    {r.tournament.organizer.firmName || r.tournament.organizer.name}
+                    {r.tournament.organizerDisplayName || r.tournament.organizer.firmName || r.tournament.organizer.name}
                   </p>
                   {r.team && (
                     <p className="mt-1 text-sm">

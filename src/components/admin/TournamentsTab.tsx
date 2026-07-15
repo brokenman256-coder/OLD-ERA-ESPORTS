@@ -21,6 +21,7 @@ interface Tournament {
   hostingFeeProof: string | null;
   registrationCount: number;
   organizerEmail: string;
+  organizerDisplayName: string | null;
   organizer?: { name: string; firmName: string | null };
   roomId: string | null;
   roomPassword: string | null;
@@ -97,7 +98,9 @@ export default function TournamentsTab() {
                   <p className="text-xs font-bold uppercase text-orange-400">{t.game}</p>
                   <h3 className="text-lg font-bold">{t.title}</h3>
                   <p className="text-sm text-neutral-500">
-                    Organizer: {t.organizer?.firmName || t.organizer?.name} ({t.organizerEmail})
+                    Organizer: {t.organizerDisplayName || t.organizer?.firmName || t.organizer?.name}
+                    {t.organizerDisplayName ? ` (account: ${t.organizer?.firmName || t.organizer?.name}, ` : " ("}
+                    {t.organizerEmail})
                   </p>
                   <p className="mt-1 text-sm">
                     Hosting fee: {t.hostingFee > 0 ? `₹${t.hostingFee}` : "None"} · Entry fee:{" "}

@@ -46,6 +46,7 @@ export function publicTournament(t: Tournament & { organizer?: User }) {
     hostingFeePaidWithWallet: t.hostingFeePaidWithWallet,
     createdAt: t.createdAt,
     organizerId: t.organizerId,
+    organizerDisplayName: t.organizerDisplayName,
     organizer: t.organizer
       ? {
           id: t.organizer.id,

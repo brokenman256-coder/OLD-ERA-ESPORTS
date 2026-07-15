@@ -99,6 +99,10 @@ model Tournament {
 
   organizerId String
   organizer   User   @relation("OrganizerTournaments", fields: [organizerId], references: [id], onDelete: Cascade)
+  // Optional override shown as "hosted by" instead of organizer.firmName/name — lets
+  // the same underlying account (e.g. a bot identity) post under a different-looking
+  // organization name each time without needing a separate account per posting.
+  organizerDisplayName String?
 
   status              String  @default("PENDING")
   reviewNote          String?

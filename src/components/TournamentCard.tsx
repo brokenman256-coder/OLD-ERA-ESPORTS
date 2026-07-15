@@ -12,6 +12,7 @@ interface CardTournament {
   startDate: Date | string;
   bannerUrl?: string | null;
   tags?: string | null;
+  organizerDisplayName?: string | null;
   organizer: { firmName: string | null; name: string; isVerified?: boolean };
   _count?: { registrations: number };
 }
@@ -70,7 +71,7 @@ export default function TournamentCard({ t }: { t: CardTournament }) {
         </p>
         <h3 className="mt-1 text-lg font-bold group-hover:text-amber-400">{t.title}</h3>
         <p className="mt-1 flex items-center gap-1 text-sm text-neutral-500">
-          by {t.organizer.firmName || t.organizer.name}
+          by {t.organizerDisplayName || t.organizer.firmName || t.organizer.name}
           {t.organizer.isVerified && <VerifiedBadge label="Verified" />}
         </p>
         <p className="mt-3 text-sm text-neutral-400">

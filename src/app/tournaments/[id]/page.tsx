@@ -109,7 +109,7 @@ export default async function TournamentDetailPage({
         <p className="mt-1 text-neutral-500">
           Hosted by{" "}
           <Link href={`/organizers/${tournament.organizer.id}`} className="hover:underline">
-            {tournament.organizer.firmName || tournament.organizer.name}
+            {tournament.organizerDisplayName || tournament.organizer.firmName || tournament.organizer.name}
           </Link>{" "}
           {tournament.organizer.isVerified && <VerifiedBadge label="Verified" />}
         </p>
