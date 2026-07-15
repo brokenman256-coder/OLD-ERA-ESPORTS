@@ -3,12 +3,12 @@ const GRAIN =
 
 export default function AnimatedBackground() {
   return (
-    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#07070a]">
+    <div aria-hidden className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-[#0a0c10]">
       <div
         className="aurora-spin absolute left-1/2 top-[-30%] h-[90vmax] w-[90vmax] rounded-full opacity-60"
         style={{
           background:
-            "conic-gradient(from 0deg, #22d3ee, #6366f1, #a855f7, #ec4899, #22d3ee)",
+            "conic-gradient(from 0deg, #ff6b1a, #ff8c42, #ffb020, #ffd60a, #ff6b1a)",
           filter: "blur(120px)",
         }}
       />
@@ -17,15 +17,15 @@ export default function AnimatedBackground() {
         className="absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 80% 60% at 50% 0%, transparent 0%, #07070a 65%)",
+            "radial-gradient(ellipse 80% 60% at 50% 0%, transparent 0%, #0a0c10 65%)",
         }}
       />
 
       <div
         className="absolute inset-x-0 top-0 h-px"
         style={{
-          background: "linear-gradient(90deg, transparent, rgba(34,211,238,0.8) 35%, rgba(236,72,153,0.8) 65%, transparent)",
-          boxShadow: "0 0 16px 1px rgba(168,85,247,0.4)",
+          background: "linear-gradient(90deg, transparent, rgba(255,107,26,0.8) 35%, rgba(255,214,10,0.8) 65%, transparent)",
+          boxShadow: "0 0 16px 1px rgba(255,176,32,0.4)",
         }}
       />
 

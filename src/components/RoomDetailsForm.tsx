@@ -30,7 +30,7 @@ export default function RoomDetailsForm({
 
   return (
     <div className="mt-3 rounded-md border border-neutral-800 bg-neutral-950/60 p-3">
-      <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">
+      <p className="text-xs font-semibold uppercase tracking-wide text-orange-400">
         Room ID &amp; password — shared with approved players
       </p>
       <div className="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">

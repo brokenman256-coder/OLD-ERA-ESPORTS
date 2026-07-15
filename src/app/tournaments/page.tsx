@@ -41,7 +41,7 @@ export default async function TournamentsPage({
           placeholder="Filter by game"
           className="rounded-md premium-input px-3 py-2"
         />
-        <button className="clip-corner-sm bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 px-5 py-2 font-bold uppercase tracking-wide hover:brightness-110">
+        <button className="clip-corner-sm bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 px-5 py-2 font-bold uppercase tracking-wide hover:brightness-110">
           Search
         </button>
       </form>

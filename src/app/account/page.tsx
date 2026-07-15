@@ -116,7 +116,7 @@ export default function AccountPage() {
 
       <div className="mt-6 flex items-center gap-4">
         <Avatar name={me.firmName || me.name} src={me.avatarUrl} size={64} />
-        <label className="cursor-pointer text-sm font-medium text-cyan-400 hover:underline">
+        <label className="cursor-pointer text-sm font-medium text-orange-400 hover:underline">
           {avatarUploading ? "Uploading..." : "Change avatar"}
           <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={handleAvatarChange} />
         </label>

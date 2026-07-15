@@ -58,7 +58,7 @@ export default function RegistrationsTab() {
             onClick={() => setFilter(f)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
               filter === f
-                ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white"
+                ? "bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white"
                 : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >

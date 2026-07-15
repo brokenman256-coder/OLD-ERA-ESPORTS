@@ -160,7 +160,7 @@ export default function RegisterForm({
           </select>
           <p className="mt-1 text-xs text-neutral-500">
             Manage your squads on the{" "}
-            <Link href="/teams" className="text-cyan-400 hover:underline">
+            <Link href="/teams" className="text-orange-400 hover:underline">
               Teams
             </Link>{" "}
             page.

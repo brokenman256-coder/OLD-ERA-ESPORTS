@@ -10,7 +10,7 @@ export default async function AdminDashboard() {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-12 animate-fade-in-up">
-      <p className="skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
+      <p className="skew-x-[-6deg] bg-gradient-to-r from-orange-300 via-amber-400 to-yellow-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
         Vantix
       </p>
       <h1 className="section-title mt-2 text-3xl font-black uppercase tracking-wide">Admin Dashboard</h1>

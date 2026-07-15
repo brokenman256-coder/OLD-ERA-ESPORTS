@@ -41,7 +41,7 @@ function LoginForm() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center px-6 py-16 sm:py-24">
-      <p className="skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
+      <p className="skew-x-[-6deg] bg-gradient-to-r from-orange-300 via-amber-400 to-yellow-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
         Vantix
       </p>
       <h1 className="mt-2 text-3xl font-black uppercase tracking-tight">Welcome back</h1>
@@ -78,7 +78,7 @@ function LoginForm() {
 
       <p className="mt-6 text-sm text-neutral-500">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-bold text-cyan-400 hover:underline">
+        <Link href="/register" className="font-bold text-orange-400 hover:underline">
           Sign up
         </Link>
       </p>

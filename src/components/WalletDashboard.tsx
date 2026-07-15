@@ -136,9 +136,9 @@ export default function WalletDashboard() {
   return (
     <div className="mt-8 space-y-8">
       <div className="glass-panel clip-corner relative overflow-hidden p-6">
-        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-cyan-500/20 blur-3xl" />
-        <p className="text-xs font-bold uppercase tracking-[0.2em] text-cyan-400">Available balance</p>
-        <p className="mt-1 bg-gradient-to-r from-cyan-300 via-purple-300 to-pink-300 bg-clip-text text-4xl font-black text-transparent">
+        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-orange-500/20 blur-3xl" />
+        <p className="text-xs font-bold uppercase tracking-[0.2em] text-orange-400">Available balance</p>
+        <p className="mt-1 bg-gradient-to-r from-orange-300 via-amber-300 to-yellow-300 bg-clip-text text-4xl font-black text-transparent">
           ₹{balance}
         </p>
         <div className="relative mt-4 flex flex-wrap gap-2">
@@ -162,7 +162,7 @@ export default function WalletDashboard() {
           <h3 className="font-bold">Add funds</h3>
           {settings?.playerUpiId && (
             <p className="text-sm text-neutral-400">
-              Pay via UPI: <span className="font-mono font-semibold text-cyan-400">{settings.playerUpiId}</span>, then
+              Pay via UPI: <span className="font-mono font-semibold text-orange-400">{settings.playerUpiId}</span>, then
               upload the screenshot below. An admin will verify and credit your wallet.
             </p>
           )}

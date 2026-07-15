@@ -11,13 +11,13 @@ export default function Logo({ size = 28, className = "" }: { size?: number; cla
       >
         <defs>
           <linearGradient id="vantixMark" x1="6" y1="5" x2="34" y2="33" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#22d3ee" />
-            <stop offset="50%" stopColor="#a855f7" />
-            <stop offset="100%" stopColor="#ec4899" />
+            <stop offset="0%" stopColor="#ff6b1a" />
+            <stop offset="50%" stopColor="#ffb020" />
+            <stop offset="100%" stopColor="#ffd60a" />
           </linearGradient>
           <linearGradient id="vantixSpark" x1="10" y1="8" x2="27" y2="16" gradientUnits="userSpaceOnUse">
-            <stop offset="0%" stopColor="#67e8f9" />
-            <stop offset="100%" stopColor="#f0abfc" />
+            <stop offset="0%" stopColor="#ffe066" />
+            <stop offset="100%" stopColor="#ffcc66" />
           </linearGradient>
           <filter id="vantixGlow" x="-60%" y="-60%" width="220%" height="220%">
             <feGaussianBlur stdDeviation="1.6" result="blur" />
@@ -37,11 +37,11 @@ export default function Logo({ size = 28, className = "" }: { size?: number; cla
             fill="none"
           />
           <line x1="11" y1="9" x2="26.5" y2="16.5" stroke="url(#vantixSpark)" strokeWidth="2.5" strokeLinecap="round" />
-          <circle cx="20" cy="33" r="2.6" fill="#f0abfc" />
+          <circle cx="20" cy="33" r="2.6" fill="#ffcc66" />
         </g>
       </svg>
       <span
-        className="skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text font-black italic tracking-tight text-transparent"
+        className="font-heading skew-x-[-6deg] bg-gradient-to-r from-orange-300 via-amber-400 to-yellow-400 bg-clip-text font-black tracking-tight text-transparent"
         style={{ fontSize: size * 0.62 }}
       >
         VANTIX

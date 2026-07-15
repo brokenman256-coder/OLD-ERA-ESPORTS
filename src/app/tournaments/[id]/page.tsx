@@ -100,7 +100,7 @@ export default async function TournamentDetailPage({
           </div>
         )}
 
-        <p className="text-xs font-bold uppercase tracking-wide text-cyan-400">
+        <p className="text-xs font-bold uppercase tracking-wide text-orange-400">
           {gameIcon(tournament.game)} {tournament.game} · {TOURNAMENT_FORMAT_LABELS[tournament.format] ?? tournament.format}
         </p>
         <h1 className="mt-1 bg-gradient-to-r from-neutral-900 to-neutral-700 bg-clip-text text-3xl font-bold text-transparent dark:from-white dark:to-neutral-300">
@@ -135,7 +135,7 @@ export default async function TournamentDetailPage({
                 href={tournament.streamUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="clip-corner-sm bg-purple-600 px-4 py-2 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-purple-500"
+                className="clip-corner-sm bg-amber-600 px-4 py-2 text-sm font-bold uppercase tracking-wide text-white transition hover:bg-amber-500"
               >
                 Watch Stream
               </a>
@@ -215,11 +215,11 @@ export default async function TournamentDetailPage({
           {tournament.status !== APPROVAL.APPROVED ? null : !user ? (
             <div className="glass-panel clip-corner p-6 text-center">
               <p>
-                <Link href="/login" className="font-medium text-cyan-400 hover:underline">
+                <Link href="/login" className="font-medium text-orange-400 hover:underline">
                   Log in
                 </Link>{" "}
                 or{" "}
-                <Link href="/register" className="font-medium text-cyan-400 hover:underline">
+                <Link href="/register" className="font-medium text-orange-400 hover:underline">
                   sign up
                 </Link>{" "}
                 as a player to register for this tournament.
@@ -240,15 +240,15 @@ export default async function TournamentDetailPage({
 
               {existingRegistration.status === APPROVAL.APPROVED &&
                 (tournament.roomId || tournament.roomPassword) && (
-                  <div className="mt-4 rounded-md border border-cyan-800 bg-cyan-950 p-4">
-                    <p className="text-sm font-semibold text-cyan-300">Room details</p>
+                  <div className="mt-4 rounded-md border border-orange-800 bg-orange-950 p-4">
+                    <p className="text-sm font-semibold text-orange-300">Room details</p>
                     {tournament.roomId && (
-                      <p className="mt-1 text-sm text-cyan-200">
+                      <p className="mt-1 text-sm text-orange-200">
                         Room ID: <span className="font-mono font-semibold">{tournament.roomId}</span>
                       </p>
                     )}
                     {tournament.roomPassword && (
-                      <p className="mt-1 text-sm text-cyan-200">
+                      <p className="mt-1 text-sm text-orange-200">
                         Password: <span className="font-mono font-semibold">{tournament.roomPassword}</span>
                       </p>
                     )}

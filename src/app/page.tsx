@@ -35,12 +35,12 @@ export default async function Home() {
     <div className="flex flex-col">
       <section className="relative overflow-hidden bg-gradient-to-b from-black/50 via-transparent to-neutral-950/60 px-6 py-28 text-center text-white">
         <div className="relative">
-          <p className="inline-block skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-sm font-black uppercase tracking-[0.35em] text-transparent">
+          <p className="inline-block skew-x-[-6deg] bg-gradient-to-r from-orange-300 via-amber-400 to-yellow-400 bg-clip-text text-sm font-black uppercase tracking-[0.35em] text-transparent">
             Vantix
           </p>
           <h1 className="mx-auto mt-3 max-w-3xl text-4xl font-black uppercase tracking-tight sm:text-6xl">
             Compete. Organize.{" "}
-            <span className="bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-orange-300 via-amber-400 to-yellow-400 bg-clip-text text-transparent">
               Get Verified.
             </span>
           </h1>
@@ -52,13 +52,13 @@ export default async function Home() {
           <div className="mt-9 flex flex-wrap justify-center gap-4">
             <Link
               href="/register"
-              className="clip-corner-sm bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 px-7 py-3 font-bold uppercase tracking-wide shadow-lg shadow-purple-900/40 transition hover:scale-105 hover:shadow-purple-900/60"
+              className="clip-corner-sm bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 px-7 py-3 font-bold uppercase tracking-wide shadow-lg shadow-amber-900/40 transition hover:scale-105 hover:shadow-amber-900/60"
             >
               Register as a Player
             </Link>
             <Link
               href="/register"
-              className="clip-corner-sm border border-cyan-400/40 bg-cyan-400/5 px-7 py-3 font-bold uppercase tracking-wide text-cyan-300 transition hover:scale-105 hover:bg-cyan-400/15"
+              className="clip-corner-sm border border-orange-400/40 bg-orange-400/5 px-7 py-3 font-bold uppercase tracking-wide text-orange-300 transition hover:scale-105 hover:bg-orange-400/15"
             >
               Post a Tournament
             </Link>
@@ -68,19 +68,19 @@ export default async function Home() {
 
           <div className="mx-auto mt-14 grid max-w-lg grid-cols-3 gap-4 text-center">
             <div>
-              <p className="text-2xl font-black text-cyan-400 sm:text-3xl">
+              <p className="text-2xl font-black text-orange-400 sm:text-3xl">
                 <StatCounter value={stats.live} />
               </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Live tournaments</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-purple-400 sm:text-3xl">
+              <p className="text-2xl font-black text-amber-400 sm:text-3xl">
                 <StatCounter value={stats.players} />
               </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Players</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-pink-400 sm:text-3xl">
+              <p className="text-2xl font-black text-yellow-400 sm:text-3xl">
                 <StatCounter value={stats.organizers} />
               </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Organizers</p>
@@ -94,7 +94,7 @@ export default async function Home() {
       <section className="mx-auto w-full max-w-6xl px-6 py-16">
         <div className="flex items-center justify-between">
           <h2 className="section-title text-2xl font-black uppercase tracking-wide">Live Tournaments</h2>
-          <Link href="/tournaments" className="text-sm font-bold uppercase tracking-wide text-cyan-400 hover:underline">
+          <Link href="/tournaments" className="text-sm font-bold uppercase tracking-wide text-orange-400 hover:underline">
             View all →
           </Link>
         </div>
@@ -115,25 +115,25 @@ export default async function Home() {
       <section className="mx-auto w-full max-w-6xl px-6 pb-20">
         <h2 className="section-title text-2xl font-black uppercase tracking-wide">How it works</h2>
         <div className="mt-8 grid grid-cols-1 gap-8 sm:grid-cols-3">
-          <div className="clip-corner border-t-4 border-cyan-500 bg-neutral-900/80 p-5 shadow-sm backdrop-blur-sm">
+          <div className="clip-corner border-t-4 border-orange-500 bg-neutral-900/80 p-5 shadow-sm backdrop-blur-sm">
             <p className="text-2xl">🎮</p>
-            <p className="mt-2 text-sm font-bold uppercase tracking-wide text-cyan-400">For Players</p>
+            <p className="mt-2 text-sm font-bold uppercase tracking-wide text-orange-400">For Players</p>
             <p className="mt-2 text-neutral-400">
               Browse live tournaments, register solo or as a squad, and upload a screenshot
               of your entry-fee payment. Your admin-verified slot is confirmed once we check it.
             </p>
           </div>
-          <div className="clip-corner border-t-4 border-purple-500 bg-neutral-900/80 p-5 shadow-sm backdrop-blur-sm">
+          <div className="clip-corner border-t-4 border-amber-500 bg-neutral-900/80 p-5 shadow-sm backdrop-blur-sm">
             <p className="text-2xl">🏆</p>
-            <p className="mt-2 text-sm font-bold uppercase tracking-wide text-purple-400">For Organizers</p>
+            <p className="mt-2 text-sm font-bold uppercase tracking-wide text-amber-400">For Organizers</p>
             <p className="mt-2 text-neutral-400">
               Post your tournament with a banner, tags, Discord/stream links, and a hosting
               fee payment screenshot. It goes live after our admin verifies the payment.
             </p>
           </div>
-          <div className="clip-corner border-t-4 border-pink-500 bg-neutral-900/80 p-5 shadow-sm backdrop-blur-sm">
+          <div className="clip-corner border-t-4 border-yellow-500 bg-neutral-900/80 p-5 shadow-sm backdrop-blur-sm">
             <p className="text-2xl">🛡️</p>
-            <p className="mt-2 text-sm font-bold uppercase tracking-wide text-pink-400">For Admins</p>
+            <p className="mt-2 text-sm font-bold uppercase tracking-wide text-yellow-400">For Admins</p>
             <p className="mt-2 text-neutral-400">
               Every payment screenshot — from players and organizers — is manually
               reviewed and approved or rejected before anything goes live.

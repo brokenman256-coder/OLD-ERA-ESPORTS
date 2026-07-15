@@ -61,7 +61,7 @@ export default function WalletTab() {
             onClick={() => setSubTab(t)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
               subTab === t
-                ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white"
+                ? "bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white"
                 : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >
@@ -118,7 +118,7 @@ function TopUpsPanel() {
             key={f}
             onClick={() => setFilter(f)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-              filter === f ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
+              filter === f ? "bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >
             {f}
@@ -213,7 +213,7 @@ function WithdrawalsPanel() {
             key={f}
             onClick={() => setFilter(f)}
             className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-              filter === f ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
+              filter === f ? "bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >
             {f}
@@ -320,7 +320,7 @@ function BalancesPanel() {
               <p className="text-xs text-neutral-500">{u.role}</p>
             </div>
             <div className="flex items-center gap-3">
-              <p className="font-bold text-cyan-400">₹{u.walletBalance}</p>
+              <p className="font-bold text-orange-400">₹{u.walletBalance}</p>
               <button
                 onClick={() => setAdjustingId(adjustingId === u.id ? null : u.id)}
                 className="rounded-md bg-neutral-800 px-3 py-1.5 text-xs font-medium hover:bg-neutral-700"

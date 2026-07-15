@@ -104,7 +104,7 @@ export default function SupportTab() {
               onClick={() => openThread(t.user)}
               className={`block w-full rounded-lg border p-3 text-left ${
                 activeUser?.id === t.user.id
-                  ? "border-cyan-500/60 bg-neutral-900"
+                  ? "border-orange-500/60 bg-neutral-900"
                   : "border-neutral-800 bg-neutral-900/60 hover:border-neutral-700"
               }`}
             >
@@ -114,7 +114,7 @@ export default function SupportTab() {
                   {t.user.firmName && <span className="text-neutral-500"> ({t.user.firmName})</span>}
                 </p>
                 {t.unreadCount > 0 && (
-                  <span className="rounded-full bg-pink-500 px-2 py-0.5 text-xs font-bold text-white">
+                  <span className="rounded-full bg-yellow-500 px-2 py-0.5 text-xs font-bold text-white">
                     {t.unreadCount}
                   </span>
                 )}
@@ -154,7 +154,7 @@ export default function SupportTab() {
                   <div
                     className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
                       m.fromAdmin
-                        ? "bg-gradient-to-r from-cyan-600 to-purple-700 text-white"
+                        ? "bg-gradient-to-r from-orange-600 to-amber-700 text-white"
                         : "bg-neutral-800 text-neutral-100"
                     }`}
                   >

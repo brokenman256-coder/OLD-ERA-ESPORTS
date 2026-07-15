@@ -31,7 +31,7 @@ export default function SocialLinks({ className = "" }: { className?: string }) 
           href={links.instagramUrl}
           target="_blank"
           rel="noreferrer"
-          className="flex items-center gap-1.5 rounded-full bg-gradient-to-tr from-amber-500 via-pink-600 to-purple-600 px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
+          className="flex items-center gap-1.5 rounded-full bg-gradient-to-tr from-amber-500 via-yellow-600 to-amber-600 px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
         >
           Instagram
         </a>

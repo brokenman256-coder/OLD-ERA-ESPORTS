@@ -108,7 +108,7 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
               <td className="py-2 pr-4">{u.email}</td>
               <td className="py-2 pr-4">
                 {u.phone ? (
-                  <a href={`tel:${u.phone}`} className="text-cyan-400 hover:underline">
+                  <a href={`tel:${u.phone}`} className="text-orange-400 hover:underline">
                     {u.phone}
                   </a>
                 ) : (

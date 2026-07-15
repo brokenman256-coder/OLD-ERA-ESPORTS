@@ -47,32 +47,32 @@ export default function Navbar() {
 
   const navLinks = (
     <>
-      <Link href="/tournaments" className="font-bold uppercase tracking-wide hover:text-cyan-400" onClick={() => setMenuOpen(false)}>
+      <Link href="/tournaments" className="font-bold uppercase tracking-wide hover:text-orange-400" onClick={() => setMenuOpen(false)}>
         Tournaments
       </Link>
-      <Link href="/leaderboard" className="font-bold uppercase tracking-wide hover:text-cyan-400" onClick={() => setMenuOpen(false)}>
+      <Link href="/leaderboard" className="font-bold uppercase tracking-wide hover:text-orange-400" onClick={() => setMenuOpen(false)}>
         Leaderboard
       </Link>
-      <Link href="/player-matches" className="font-bold uppercase tracking-wide hover:text-cyan-400" onClick={() => setMenuOpen(false)}>
+      <Link href="/player-matches" className="font-bold uppercase tracking-wide hover:text-orange-400" onClick={() => setMenuOpen(false)}>
         Player Matches
       </Link>
-      <Link href="/contact" className="font-bold uppercase tracking-wide hover:text-cyan-400" onClick={() => setMenuOpen(false)}>
+      <Link href="/contact" className="font-bold uppercase tracking-wide hover:text-orange-400" onClick={() => setMenuOpen(false)}>
         Contact
       </Link>
       {user && (
         <>
-          <Link href={dashboardHref} className="font-bold uppercase tracking-wide hover:text-purple-400" onClick={() => setMenuOpen(false)}>
+          <Link href={dashboardHref} className="font-bold uppercase tracking-wide hover:text-amber-400" onClick={() => setMenuOpen(false)}>
             Dashboard
           </Link>
-          <Link href="/wallet" className="font-bold uppercase tracking-wide hover:text-purple-400" onClick={() => setMenuOpen(false)}>
+          <Link href="/wallet" className="font-bold uppercase tracking-wide hover:text-amber-400" onClick={() => setMenuOpen(false)}>
             Wallet
           </Link>
           {user.role === "PLAYER" && (
-            <Link href="/teams" className="font-bold uppercase tracking-wide hover:text-purple-400" onClick={() => setMenuOpen(false)}>
+            <Link href="/teams" className="font-bold uppercase tracking-wide hover:text-amber-400" onClick={() => setMenuOpen(false)}>
               Teams
             </Link>
           )}
-          <Link href="/account" className="font-bold uppercase tracking-wide hover:text-purple-400" onClick={() => setMenuOpen(false)}>
+          <Link href="/account" className="font-bold uppercase tracking-wide hover:text-amber-400" onClick={() => setMenuOpen(false)}>
             Account
           </Link>
           {profileHref && (
@@ -92,12 +92,12 @@ export default function Navbar() {
       )}
       {user === null && (
         <>
-          <Link href="/login" className="font-bold uppercase tracking-wide hover:text-purple-400" onClick={() => setMenuOpen(false)}>
+          <Link href="/login" className="font-bold uppercase tracking-wide hover:text-amber-400" onClick={() => setMenuOpen(false)}>
             Log in
           </Link>
           <Link
             href="/register"
-            className="clip-corner-sm bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 px-3 py-1.5 font-bold uppercase tracking-wide hover:brightness-110"
+            className="clip-corner-sm bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 px-3 py-1.5 font-bold uppercase tracking-wide hover:brightness-110"
             onClick={() => setMenuOpen(false)}
           >
             Sign up
@@ -108,7 +108,7 @@ export default function Navbar() {
   );
 
   return (
-    <header className="sticky top-0 z-20 border-b border-white/10 bg-black text-white shadow-[0_1px_0_0_rgba(168,85,247,0.3)]">
+    <header className="sticky top-0 z-20 border-b border-white/10 bg-black text-white shadow-[0_1px_0_0_rgba(255,176,32,0.3)]">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3.5 sm:px-6">
         <Link href="/" className="transition hover:opacity-90">
           <Logo size={24} />

@@ -6,9 +6,9 @@ interface PosterTheme {
 }
 
 const THEMES: PosterTheme[] = [
-  { bgFrom: "#0a0a12", bgTo: "#12172e", accentA: "#22d3ee", accentB: "#a855f7" },
-  { bgFrom: "#0f0a14", bgTo: "#1e1030", accentA: "#a855f7", accentB: "#ec4899" },
-  { bgFrom: "#0a0e14", bgTo: "#10202c", accentA: "#22d3ee", accentB: "#ec4899" },
+  { bgFrom: "#0a0c10", bgTo: "#171b24", accentA: "#ff6b1a", accentB: "#ffd60a" },
+  { bgFrom: "#12100a", bgTo: "#241d10", accentA: "#ffb020", accentB: "#ffd60a" },
+  { bgFrom: "#0d0a08", bgTo: "#221408", accentA: "#ff6b1a", accentB: "#ffb020" },
 ];
 
 function escapeXml(value: string) {

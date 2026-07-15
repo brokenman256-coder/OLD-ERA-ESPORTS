@@ -39,7 +39,7 @@ export default function RegisterPage() {
 
   return (
     <div className="mx-auto flex max-w-md flex-col items-center px-6 py-16 sm:py-24">
-      <p className="skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
+      <p className="skew-x-[-6deg] bg-gradient-to-r from-orange-300 via-amber-400 to-yellow-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
         Vantix
       </p>
       <h1 className="mt-2 text-3xl font-black uppercase tracking-tight">Create an account</h1>
@@ -51,7 +51,7 @@ export default function RegisterPage() {
             onClick={() => setRole("PLAYER")}
             className={`clip-corner-sm border px-4 py-3 text-sm font-bold uppercase tracking-wide transition ${
               role === "PLAYER"
-                ? "border-cyan-400/50 bg-cyan-400/10 text-cyan-300"
+                ? "border-orange-400/50 bg-orange-400/10 text-orange-300"
                 : "border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >
@@ -62,7 +62,7 @@ export default function RegisterPage() {
             onClick={() => setRole("ORGANIZER")}
             className={`clip-corner-sm border px-4 py-3 text-sm font-bold uppercase tracking-wide transition ${
               role === "ORGANIZER"
-                ? "border-purple-400/50 bg-purple-400/10 text-purple-300"
+                ? "border-amber-400/50 bg-amber-400/10 text-amber-300"
                 : "border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
             }`}
           >
@@ -146,7 +146,7 @@ export default function RegisterPage() {
 
       <p className="mt-6 text-sm text-neutral-500">
         Already have an account?{" "}
-        <Link href="/login" className="font-bold text-cyan-400 hover:underline">
+        <Link href="/login" className="font-bold text-orange-400 hover:underline">
           Log in
         </Link>
       </p>

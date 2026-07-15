@@ -17,11 +17,11 @@ interface CardTournament {
 }
 
 const FALLBACK_GRADIENTS = [
-  "from-cyan-600 via-blue-800 to-neutral-950",
-  "from-purple-600 via-fuchsia-800 to-neutral-950",
-  "from-pink-600 via-rose-800 to-neutral-950",
+  "from-orange-600 via-blue-800 to-neutral-950",
+  "from-amber-600 via-fuchsia-800 to-neutral-950",
+  "from-yellow-600 via-rose-800 to-neutral-950",
   "from-neutral-700 via-neutral-900 to-black",
-  "from-indigo-600 via-purple-800 to-neutral-950",
+  "from-indigo-600 via-amber-800 to-neutral-950",
 ];
 
 function gradientFor(game: string) {
@@ -47,7 +47,7 @@ export default function TournamentCard({ t }: { t: CardTournament }) {
   return (
     <Link
       href={`/tournaments/${t.id}`}
-      className="clip-corner group overflow-hidden border border-neutral-800 bg-neutral-900 shadow-sm transition hover:-translate-y-1 hover:border-purple-500/40 hover:shadow-xl hover:shadow-purple-900/20"
+      className="clip-corner group overflow-hidden border border-neutral-800 bg-neutral-900 shadow-sm transition hover:-translate-y-1 hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-900/20"
     >
       <div className="relative">
         {t.bannerUrl ? (
@@ -59,16 +59,16 @@ export default function TournamentCard({ t }: { t: CardTournament }) {
           </div>
         )}
         {daysLeft && (
-          <span className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-cyan-300 backdrop-blur-sm">
+          <span className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-orange-300 backdrop-blur-sm">
             {daysLeft}
           </span>
         )}
       </div>
       <div className="p-5">
-        <p className="text-xs font-bold uppercase tracking-wide text-cyan-400">
+        <p className="text-xs font-bold uppercase tracking-wide text-orange-400">
           {gameIcon(t.game)} {t.game}
         </p>
-        <h3 className="mt-1 text-lg font-bold group-hover:text-purple-400">{t.title}</h3>
+        <h3 className="mt-1 text-lg font-bold group-hover:text-amber-400">{t.title}</h3>
         <p className="mt-1 flex items-center gap-1 text-sm text-neutral-500">
           by {t.organizer.firmName || t.organizer.name}
           {t.organizer.isVerified && <VerifiedBadge label="Verified" />}
@@ -83,7 +83,7 @@ export default function TournamentCard({ t }: { t: CardTournament }) {
           <div className="mt-2">
             <div className="h-1.5 w-full overflow-hidden rounded-full bg-neutral-800">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-purple-500"
+                className="h-full rounded-full bg-gradient-to-r from-orange-500 to-amber-500"
                 style={{ width: `${pct}%` }}
               />
             </div>

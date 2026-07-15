@@ -35,7 +35,7 @@ export default function AdminPanel({ currentAdminId }: { currentAdminId: string 
             onClick={() => setTab(t.key)}
             className={`-mb-px border-b-2 px-4 py-2 text-sm font-bold uppercase tracking-wide transition ${
               tab === t.key
-                ? "border-cyan-400 bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-transparent"
+                ? "border-orange-400 bg-gradient-to-r from-orange-300 via-amber-400 to-yellow-400 bg-clip-text text-transparent"
                 : "border-transparent text-neutral-500 hover:text-neutral-200"
             }`}
           >

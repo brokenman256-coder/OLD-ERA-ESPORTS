@@ -79,7 +79,7 @@ function MatchCard({ match, canManage }: { match: MatchDTO; canManage: boolean }
 
   const rowClass = (isWinner: boolean, filled: boolean) =>
     `flex items-center justify-between gap-2 px-3 py-1.5 text-sm ${
-      isWinner ? "font-bold text-cyan-300" : filled ? "text-neutral-200" : "text-neutral-600 italic"
+      isWinner ? "font-bold text-orange-300" : filled ? "text-neutral-200" : "text-neutral-600 italic"
     }`;
 
   return (
@@ -97,7 +97,7 @@ function MatchCard({ match, canManage }: { match: MatchDTO; canManage: boolean }
       {canReport && !reporting && (
         <button
           onClick={() => setReporting(true)}
-          className="w-full border-t border-neutral-800 py-1 text-xs font-bold uppercase tracking-wide text-purple-400 hover:bg-purple-500/10"
+          className="w-full border-t border-neutral-800 py-1 text-xs font-bold uppercase tracking-wide text-amber-400 hover:bg-amber-500/10"
         >
           Report result
         </button>
@@ -125,14 +125,14 @@ function MatchCard({ match, canManage }: { match: MatchDTO; canManage: boolean }
             <button
               disabled={saving}
               onClick={() => submitWinner(p1!.registrationId)}
-              className="rounded bg-cyan-600/20 px-2 py-1 text-xs font-semibold text-cyan-300 hover:bg-cyan-600/30 disabled:opacity-50"
+              className="rounded bg-orange-600/20 px-2 py-1 text-xs font-semibold text-orange-300 hover:bg-orange-600/30 disabled:opacity-50"
             >
               {p1?.name} wins
             </button>
             <button
               disabled={saving}
               onClick={() => submitWinner(p2!.registrationId)}
-              className="rounded bg-purple-600/20 px-2 py-1 text-xs font-semibold text-purple-300 hover:bg-purple-600/30 disabled:opacity-50"
+              className="rounded bg-amber-600/20 px-2 py-1 text-xs font-semibold text-amber-300 hover:bg-amber-600/30 disabled:opacity-50"
             >
               {p2?.name} wins
             </button>
@@ -190,11 +190,11 @@ function StandingsTable({ standings }: { standings: StandingRow[] }) {
           {standings.map((row, i) => (
             <tr key={row.registrationId} className="border-b border-neutral-900 last:border-0">
               <td className="px-3 py-2 text-neutral-500">{i + 1}</td>
-              <td className={`px-3 py-2 ${i === 0 ? "font-bold text-cyan-300" : "text-neutral-200"}`}>{row.name}</td>
+              <td className={`px-3 py-2 ${i === 0 ? "font-bold text-orange-300" : "text-neutral-200"}`}>{row.name}</td>
               <td className="px-3 py-2 text-center text-neutral-400">{row.played}</td>
               <td className="px-3 py-2 text-center text-neutral-400">{row.wins}</td>
               <td className="px-3 py-2 text-center text-neutral-400">{row.losses}</td>
-              <td className="px-3 py-2 text-right font-bold text-purple-300">{row.points}</td>
+              <td className="px-3 py-2 text-right font-bold text-amber-300">{row.points}</td>
             </tr>
           ))}
         </tbody>

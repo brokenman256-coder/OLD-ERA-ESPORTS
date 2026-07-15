@@ -355,7 +355,7 @@ export default function SettingsTab() {
       <button
         onClick={save}
         disabled={saving}
-        className="clip-corner-sm bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 px-4 py-2 font-bold uppercase tracking-wide hover:brightness-110 disabled:opacity-50"
+        className="clip-corner-sm bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 px-4 py-2 font-bold uppercase tracking-wide hover:brightness-110 disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save settings"}
       </button>

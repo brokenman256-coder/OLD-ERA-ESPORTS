@@ -39,12 +39,12 @@ export default async function OrganizerProfilePage({
               <span className="text-neutral-500">Discord: {organizer.discordHandle}</span>
             )}
             {organizer.twitterUrl && (
-              <a href={organizer.twitterUrl} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">
+              <a href={organizer.twitterUrl} target="_blank" rel="noreferrer" className="text-orange-400 hover:underline">
                 Twitter/X
               </a>
             )}
             {organizer.websiteUrl && (
-              <a href={organizer.websiteUrl} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">
+              <a href={organizer.websiteUrl} target="_blank" rel="noreferrer" className="text-orange-400 hover:underline">
                 Website
               </a>
             )}
@@ -65,7 +65,7 @@ export default async function OrganizerProfilePage({
               href={`/tournaments/${t.id}`}
               className="glass-panel clip-corner p-4 transition hover-glow"
             >
-              <p className="text-xs font-bold uppercase text-cyan-400">{t.game}</p>
+              <p className="text-xs font-bold uppercase text-orange-400">{t.game}</p>
               <h3 className="font-bold">{t.title}</h3>
               <p className="text-sm text-neutral-500">{new Date(t.startDate).toLocaleDateString()}</p>
             </Link>

@@ -25,7 +25,7 @@ export default async function OrganizerDashboard() {
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-12 animate-fade-in-up">
-      <p className="skew-x-[-6deg] bg-gradient-to-r from-cyan-300 via-purple-400 to-pink-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
+      <p className="skew-x-[-6deg] bg-gradient-to-r from-orange-300 via-amber-400 to-yellow-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
         Organizer Dashboard
       </p>
       <h1 className="section-title mt-2 text-3xl font-black uppercase tracking-wide">
@@ -70,7 +70,7 @@ export default async function OrganizerDashboard() {
                   href={t.hostingFeeProof}
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-3 inline-block text-sm font-semibold text-cyan-400 hover:underline"
+                  className="mt-3 inline-block text-sm font-semibold text-orange-400 hover:underline"
                 >
                   View my hosting fee screenshot
                 </a>

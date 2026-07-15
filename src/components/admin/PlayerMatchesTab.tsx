@@ -117,7 +117,7 @@ export default function PlayerMatchesTab() {
               onClick={() => setFilter(f)}
               className={`rounded-md px-3 py-1.5 text-sm font-medium ${
                 filter === f
-                  ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white"
+                  ? "bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white"
                   : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
               }`}
             >
@@ -144,7 +144,7 @@ export default function PlayerMatchesTab() {
                 type="button"
                 onClick={() => setMode(m)}
                 className={`rounded-md px-3 py-1.5 text-sm font-semibold ${
-                  mode === m ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
+                  mode === m ? "bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
                 }`}
               >
                 {m}
@@ -181,7 +181,7 @@ export default function PlayerMatchesTab() {
             <div key={m.id} className="glass-panel clip-corner p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-xs font-semibold uppercase text-cyan-400">{m.mode}</p>
+                  <p className="text-xs font-semibold uppercase text-orange-400">{m.mode}</p>
                   <h3 className="text-lg font-bold">{m.title}</h3>
                   <p className="text-sm text-neutral-500">
                     By {m.creator?.name} ({m.creatorEmail})
@@ -193,7 +193,7 @@ export default function PlayerMatchesTab() {
                   </p>
                   {m.matchCode && (
                     <p className="mt-1 text-sm">
-                      Match code: <span className="font-mono font-semibold text-cyan-400">{m.matchCode}</span>
+                      Match code: <span className="font-mono font-semibold text-orange-400">{m.matchCode}</span>
                     </p>
                   )}
                   {m.description && <p className="mt-1 text-sm text-neutral-400">{m.description}</p>}

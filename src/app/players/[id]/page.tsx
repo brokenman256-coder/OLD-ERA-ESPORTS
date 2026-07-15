@@ -39,7 +39,7 @@ export default async function PlayerProfilePage({
           <div className="mt-3 flex flex-wrap gap-3 text-sm">
             {player.discordHandle && <span className="text-neutral-500">Discord: {player.discordHandle}</span>}
             {player.twitterUrl && (
-              <a href={player.twitterUrl} target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">
+              <a href={player.twitterUrl} target="_blank" rel="noreferrer" className="text-orange-400 hover:underline">
                 Twitter/X
               </a>
             )}

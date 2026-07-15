@@ -71,7 +71,7 @@ export default function SupportChatWidget() {
     <div className="fixed bottom-5 right-5 z-30">
       {open && (
         <div className="mb-3 flex h-96 w-80 flex-col overflow-hidden rounded-lg border border-neutral-800 bg-neutral-950 shadow-2xl shadow-black/50">
-          <div className="flex items-center justify-between bg-gradient-to-r from-cyan-600 to-purple-700 px-4 py-3">
+          <div className="flex items-center justify-between bg-gradient-to-r from-orange-600 to-amber-700 px-4 py-3">
             <p className="text-sm font-bold text-white">Support Chat</p>
             <button onClick={() => setOpen(false)} className="text-white/80 hover:text-white" aria-label="Close chat">
               ✕
@@ -90,10 +90,10 @@ export default function SupportChatWidget() {
                     className={`max-w-[80%] rounded-lg px-3 py-2 text-sm ${
                       m.fromAdmin
                         ? "bg-neutral-800 text-neutral-100"
-                        : "bg-gradient-to-r from-cyan-600 to-purple-700 text-white"
+                        : "bg-gradient-to-r from-orange-600 to-amber-700 text-white"
                     }`}
                   >
-                    {m.fromAdmin && <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wide text-cyan-400">Support Team</p>}
+                    {m.fromAdmin && <p className="mb-0.5 text-[10px] font-bold uppercase tracking-wide text-orange-400">Support Team</p>}
                     <p className="whitespace-pre-wrap break-words">{m.body}</p>
                   </div>
                 </div>
@@ -121,7 +121,7 @@ export default function SupportChatWidget() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-label="Toggle support chat"
-        className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 text-2xl text-white shadow-lg shadow-cyan-900/40 transition hover:scale-105"
+        className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-orange-500 to-amber-600 text-2xl text-white shadow-lg shadow-orange-900/40 transition hover:scale-105"
       >
         {open ? "✕" : "💬"}
       </button>

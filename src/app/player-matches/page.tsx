@@ -30,7 +30,7 @@ export default async function PlayerMatchesPage({
         <a
           href="/player-matches"
           className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-            !mode ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
+            !mode ? "bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
           }`}
         >
           All
@@ -38,7 +38,7 @@ export default async function PlayerMatchesPage({
         <a
           href="/player-matches?mode=WOW"
           className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-            mode === "WOW" ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
+            mode === "WOW" ? "bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
           }`}
         >
           WOW
@@ -46,7 +46,7 @@ export default async function PlayerMatchesPage({
         <a
           href="/player-matches?mode=TDM"
           className={`rounded-md px-3 py-1.5 text-sm font-medium ${
-            mode === "TDM" ? "bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
+            mode === "TDM" ? "bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 text-white" : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
           }`}
         >
           TDM
@@ -55,7 +55,7 @@ export default async function PlayerMatchesPage({
 
       {!user && (
         <p className="mt-6 text-sm text-neutral-500">
-          <a href="/login" className="text-cyan-400 hover:underline">
+          <a href="/login" className="text-orange-400 hover:underline">
             Log in
           </a>{" "}
           to see match codes and join.
@@ -68,7 +68,7 @@ export default async function PlayerMatchesPage({
         <div className="mt-8 space-y-4">
           {matches.map((m) => (
             <div key={m.id} className="glass-panel clip-corner p-5">
-              <p className="text-xs font-semibold uppercase tracking-wide text-cyan-400">{m.mode}</p>
+              <p className="text-xs font-semibold uppercase tracking-wide text-orange-400">{m.mode}</p>
               <h3 className="mt-1 text-lg font-bold">{m.title}</h3>
               <p className="mt-1 text-sm text-neutral-500">
                 By {m.creator.name} · Starts {new Date(m.startDate).toLocaleString()}
@@ -80,7 +80,7 @@ export default async function PlayerMatchesPage({
               {m.description && <p className="mt-2 text-sm text-neutral-400">{m.description}</p>}
               {user ? (
                 <p className="mt-3 text-sm">
-                  Match code: <span className="font-mono font-semibold text-cyan-400">{m.matchCode}</span>
+                  Match code: <span className="font-mono font-semibold text-orange-400">{m.matchCode}</span>
                 </p>
               ) : (
                 <p className="mt-3 text-sm text-neutral-500">Log in to see the match code.</p>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Orbitron, Rajdhani } from "next/font/google";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import SocialLinks from "@/components/SocialLinks";
@@ -8,9 +8,16 @@ import SupportChatWidget from "@/components/SupportChatWidget";
 import SiteBackground from "@/components/SiteBackground";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const orbitron = Orbitron({
+  variable: "--font-orbitron",
   subsets: ["latin"],
+  weight: ["600", "800"],
+});
+
+const rajdhani = Rajdhani({
+  variable: "--font-rajdhani",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -32,7 +39,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`dark ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`dark ${orbitron.variable} ${rajdhani.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-neutral-950 text-neutral-100">
         <SiteBackground />
@@ -43,7 +50,7 @@ export default function RootLayout({
           <div className="flex flex-col items-center gap-3">
             <Logo size={22} />
             <SocialLinks />
-            <Link href="/contact" className="text-cyan-400 hover:underline">
+            <Link href="/contact" className="text-amber-400 hover:underline">
               Contact & Support
             </Link>
             <p>

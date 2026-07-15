@@ -46,7 +46,7 @@ export default async function LeaderboardPage() {
 
       <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-2">
         <div>
-          <h2 className="border-b-4 border-cyan-500 pb-1 text-xl font-bold">Top Players</h2>
+          <h2 className="border-b-4 border-orange-500 pb-1 text-xl font-bold">Top Players</h2>
           {topPlayers.length === 0 ? (
             <p className="mt-4 text-neutral-500">No confirmed registrations yet.</p>
           ) : (
@@ -57,7 +57,7 @@ export default async function LeaderboardPage() {
                   href={`/players/${row.user.id}`}
                   className="flex items-center gap-3 glass-panel clip-corner p-3 transition hover-glow"
                 >
-                  <span className="w-8 text-center text-lg font-bold text-cyan-400">{medal(i)}</span>
+                  <span className="w-8 text-center text-lg font-bold text-orange-400">{medal(i)}</span>
                   <Avatar name={row.user.name} src={row.user.avatarUrl} size={32} />
                   <span className="flex-1 font-medium">
                     {row.user.name} {row.user.isVerified && <VerifiedBadge label="Notable" />}

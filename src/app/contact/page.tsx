@@ -23,7 +23,7 @@ export default async function ContactPage() {
         {settings.supportEmail && (
           <div>
             <p className="text-xs uppercase tracking-wide text-neutral-500">Email</p>
-            <a href={`mailto:${settings.supportEmail}`} className="font-medium text-cyan-400 hover:underline">
+            <a href={`mailto:${settings.supportEmail}`} className="font-medium text-orange-400 hover:underline">
               {settings.supportEmail}
             </a>
           </div>
@@ -32,7 +32,7 @@ export default async function ContactPage() {
         {settings.supportPhone && (
           <div>
             <p className="text-xs uppercase tracking-wide text-neutral-500">Phone</p>
-            <a href={`tel:${settings.supportPhone}`} className="font-medium text-cyan-400 hover:underline">
+            <a href={`tel:${settings.supportPhone}`} className="font-medium text-orange-400 hover:underline">
               {settings.supportPhone}
             </a>
           </div>
