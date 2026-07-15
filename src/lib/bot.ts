@@ -35,13 +35,17 @@ const TDM_MAPS = ["Warehouse", "Los Leones", "Hangar"];
 const CLASSIC_MAPS = ["Erangel", "Miramar", "Sanhok", "Vikendi", "Livik"];
 
 // TDM tournaments are a bracket of head-to-head 4v4s, so the field stays small and
-// power-of-two friendly. Classic lobbies hold far more squads.
+// power-of-two friendly. Classic lobbies hold real BGMI capacity: 25 squads (100 players).
 const TDM_SLOTS = [4, 8, 16];
-const CLASSIC_SLOTS = [16, 25, 32, 50, 64];
+const CLASSIC_SLOTS = [25];
 const TDM_FORMATS = [TOURNAMENT_FORMATS.SINGLE_ELIMINATION, TOURNAMENT_FORMATS.DOUBLE_ELIMINATION];
 
 const PAID_ENTRY_FEES = [10, 20, 30, 40, 50];
 const FREE_PRIZE_AMOUNTS = [100, 110, 120, 130, 140, 150];
+
+// Paid bot matches pay out 80% of collected entry fees to the winners; Vantix
+// keeps the remaining 20% to cover hosting/platform costs (house profit).
+const PAID_PAYOUT_SHARE = 0.8;
 
 const ADJECTIVES = ["Midnight", "Solo", "Rapid", "Clutch", "Ranked", "Iron", "Neon", "Rogue", "Prime", "Turbo"];
 const NOUNS = ["Clash", "Showdown", "Skirmish", "Cup", "Rumble", "Circuit", "Gauntlet", "Faceoff", "Sprint", "League"];
@@ -108,9 +112,12 @@ function randomDetails(identity: BotIdentity, kind: MatchKind) {
     entryLine = `This is a free-entry match — no entry fee required. Vantix is sponsoring a ${prizePool} bonus prize pool for the top finishers.`;
   } else {
     entryFee = pick(PAID_ENTRY_FEES);
-    const amount = entryFee * maxSlots;
-    prizePool = `₹${amount}`;
-    entryLine = `Entry fee is ₹${entryFee} per squad (pay via the registration page; wallet payment supported). The prize pool is the full ${prizePool} collected from all ${maxSlots} squads at capacity, paid out entirely to the top finishers.`;
+    // Starts at ₹0 with no registrations yet — refreshBotPrizePools() keeps this
+    // field updated live as squads actually register, so it always reflects real
+    // money collected rather than a projected best case.
+    prizePool = "₹0";
+    const ceiling = Math.round((entryFee * maxSlots * PAID_PAYOUT_SHARE) / 10) * 10;
+    entryLine = `Entry fee is ₹${entryFee} per squad (pay via the registration page; wallet payment supported). The prize pool is 80% of entry fees actually collected from confirmed registrations — it grows live as squads join (see the Prize Pool figure above), capped at ₹${ceiling} if all ${maxSlots} squads register. Vantix keeps the remaining 20% to cover hosting and platform costs.`;
   }
 
   const formatLine = isTdm
@@ -145,6 +152,37 @@ function randomDetails(identity: BotIdentity, kind: MatchKind) {
   };
 }
 
+const BOT_EMAILS = BOT_IDENTITIES.map((b) => b.email);
+
+// Keeps paid bot matches' prize pools honest: recomputed from the actual count of
+// APPROVED (payment-confirmed) registrations rather than a static projection, so
+// the figure players see always reflects real money collected so far. Runs on
+// every opportunistic tick, independent of whether new matches are due to post.
+async function refreshBotPrizePools() {
+  const upcoming = await prisma.tournament.findMany({
+    where: {
+      entryFee: { gt: 0 },
+      status: APPROVAL.APPROVED,
+      startDate: { gt: new Date() },
+      organizer: { email: { in: BOT_EMAILS } },
+    },
+    select: {
+      id: true,
+      entryFee: true,
+      prizePool: true,
+      _count: { select: { registrations: { where: { status: APPROVAL.APPROVED } } } },
+    },
+  });
+
+  for (const t of upcoming) {
+    const amount = Math.round((t._count.registrations * t.entryFee * PAID_PAYOUT_SHARE) / 10) * 10;
+    const newPrizePool = `₹${amount}`;
+    if (newPrizePool !== t.prizePool) {
+      await prisma.tournament.update({ where: { id: t.id }, data: { prizePool: newPrizePool } });
+    }
+  }
+}
+
 async function postOneMatch(identity: BotIdentity, kind: MatchKind) {
   const organizer = await getOrCreateBotOrganizer(identity);
   const { posterMap, posterMode, ...details } = randomDetails(identity, kind);
@@ -152,7 +190,10 @@ async function postOneMatch(identity: BotIdentity, kind: MatchKind) {
     title: details.title,
     game: details.game,
     entryFee: details.entryFee,
-    prizePool: details.prizePool,
+    // The poster is a static image generated once, but a PAID match's DB
+    // prizePool keeps growing after this (see refreshBotPrizePools) — show a
+    // label that stays true forever instead of a number that would go stale.
+    prizePool: kind === "PAID" ? "GROWS LIVE" : details.prizePool,
     startDate: details.startDate,
     map: posterMap,
     mode: posterMode,
@@ -171,6 +212,10 @@ async function postOneMatch(identity: BotIdentity, kind: MatchKind) {
 }
 
 export async function maybeRunBot() {
+  // Keep already-posted paid matches' prize pools accurate regardless of whether
+  // the bot is currently enabled — disabling only stops new postings.
+  await refreshBotPrizePools();
+
   const settings = await prisma.siteSettings.upsert({
     where: { id: "global" },
     update: {},
@@ -194,7 +239,7 @@ export async function maybeRunBot() {
   // Each cycle posts a pair of matches from two different bots in the 10-bot
   // roster (drawn without replacement, so it's never the same identity posting
   // both) — one free-entry match with a small sponsored prize, one paid-entry
-  // match whose prize pool is the full expected collection at capacity.
+  // match whose prize pool grows live off real registrations (refreshBotPrizePools).
   const [identityA, identityB] = pickTwoDistinct(BOT_IDENTITIES);
   await postOneMatch(identityA, "FREE");
   await postOneMatch(identityB, "PAID");

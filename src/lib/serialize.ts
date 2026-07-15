@@ -14,6 +14,7 @@ export function publicUser(user: User) {
     discordHandle: user.discordHandle,
     twitterUrl: user.twitterUrl,
     websiteUrl: user.websiteUrl,
+    gmail: user.gmail,
     isVerified: user.isVerified,
     walletBalance: user.walletBalance,
     createdAt: user.createdAt,

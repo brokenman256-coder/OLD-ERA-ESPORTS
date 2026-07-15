@@ -48,6 +48,11 @@ export default async function OrganizerProfilePage({
                 Website
               </a>
             )}
+            {organizer.gmail && (
+              <a href={`mailto:${organizer.gmail}`} className="text-orange-400 hover:underline">
+                {organizer.gmail}
+              </a>
+            )}
           </div>
         </div>
       </div>

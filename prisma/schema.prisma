@@ -29,6 +29,7 @@ model User {
   discordHandle String?
   twitterUrl    String?
   websiteUrl    String?
+  gmail         String? // linked Gmail / Google contact address, shown on the public profile
   isVerified    Boolean  @default(false) // verified-organizer / notable-player badge
 
   walletBalance Float @default(0)

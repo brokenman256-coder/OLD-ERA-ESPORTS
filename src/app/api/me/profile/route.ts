@@ -3,7 +3,8 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ROLES } from "@/lib/constants";
 
-const EDITABLE_FIELDS = ["name", "bio", "discordHandle", "twitterUrl", "websiteUrl", "firmName"] as const;
+const EDITABLE_FIELDS = ["name", "bio", "discordHandle", "twitterUrl", "websiteUrl", "gmail", "firmName"] as const;
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function PATCH(req: NextRequest) {
   const user = await getCurrentUser();
@@ -22,6 +23,10 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ error: "Name must be at least 2 characters" }, { status: 400 });
   }
 
+  if (typeof data.gmail === "string" && !EMAIL_PATTERN.test(data.gmail)) {
+    return NextResponse.json({ error: "Please enter a valid email address" }, { status: 400 });
+  }
+
   const updated = await prisma.user.update({ where: { id: user.id }, data });
 
   return NextResponse.json({
@@ -36,6 +41,7 @@ export async function PATCH(req: NextRequest) {
       discordHandle: updated.discordHandle,
       twitterUrl: updated.twitterUrl,
       websiteUrl: updated.websiteUrl,
+      gmail: updated.gmail,
       isVerified: updated.isVerified,
     },
   });

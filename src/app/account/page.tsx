@@ -14,6 +14,7 @@ interface Me {
   discordHandle: string | null;
   twitterUrl: string | null;
   websiteUrl: string | null;
+  gmail: string | null;
 }
 
 export default function AccountPage() {
@@ -25,6 +26,7 @@ export default function AccountPage() {
   const [discordHandle, setDiscordHandle] = useState("");
   const [twitterUrl, setTwitterUrl] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
+  const [gmail, setGmail] = useState("");
   const [profileMsg, setProfileMsg] = useState<{ type: "error" | "success"; text: string } | null>(null);
   const [profileSaving, setProfileSaving] = useState(false);
 
@@ -47,6 +49,7 @@ export default function AccountPage() {
         setDiscordHandle(data.user.discordHandle ?? "");
         setTwitterUrl(data.user.twitterUrl ?? "");
         setWebsiteUrl(data.user.websiteUrl ?? "");
+        setGmail(data.user.gmail ?? "");
       });
   }, []);
 
@@ -72,7 +75,7 @@ export default function AccountPage() {
     const res = await fetch("/api/me/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, firmName, bio, discordHandle, twitterUrl, websiteUrl }),
+      body: JSON.stringify({ name, firmName, bio, discordHandle, twitterUrl, websiteUrl, gmail }),
     });
     const data = await res.json();
     setProfileSaving(false);
@@ -169,6 +172,17 @@ export default function AccountPage() {
               placeholder="https://x.com/..."
               className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Gmail address</label>
+            <input
+              type="email"
+              value={gmail}
+              onChange={(e) => setGmail(e.target.value)}
+              placeholder="you@gmail.com"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
+            />
+            <p className="mt-1 text-xs text-neutral-500">Shown on your public profile so others can reach you.</p>
           </div>
         </div>
         {me.role === "ORGANIZER" && (

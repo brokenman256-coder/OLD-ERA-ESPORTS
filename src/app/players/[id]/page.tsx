@@ -43,6 +43,11 @@ export default async function PlayerProfilePage({
                 Twitter/X
               </a>
             )}
+            {player.gmail && (
+              <a href={`mailto:${player.gmail}`} className="text-orange-400 hover:underline">
+                {player.gmail}
+              </a>
+            )}
           </div>
         </div>
       </div>

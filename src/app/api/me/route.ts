@@ -18,6 +18,7 @@ export async function GET() {
       discordHandle: user.discordHandle,
       twitterUrl: user.twitterUrl,
       websiteUrl: user.websiteUrl,
+      gmail: user.gmail,
       isVerified: user.isVerified,
     },
   });
