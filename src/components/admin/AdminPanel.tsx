@@ -17,7 +17,7 @@ const TABS = [
   { key: "wallet", label: "Wallet" },
   { key: "users", label: "Users" },
   { key: "support", label: "Support Chat" },
-  { key: "settings", label: "Payment & Contact Settings" },
+  { key: "settings", label: "Settings & Bot" },
   { key: "promos", label: "Promotions" },
 ] as const;
 

@@ -131,6 +131,37 @@ export default function SettingsTab() {
   return (
     <div className="max-w-xl space-y-6">
       <div className="glass-panel clip-corner p-5">
+        <h3 className="font-bold">🤖 Tournament bot</h3>
+        <p className="mt-1 text-sm text-neutral-500">
+          When enabled, an automated organizer account (&quot;Vantix Bot&quot;) posts a new tournament —
+          random game, title, and a generated poster — every N minutes to keep the lobby active.
+          The check runs opportunistically whenever someone loads the homepage or tournaments
+          page, so timing follows traffic rather than a strict clock.
+        </p>
+        <div className="mt-4 space-y-4">
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              checked={botEnabled}
+              onChange={(e) => setBotEnabled(e.target.checked)}
+            />
+            Enable tournament bot
+          </label>
+          <div>
+            <label className="block text-sm font-medium">Interval (minutes)</label>
+            <input
+              type="number"
+              min="1"
+              value={botIntervalMinutes}
+              onChange={(e) => setBotIntervalMinutes(e.target.value)}
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
+            />
+            <p className="mt-1 text-xs text-neutral-500">e.g. 10 or 20</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="glass-panel clip-corner p-5">
         <h3 className="font-bold">Organizer payment details (hosting fee)</h3>
         <p className="mt-1 text-sm text-neutral-500">
           Shown to organizers when they post a tournament, so they know what to pay and where.
@@ -316,37 +347,6 @@ export default function SettingsTab() {
               placeholder="auto"
               className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
-          </div>
-        </div>
-      </div>
-
-      <div className="glass-panel clip-corner p-5">
-        <h3 className="font-bold">Tournament bot</h3>
-        <p className="mt-1 text-sm text-neutral-500">
-          When enabled, an automated organizer account (&quot;Vantix Bot&quot;) posts a new tournament —
-          random game, title, and a generated poster — every N minutes to keep the lobby active.
-          The check runs opportunistically whenever someone loads the homepage or tournaments
-          page, so timing follows traffic rather than a strict clock.
-        </p>
-        <div className="mt-4 space-y-4">
-          <label className="flex items-center gap-2 text-sm font-medium">
-            <input
-              type="checkbox"
-              checked={botEnabled}
-              onChange={(e) => setBotEnabled(e.target.checked)}
-            />
-            Enable tournament bot
-          </label>
-          <div>
-            <label className="block text-sm font-medium">Interval (minutes)</label>
-            <input
-              type="number"
-              min="1"
-              value={botIntervalMinutes}
-              onChange={(e) => setBotIntervalMinutes(e.target.value)}
-              className="mt-1 w-full rounded-md premium-input px-3 py-2"
-            />
-            <p className="mt-1 text-xs text-neutral-500">e.g. 10 or 20</p>
           </div>
         </div>
       </div>
