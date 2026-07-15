@@ -16,6 +16,9 @@ export function publicUser(user: User) {
     websiteUrl: user.websiteUrl,
     gmail: user.gmail,
     isVerified: user.isVerified,
+    // Admin-only field (publicUser() is only ever consumed by /api/admin/users
+    // routes) — never surface this on player/organizer-facing endpoints.
+    isBot: user.isBot,
     walletBalance: user.walletBalance,
     createdAt: user.createdAt,
   };

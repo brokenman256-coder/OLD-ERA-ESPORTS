@@ -4,11 +4,12 @@ import { APPROVAL, ROLES, TOURNAMENT_FORMATS } from "@/lib/constants";
 import { generatePosterDataUri } from "@/lib/posterGenerator";
 import { randomUUID } from "crypto";
 
-// A roster of 10 distinct BGMI-focused auto-hosting bot organizers running side by
-// side: 5 dedicated to small head-to-head Arena matches (TDM or WOW — both are
-// custom-room formats played 1v1 through 5v5 on the small arena maps), 5 dedicated
-// to Classic (squad-of-4 battle royale on the full-size maps). Each bot keeps its
-// own identity so the two categories read as coming from specialized hosts.
+// A roster of 10 distinct BGMI-focused auto-hosting bot organizers: 5 dedicated to
+// small head-to-head Arena matches (TDM or WOW — both are custom-room formats
+// played 1v1 through 5v5 on the small arena maps), 5 dedicated to Classic
+// (squad-of-4 battle royale on the full-size maps). Each due cycle, 5 of the 10
+// identities are picked to each post 3 matches (1 free + 2 paid) — 15 tournaments
+// per cycle — so the browse page always has multiple live boards going at once.
 type BotMode = "ARENA" | "CLASSIC";
 
 interface BotIdentity {
@@ -29,10 +30,12 @@ const BOT_IDENTITIES: BotIdentity[] = [
   { email: "bot-classic-4@vantix.internal", name: "Vantix Classic Bot IV", mode: "CLASSIC" },
   { email: "bot-classic-5@vantix.internal", name: "Vantix Classic Bot V", mode: "CLASSIC" },
 ];
+const BOT_EMAILS = BOT_IDENTITIES.map((b) => b.email);
 
 // Cosmetic "hosted by" org names, randomized per posting (see organizerDisplayName)
 // so the same 10 backing accounts still show up as fresh-looking organizations on
-// the scoreboard/browse page instead of repeating the same handful of bot names.
+// the scoreboard/browse page/leaderboard instead of repeating the same bot names.
+// Also reused as fake squad/team names for the registration-seeding bots below.
 const ORG_NAMES = [
   "Phoenix Esports",
   "Team Vertex",
@@ -99,12 +102,32 @@ const PAID_PAYOUT_SHARE = 0.8;
 const ADJECTIVES = ["Midnight", "Solo", "Rapid", "Clutch", "Ranked", "Iron", "Neon", "Rogue", "Prime", "Turbo"];
 const NOUNS = ["Clash", "Showdown", "Skirmish", "Cup", "Rumble", "Circuit", "Gauntlet", "Faceoff", "Sprint", "League"];
 
+// Fake in-game names for registration-seeding bot players (see seedFakeRegistrations).
+const IGN_PREFIX = [
+  "Shadow", "Viper", "Ghost", "Frost", "Blaze", "Venom", "Raptor", "Phantom", "Storm", "Reaper",
+  "Nova", "Fury", "Titan", "Cobra", "Havoc", "Rogue", "Specter", "Wraith", "Talon", "Hex",
+];
+const IGN_SUFFIX = ["X", "Pro", "99", "Prime", "Zero", "King", "Slayer", "Ops", "YT", "Elite", "07", "Jr", "Max", "OP"];
+const FAKE_PLAYER_COUNT = 40;
+
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
 function pickDistinct<T>(arr: T[], count: number): T[] {
   return [...arr].sort(() => Math.random() - 0.5).slice(0, count);
+}
+
+function fakeIgn(): string {
+  return `${pick(IGN_PREFIX)}${pick(IGN_SUFFIX)}`;
+}
+
+function fakeGameId(): string {
+  return String(Math.floor(100000000 + Math.random() * 899999999));
+}
+
+function fakePhone(): string {
+  return `9${Math.floor(100000000 + Math.random() * 899999999)}`;
 }
 
 async function getOrCreateBotOrganizer(identity: BotIdentity) {
@@ -120,11 +143,67 @@ async function getOrCreateBotOrganizer(identity: BotIdentity) {
       role: ROLES.ORGANIZER,
       firmName: identity.mode === "ARENA" ? "Vantix Arena Hosting" : "Vantix Auto-Hosted",
       isVerified: true,
+      isBot: true,
       bio:
         identity.mode === "ARENA"
           ? "Automated Arena host. Runs TDM/WOW custom-room brackets to keep the arena queue active."
           : "Automated Classic battle royale host. Runs squad-of-4 matches to keep the lobby active.",
     },
+  });
+}
+
+// Lazily creates (once) and returns the pool of fake registrant player accounts
+// used to seed realistic-looking registration counts on freshly posted bot
+// matches. Flagged isBot=true so only the admin panel can tell them apart from
+// real players — every public-facing view/serializer omits that field.
+async function ensureFakePlayers(): Promise<{ id: string; name: string }[]> {
+  const emails = Array.from({ length: FAKE_PLAYER_COUNT }, (_, i) => `fake-player-${i}@vantix.internal`);
+  const existing = await prisma.user.findMany({
+    where: { email: { in: emails } },
+    select: { id: true, email: true, name: true },
+  });
+  if (existing.length === emails.length) return existing;
+
+  const existingEmails = new Set(existing.map((u) => u.email));
+  const missing = emails.filter((e) => !existingEmails.has(e));
+  const passwordHash = await hashPassword(randomUUID());
+  await prisma.user.createMany({
+    data: missing.map((email) => ({
+      name: fakeIgn(),
+      email,
+      passwordHash,
+      role: ROLES.PLAYER,
+      phone: fakePhone(),
+      isBot: true,
+    })),
+    skipDuplicates: true,
+  });
+
+  return prisma.user.findMany({ where: { email: { in: emails } }, select: { id: true, email: true, name: true } });
+}
+
+// Registers a random subset (20-60% of capacity) of the fake player pool into a
+// freshly posted tournament so it doesn't sit at "0 registered" — bulk-inserted
+// since a single due cycle posts 15 tournaments and this runs for each of them.
+async function seedFakeRegistrations(
+  tournamentId: string,
+  maxSlots: number | null,
+  fakePlayers: { id: string; name: string }[],
+) {
+  if (!maxSlots || fakePlayers.length === 0) return;
+  const targetCount = Math.min(fakePlayers.length, Math.max(1, Math.round(maxSlots * (0.2 + Math.random() * 0.4))));
+  const chosen = pickDistinct(fakePlayers, targetCount);
+
+  await prisma.registration.createMany({
+    data: chosen.map((fp) => ({
+      tournamentId,
+      playerId: fp.id,
+      teamName: pick(ORG_NAMES),
+      contactPhone: fakePhone(),
+      squadMembers: Array.from({ length: 4 }, () => ({ name: fakeIgn(), gameId: fakeGameId() })),
+      status: APPROVAL.APPROVED,
+    })),
+    skipDuplicates: true,
   });
 }
 
@@ -181,13 +260,13 @@ function randomDetails(identity: BotIdentity, kind: MatchKind) {
     entryLine = `This is a free-entry match — no entry fee required. Vantix is sponsoring a ${prizePool} bonus prize pool for the top finishers.`;
   } else {
     entryFee = isArena && teamFormat ? pick(teamFormat.entryFees) : pick(CLASSIC_ENTRY_FEES);
-    // Starts at ₹0 with no registrations yet — refreshBotPrizePools() keeps this
-    // field updated live as squads actually register, capped at prizeBasisTeams
-    // worth of entry fees, so it always reflects real money collected rather than
-    // a projected best case.
-    prizePool = "₹0";
-    const ceiling = Math.round((entryFee * prizeBasisTeams * PAID_PAYOUT_SHARE) / 10) * 10;
-    entryLine = `Entry fee is ₹${entryFee} per squad (pay via the registration page; wallet payment supported). The prize pool is 80% of entry fees actually collected from confirmed registrations — it grows live as squads join (see the Prize Pool figure above), capped at ₹${ceiling}. Vantix keeps the remaining 20% to cover hosting and platform costs.`;
+    // Shown immediately as the estimated full-field prize pool (80% of entry fees
+    // x the standard team count for this match type) so it never displays as ₹0
+    // the moment it's posted. refreshBotPrizePools can only push this figure
+    // higher later if real registrations exceed the estimate — never lower.
+    const estimate = Math.round((entryFee * prizeBasisTeams * PAID_PAYOUT_SHARE) / 10) * 10;
+    prizePool = `₹${estimate}`;
+    entryLine = `Entry fee is ₹${entryFee} per squad (pay via the registration page; wallet payment supported). Estimated prize pool is ₹${estimate} — 80% of entry fees from a full field of ${prizeBasisTeams} squads, paid out to the top finishers. Vantix keeps the remaining 20% to cover hosting and platform costs.`;
   }
 
   const formatLine =
@@ -226,13 +305,11 @@ function randomDetails(identity: BotIdentity, kind: MatchKind) {
   };
 }
 
-const BOT_EMAILS = BOT_IDENTITIES.map((b) => b.email);
-
-// Keeps paid bot matches' prize pools honest: recomputed from the actual count of
-// APPROVED (payment-confirmed) registrations rather than a static projection, so
-// the figure players see always reflects real money collected so far — capped at
-// each match's prize-basis team count (see MAP_TIERS). Runs on every opportunistic
-// tick, independent of whether new matches are due to post.
+// Keeps paid bot matches' prize pools honest: if real (non-bot) confirmed
+// registrations end up collecting more than the initial estimate, bump the
+// figure up to match — but it only ever increases, never regresses to a lower
+// or zero-looking number. Runs on every opportunistic tick, independent of
+// whether new matches are due to post.
 async function refreshBotPrizePools() {
   const upcoming = await prisma.tournament.findMany({
     where: {
@@ -246,7 +323,9 @@ async function refreshBotPrizePools() {
       entryFee: true,
       prizePool: true,
       tags: true,
-      _count: { select: { registrations: { where: { status: APPROVAL.APPROVED } } } },
+      _count: {
+        select: { registrations: { where: { status: APPROVAL.APPROVED, player: { isBot: false } } } },
+      },
     },
   });
 
@@ -254,31 +333,38 @@ async function refreshBotPrizePools() {
     const basisMatch = t.tags?.match(/basis-(\d+)/);
     const basis = basisMatch ? Number(basisMatch[1]) : Infinity;
     const countedTeams = Math.min(t._count.registrations, basis);
-    const amount = Math.round((countedTeams * t.entryFee * PAID_PAYOUT_SHARE) / 10) * 10;
-    const newPrizePool = `₹${amount}`;
-    if (newPrizePool !== t.prizePool) {
-      await prisma.tournament.update({ where: { id: t.id }, data: { prizePool: newPrizePool } });
+    const liveAmount = Math.round((countedTeams * t.entryFee * PAID_PAYOUT_SHARE) / 10) * 10;
+    const currentAmount = Number((t.prizePool ?? "").replace(/[^\d]/g, "")) || 0;
+    const newAmount = Math.max(liveAmount, currentAmount);
+    if (newAmount !== currentAmount) {
+      await prisma.tournament.update({ where: { id: t.id }, data: { prizePool: `₹${newAmount}` } });
     }
   }
 }
 
-async function postOneMatch(identity: BotIdentity, kind: MatchKind) {
+// Bot matches are ephemeral filler content — once a match's scheduled start time
+// has passed, delete it (and its registrations/brackets, via cascade) so the
+// browse page doesn't grow forever at 15 postings/minute.
+async function deleteExpiredBotTournaments() {
+  await prisma.tournament.deleteMany({
+    where: { organizer: { email: { in: BOT_EMAILS } }, startDate: { lt: new Date() } },
+  });
+}
+
+async function postOneMatch(identity: BotIdentity, kind: MatchKind, fakePlayers: { id: string; name: string }[]) {
   const organizer = await getOrCreateBotOrganizer(identity);
   const { posterMap, posterMode, ...details } = randomDetails(identity, kind);
   const bannerUrl = generatePosterDataUri({
     title: details.title,
     game: details.game,
     entryFee: details.entryFee,
-    // The poster is a static image generated once, but a PAID match's DB
-    // prizePool keeps growing after this (see refreshBotPrizePools) — show a
-    // label that stays true forever instead of a number that would go stale.
-    prizePool: kind === "PAID" ? "GROWS LIVE" : details.prizePool,
+    prizePool: details.prizePool,
     startDate: details.startDate,
     map: posterMap,
     mode: posterMode,
   });
 
-  await prisma.tournament.create({
+  const tournament = await prisma.tournament.create({
     data: {
       ...details,
       bannerUrl,
@@ -288,12 +374,16 @@ async function postOneMatch(identity: BotIdentity, kind: MatchKind) {
       hostingFeeVerified: true,
     },
   });
+
+  await seedFakeRegistrations(tournament.id, details.maxSlots, fakePlayers);
 }
 
 export async function maybeRunBot() {
-  // Keep already-posted paid matches' prize pools accurate regardless of whether
-  // the bot is currently enabled — disabling only stops new postings.
+  // Keep already-posted paid matches' prize pools accurate, and clear out expired
+  // ones, regardless of whether the bot is currently enabled — disabling only
+  // stops new postings.
   await refreshBotPrizePools();
+  await deleteExpiredBotTournaments();
 
   const settings = await prisma.siteSettings.upsert({
     where: { id: "global" },
@@ -315,12 +405,14 @@ export async function maybeRunBot() {
   });
   if (claimed.count === 0) return;
 
-  // Each cycle posts three matches from three different bots in the 10-bot roster
-  // (drawn without replacement) — one free-entry match with a small sponsored
-  // prize, two paid-entry matches whose prize pools grow live off real
-  // registrations (refreshBotPrizePools).
-  const [identityA, identityB, identityC] = pickDistinct(BOT_IDENTITIES, 3);
-  await postOneMatch(identityA, "FREE");
-  await postOneMatch(identityB, "PAID");
-  await postOneMatch(identityC, "PAID");
+  // Each due cycle picks 5 of the 10 bot identities, and each posts 3 matches
+  // (1 free + 2 paid) — 15 tournaments per cycle, each seeded with a batch of
+  // fake registrations so the board looks active immediately.
+  const fakePlayers = await ensureFakePlayers();
+  const activeIdentities = pickDistinct(BOT_IDENTITIES, 5);
+  for (const identity of activeIdentities) {
+    await postOneMatch(identity, "FREE", fakePlayers);
+    await postOneMatch(identity, "PAID", fakePlayers);
+    await postOneMatch(identity, "PAID", fakePlayers);
+  }
 }

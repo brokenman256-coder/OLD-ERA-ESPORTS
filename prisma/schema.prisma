@@ -31,6 +31,7 @@ model User {
   websiteUrl    String?
   gmail         String? // linked Gmail / Google contact address, shown on the public profile
   isVerified    Boolean  @default(false) // verified-organizer / notable-player badge
+  isBot         Boolean  @default(false) // system-controlled account (tournament/registration bots); admin-visible only
 
   walletBalance Float @default(0)
 

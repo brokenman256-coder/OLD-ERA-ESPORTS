@@ -37,6 +37,20 @@ export default async function LeaderboardPage() {
     .map((g) => ({ user: organizers.find((o) => o.id === g.organizerId), count: g._count.organizerId }))
     .filter((r): r is { user: NonNullable<typeof r.user>; count: number } => !!r.user);
 
+  // Bot organizer accounts post under a per-tournament organizerDisplayName so the
+  // browse page shows fresh-looking hosts each time — reuse that here too, so an
+  // aggregate leaderboard row for a bot account doesn't just show its raw account
+  // name over and over. Falls back to firmName/name for real organizers.
+  const latestDisplayNames = await Promise.all(
+    topOrganizers.map((row) =>
+      prisma.tournament.findFirst({
+        where: { organizerId: row.user.id, organizerDisplayName: { not: null } },
+        orderBy: { createdAt: "desc" },
+        select: { organizerDisplayName: true },
+      })
+    )
+  );
+
   const medal = (i: number) => (i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`);
 
   return (
@@ -75,20 +89,24 @@ export default async function LeaderboardPage() {
             <p className="mt-4 text-neutral-500">No approved tournaments yet.</p>
           ) : (
             <div className="mt-4 space-y-2">
-              {topOrganizers.map((row, i) => (
-                <Link
-                  key={row.user.id}
-                  href={`/organizers/${row.user.id}`}
-                  className="flex items-center gap-3 glass-panel clip-corner p-3 transition hover-glow"
-                >
-                  <span className="w-8 text-center text-lg font-bold text-amber-400">{medal(i)}</span>
-                  <Avatar name={row.user.firmName || row.user.name} src={row.user.avatarUrl} size={32} />
-                  <span className="flex-1 font-medium">
-                    {row.user.firmName || row.user.name} {row.user.isVerified && <VerifiedBadge label="Verified" />}
-                  </span>
-                  <span className="text-sm text-neutral-400">{row.count} tournaments hosted</span>
-                </Link>
-              ))}
+              {topOrganizers.map((row, i) => {
+                const displayName =
+                  latestDisplayNames[i]?.organizerDisplayName || row.user.firmName || row.user.name;
+                return (
+                  <Link
+                    key={row.user.id}
+                    href={`/organizers/${row.user.id}`}
+                    className="flex items-center gap-3 glass-panel clip-corner p-3 transition hover-glow"
+                  >
+                    <span className="w-8 text-center text-lg font-bold text-amber-400">{medal(i)}</span>
+                    <Avatar name={displayName} src={row.user.avatarUrl} size={32} />
+                    <span className="flex-1 font-medium">
+                      {displayName} {row.user.isVerified && <VerifiedBadge label="Verified" />}
+                    </span>
+                    <span className="text-sm text-neutral-400">{row.count} tournaments hosted</span>
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>

@@ -13,6 +13,7 @@ interface Registration {
   status: string;
   reviewNote: string | null;
   player?: { name: string; email: string };
+  playerIsBot?: boolean;
   tournament: { title: string; game: string; entryFee: number };
 }
 
@@ -81,6 +82,11 @@ export default function RegistrationsTab() {
                   <p className="text-sm text-neutral-500">{r.tournament.game}</p>
                   <p className="mt-1 text-sm">
                     Player: {r.player?.name} ({r.player?.email})
+                    {r.playerIsBot && (
+                      <span className="ml-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-400">
+                        Bot
+                      </span>
+                    )}
                     {r.teamName ? ` · Team/IGN: ${r.teamName}` : ""}
                   </p>
                   <p className="mt-1 text-sm">Entry fee: ₹{r.tournament.entryFee}</p>

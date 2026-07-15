@@ -11,6 +11,7 @@ interface UserRow {
   phone: string | null;
   isBanned: boolean;
   isVerified: boolean;
+  isBot: boolean;
   createdAt: string;
 }
 
@@ -104,6 +105,11 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
               <td className="py-2 pr-4">
                 {u.name}
                 {u.firmName && <span className="text-neutral-500"> ({u.firmName})</span>}
+                {u.isBot && (
+                  <span className="ml-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-400">
+                    Bot
+                  </span>
+                )}
               </td>
               <td className="py-2 pr-4">{u.email}</td>
               <td className="py-2 pr-4">
