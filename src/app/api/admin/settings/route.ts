@@ -22,6 +22,7 @@ export async function PATCH(req: NextRequest) {
     if (typeof body.playerUpiId === "string") data.playerUpiId = body.playerUpiId.trim() || null;
     if (typeof body.whatsappLink === "string") data.whatsappLink = body.whatsappLink.trim() || null;
     if (typeof body.instagramUrl === "string") data.instagramUrl = body.instagramUrl.trim() || null;
+    if (typeof body.discordUrl === "string") data.discordUrl = body.discordUrl.trim() || null;
     if (typeof body.supportEmail === "string") data.supportEmail = body.supportEmail.trim() || null;
     if (typeof body.supportPhone === "string") data.supportPhone = body.supportPhone.trim() || null;
     if (typeof body.supportMessage === "string") data.supportMessage = body.supportMessage.trim() || null;

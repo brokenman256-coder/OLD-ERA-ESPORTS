@@ -3,7 +3,11 @@
 import { useEffect, useState } from "react";
 
 export default function SocialLinks({ className = "" }: { className?: string }) {
-  const [links, setLinks] = useState<{ whatsappLink: string | null; instagramUrl: string | null } | null>(null);
+  const [links, setLinks] = useState<{
+    whatsappLink: string | null;
+    instagramUrl: string | null;
+    discordUrl: string | null;
+  } | null>(null);
 
   useEffect(() => {
     fetch("/api/settings")
@@ -12,7 +16,7 @@ export default function SocialLinks({ className = "" }: { className?: string }) 
       .catch(() => setLinks(null));
   }, []);
 
-  if (!links || (!links.whatsappLink && !links.instagramUrl)) return null;
+  if (!links || (!links.whatsappLink && !links.instagramUrl && !links.discordUrl)) return null;
 
   return (
     <div className={`flex items-center gap-3 ${className}`}>
@@ -24,6 +28,16 @@ export default function SocialLinks({ className = "" }: { className?: string }) 
           className="flex items-center gap-1.5 rounded-full bg-green-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-green-500"
         >
           WhatsApp
+        </a>
+      )}
+      {links.discordUrl && (
+        <a
+          href={links.discordUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="flex items-center gap-1.5 rounded-full bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500"
+        >
+          Discord
         </a>
       )}
       {links.instagramUrl && (

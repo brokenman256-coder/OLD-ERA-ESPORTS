@@ -200,6 +200,7 @@ model SiteSettings {
   playerQrCodeUrl  String? // player-facing payment QR code
   whatsappLink     String?
   instagramUrl     String?
+  discordUrl       String? // community Discord server invite, shown on /community
 
   supportEmail   String?
   supportPhone   String?

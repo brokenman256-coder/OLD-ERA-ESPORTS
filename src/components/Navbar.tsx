@@ -56,6 +56,9 @@ export default function Navbar() {
       <Link href="/player-matches" className="font-bold uppercase tracking-wide hover:text-orange-400" onClick={() => setMenuOpen(false)}>
         Player Matches
       </Link>
+      <Link href="/community" className="font-bold uppercase tracking-wide hover:text-orange-400" onClick={() => setMenuOpen(false)}>
+        Community
+      </Link>
       <Link href="/contact" className="font-bold uppercase tracking-wide hover:text-orange-400" onClick={() => setMenuOpen(false)}>
         Contact
       </Link>

@@ -10,6 +10,7 @@ interface Settings {
   playerQrCodeUrl: string | null;
   whatsappLink: string | null;
   instagramUrl: string | null;
+  discordUrl: string | null;
   supportEmail: string | null;
   supportPhone: string | null;
   supportMessage: string | null;
@@ -27,6 +28,7 @@ export default function SettingsTab() {
   const [playerUpiId, setPlayerUpiId] = useState("");
   const [whatsappLink, setWhatsappLink] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
+  const [discordUrl, setDiscordUrl] = useState("");
   const [supportEmail, setSupportEmail] = useState("");
   const [supportPhone, setSupportPhone] = useState("");
   const [supportMessage, setSupportMessage] = useState("");
@@ -49,6 +51,7 @@ export default function SettingsTab() {
     setPlayerUpiId(data.settings.playerUpiId ?? "");
     setWhatsappLink(data.settings.whatsappLink ?? "");
     setInstagramUrl(data.settings.instagramUrl ?? "");
+    setDiscordUrl(data.settings.discordUrl ?? "");
     setSupportEmail(data.settings.supportEmail ?? "");
     setSupportPhone(data.settings.supportPhone ?? "");
     setSupportMessage(data.settings.supportMessage ?? "");
@@ -76,6 +79,7 @@ export default function SettingsTab() {
         playerUpiId,
         whatsappLink,
         instagramUrl,
+        discordUrl,
         supportEmail,
         supportPhone,
         supportMessage,
@@ -248,7 +252,10 @@ export default function SettingsTab() {
       </div>
 
       <div className="glass-panel clip-corner p-5">
-        <h3 className="font-bold">Social links</h3>
+        <h3 className="font-bold">Community &amp; social links</h3>
+        <p className="mt-1 text-sm text-neutral-500">
+          Shown on the Join Us / Community page and around the site so players can find and join your community.
+        </p>
         <div className="mt-4 space-y-4">
           <div>
             <label className="block text-sm font-medium">WhatsApp link</label>
@@ -256,6 +263,15 @@ export default function SettingsTab() {
               value={whatsappLink}
               onChange={(e) => setWhatsappLink(e.target.value)}
               placeholder="https://wa.me/91..."
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Discord invite link</label>
+            <input
+              value={discordUrl}
+              onChange={(e) => setDiscordUrl(e.target.value)}
+              placeholder="https://discord.gg/..."
               className="mt-1 w-full rounded-md premium-input px-3 py-2"
             />
           </div>

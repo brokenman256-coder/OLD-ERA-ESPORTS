@@ -17,6 +17,7 @@ export async function GET() {
       playerQrCodeUrl: settings.playerQrCodeUrl,
       whatsappLink: settings.whatsappLink,
       instagramUrl: settings.instagramUrl,
+      discordUrl: settings.discordUrl,
       supportEmail: settings.supportEmail,
       supportPhone: settings.supportPhone,
       supportMessage: settings.supportMessage,
