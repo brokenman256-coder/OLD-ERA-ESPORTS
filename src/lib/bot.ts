@@ -346,8 +346,14 @@ async function refreshBotPrizePools() {
 // has passed, delete it (and its registrations/brackets, via cascade) so the
 // browse page doesn't grow forever at 15 postings/minute.
 async function deleteExpiredBotTournaments() {
+  // Match by the @vantix.internal email domain rather than organizer.isBot or
+  // the current BOT_EMAILS roster: the bot roster has changed shape before
+  // (the original bot@vantix.internal identity predates the isBot column, so
+  // it defaulted to false and was never backfilled), which left tournaments
+  // from retired identities stuck forever. Every bot organizer, past or
+  // future, is created under this internal domain, so it's the stable match.
   await prisma.tournament.deleteMany({
-    where: { organizer: { email: { in: BOT_EMAILS } }, startDate: { lt: new Date() } },
+    where: { organizer: { email: { endsWith: "@vantix.internal" } }, startDate: { lt: new Date() } },
   });
 }
 
