@@ -321,7 +321,7 @@ export default function SettingsTab() {
         <p className="mt-1 text-sm text-neutral-500">
           Leave blank to show the real live-tournament count. The homepage also shows a
           simulated &ldquo;players online&rdquo; counter (200–1000, fluctuates live) and a static
-          &ldquo;20+ organizations onboard&rdquo; stat — neither is configurable here.
+          &ldquo;30+ organizations working with us&rdquo; stat — neither is configurable here.
         </p>
         <div className="mt-4">
           <div>

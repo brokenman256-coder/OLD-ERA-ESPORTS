@@ -20,6 +20,13 @@ export default async function Home() {
     include: { organizer: true, _count: { select: { registrations: true } } },
   });
 
+  const pubgInternationalTournaments = await prisma.tournament.findMany({
+    where: { status: APPROVAL.APPROVED, game: { contains: "PUBG", mode: "insensitive" } },
+    orderBy: { startDate: "asc" },
+    take: 6,
+    include: { organizer: true, _count: { select: { registrations: true } } },
+  });
+
   const [tournaments, liveCount, settings] = await Promise.all([
     prisma.tournament.findMany({
       where: { status: APPROVAL.APPROVED, id: { notIn: originalTournaments.map((t) => t.id) } },
@@ -88,8 +95,8 @@ export default async function Home() {
               <p className="text-xs uppercase tracking-wide text-neutral-400">Live tournaments</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-yellow-400 sm:text-3xl">20+</p>
-              <p className="text-xs uppercase tracking-wide text-neutral-400">Organizations onboard</p>
+              <p className="text-2xl font-black text-yellow-400 sm:text-3xl">30+</p>
+              <p className="text-xs uppercase tracking-wide text-neutral-400">Organizations working with us</p>
             </div>
           </div>
 
@@ -137,6 +144,33 @@ export default async function Home() {
         ) : (
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {tournaments.map((t) => (
+              <TournamentCard key={t.id} t={t} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-6 py-16">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="section-title text-2xl font-black uppercase tracking-wide">PUBG International</h2>
+            <p className="mt-1 text-sm text-neutral-500">
+              Cross-border PUBG Mobile tournaments, open beyond BGMI&apos;s India-only roster.
+            </p>
+          </div>
+          <Link href="/tournaments" className="text-sm font-bold uppercase tracking-wide text-orange-400 hover:underline">
+            View all →
+          </Link>
+        </div>
+
+        {pubgInternationalTournaments.length === 0 ? (
+          <p className="mt-8 text-neutral-500">
+            No PUBG International tournaments are live yet — organizers can post one under the
+            &quot;PUBG Mobile&quot; or &quot;PUBG International&quot; game and it&apos;ll be featured here.
+          </p>
+        ) : (
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {pubgInternationalTournaments.map((t) => (
               <TournamentCard key={t.id} t={t} />
             ))}
           </div>
