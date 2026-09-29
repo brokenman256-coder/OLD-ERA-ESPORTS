@@ -12,9 +12,16 @@ export const dynamic = "force-dynamic";
 export default async function Home() {
   await maybeRunBot();
 
+  const originalTournaments = await prisma.tournament.findMany({
+    where: { status: APPROVAL.APPROVED, organizer: { email: { not: { endsWith: "@vantix.internal" } } } },
+    orderBy: { startDate: "asc" },
+    take: 6,
+    include: { organizer: true, _count: { select: { registrations: true } } },
+  });
+
   const [tournaments, liveCount, playerCount, organizerCount, settings] = await Promise.all([
     prisma.tournament.findMany({
-      where: { status: APPROVAL.APPROVED },
+      where: { status: APPROVAL.APPROVED, id: { notIn: originalTournaments.map((t) => t.id) } },
       orderBy: { startDate: "asc" },
       take: 6,
       include: { organizer: true, _count: { select: { registrations: true } } },
@@ -89,6 +96,31 @@ export default async function Home() {
 
           <SocialLinks className="mt-8 justify-center" />
         </div>
+      </section>
+
+      <section className="mx-auto w-full max-w-6xl px-6 pt-16">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="section-title text-2xl font-black uppercase tracking-wide">Vantix Originals</h2>
+            <p className="mt-1 text-sm text-neutral-500">Real tournaments, posted and run by real organizers.</p>
+          </div>
+          <Link href="/tournaments" className="text-sm font-bold uppercase tracking-wide text-orange-400 hover:underline">
+            View all →
+          </Link>
+        </div>
+
+        {originalTournaments.length === 0 ? (
+          <p className="mt-8 text-neutral-500">
+            No organizer-hosted tournaments are live yet — be the first to post one and it&apos;ll be
+            featured here.
+          </p>
+        ) : (
+          <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {originalTournaments.map((t) => (
+              <TournamentCard key={t.id} t={t} badge="Vantix Original" />
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="mx-auto w-full max-w-6xl px-6 py-16">

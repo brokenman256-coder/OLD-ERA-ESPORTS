@@ -40,7 +40,7 @@ function daysLeftLabel(startDate: Date | string) {
   return null;
 }
 
-export default function TournamentCard({ t }: { t: CardTournament }) {
+export default function TournamentCard({ t, badge }: { t: CardTournament; badge?: string }) {
   const filled = t._count?.registrations ?? 0;
   const pct = t.maxSlots ? Math.min(100, Math.round((filled / t.maxSlots) * 100)) : null;
   const daysLeft = daysLeftLabel(t.startDate);
@@ -58,6 +58,11 @@ export default function TournamentCard({ t }: { t: CardTournament }) {
           <div className={`flex h-32 w-full items-center justify-center bg-gradient-to-br text-4xl ${gradientFor(t.game)}`}>
             {gameIcon(t.game)}
           </div>
+        )}
+        {badge && (
+          <span className="absolute left-2 top-2 rounded-full bg-gradient-to-r from-orange-500 to-amber-500 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-black backdrop-blur-sm">
+            {badge}
+          </span>
         )}
         {daysLeft && (
           <span className="absolute right-2 top-2 rounded-full bg-black/70 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-orange-300 backdrop-blur-sm">
