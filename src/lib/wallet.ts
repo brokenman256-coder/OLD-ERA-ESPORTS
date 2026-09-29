@@ -13,7 +13,9 @@ export type WalletTransactionType =
   | "ENTRY_FEE_PAYMENT"
   | "HOSTING_FEE_PAYMENT"
   | "ADMIN_CREDIT"
-  | "ADMIN_DEBIT";
+  | "ADMIN_DEBIT"
+  | "ORGANIZER_EARNING"
+  | "ORGANIZER_EARNING_REVERSAL";
 
 export async function creditWallet(
   userId: string,
@@ -31,6 +33,33 @@ export async function creditWallet(
     });
     return user.walletBalance;
   });
+}
+
+// Entry fees for a real organizer's tournament are paid to Vantix directly
+// (via the platform's own UPI, or a player's Vantix wallet), so the organizer
+// never sees that money change hands — this is how it reaches them instead:
+// once a paid registration is verified, we credit their Vantix wallet for the
+// entry fee, and they cash out later via a withdrawal request. Bot-organized
+// filler tournaments never earn real money, so isBotOrganizer short-circuits
+// both the credit and its reversal.
+export async function creditOrganizerEarning(
+  organizerId: string,
+  isBotOrganizer: boolean,
+  amount: number,
+  note: string
+) {
+  if (isBotOrganizer || amount <= 0) return;
+  await creditWallet(organizerId, amount, "ORGANIZER_EARNING", note);
+}
+
+export async function reverseOrganizerEarning(
+  organizerId: string,
+  isBotOrganizer: boolean,
+  amount: number,
+  note: string
+) {
+  if (isBotOrganizer || amount <= 0) return;
+  await creditWallet(organizerId, -amount, "ORGANIZER_EARNING_REVERSAL", note);
 }
 
 export async function debitWallet(

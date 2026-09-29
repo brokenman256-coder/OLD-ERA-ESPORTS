@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getCurrentUser } from "@/lib/auth";
 import { savePaymentScreenshot, UploadError } from "@/lib/upload";
-import { debitWallet, InsufficientBalanceError } from "@/lib/wallet";
+import { debitWallet, creditOrganizerEarning, InsufficientBalanceError } from "@/lib/wallet";
 import { APPROVAL, ROLES } from "@/lib/constants";
 import { publicRegistration } from "@/lib/serialize";
 
@@ -14,8 +14,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (user.role !== ROLES.PLAYER) {
       return NextResponse.json({ error: "Only players can register for tournaments" }, { status: 403 });
     }
+    if (user.isBot) {
+      return NextResponse.json({ error: "This account cannot register for tournaments" }, { status: 403 });
+    }
 
-    const tournament = await prisma.tournament.findUnique({ where: { id } });
+    const tournament = await prisma.tournament.findUnique({ where: { id }, include: { organizer: true } });
     if (!tournament || tournament.status !== APPROVAL.APPROVED) {
       return NextResponse.json({ error: "Tournament not found" }, { status: 404 });
     }
@@ -86,6 +89,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         throw err;
       }
       paidWithWallet = true;
+      await creditOrganizerEarning(
+        tournament.organizerId,
+        tournament.organizer.isBot,
+        tournament.entryFee,
+        `Entry fee earned from "${tournament.title}"`
+      );
     } else {
       const proofFile = form.get("paymentProof");
       if (proofFile instanceof File && proofFile.size > 0) {

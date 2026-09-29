@@ -15,8 +15,6 @@ interface Settings {
   supportPhone: string | null;
   supportMessage: string | null;
   displayLiveTournaments: number | null;
-  displayPlayers: number | null;
-  displayOrganizers: number | null;
   botEnabled: boolean;
   botIntervalMinutes: number;
 }
@@ -33,8 +31,6 @@ export default function SettingsTab() {
   const [supportPhone, setSupportPhone] = useState("");
   const [supportMessage, setSupportMessage] = useState("");
   const [displayLiveTournaments, setDisplayLiveTournaments] = useState("");
-  const [displayPlayers, setDisplayPlayers] = useState("");
-  const [displayOrganizers, setDisplayOrganizers] = useState("");
   const [botEnabled, setBotEnabled] = useState(false);
   const [botIntervalMinutes, setBotIntervalMinutes] = useState("20");
   const [saving, setSaving] = useState(false);
@@ -56,8 +52,6 @@ export default function SettingsTab() {
     setSupportPhone(data.settings.supportPhone ?? "");
     setSupportMessage(data.settings.supportMessage ?? "");
     setDisplayLiveTournaments(data.settings.displayLiveTournaments?.toString() ?? "");
-    setDisplayPlayers(data.settings.displayPlayers?.toString() ?? "");
-    setDisplayOrganizers(data.settings.displayOrganizers?.toString() ?? "");
     setBotEnabled(Boolean(data.settings.botEnabled));
     setBotIntervalMinutes(String(data.settings.botIntervalMinutes ?? 20));
   }
@@ -84,8 +78,6 @@ export default function SettingsTab() {
         supportPhone,
         supportMessage,
         displayLiveTournaments: displayLiveTournaments === "" ? null : Number(displayLiveTournaments),
-        displayPlayers: displayPlayers === "" ? null : Number(displayPlayers),
-        displayOrganizers: displayOrganizers === "" ? null : Number(displayOrganizers),
         botEnabled,
         botIntervalMinutes: Number(botIntervalMinutes),
       }),
@@ -327,10 +319,11 @@ export default function SettingsTab() {
       <div className="glass-panel clip-corner p-5">
         <h3 className="font-bold">Homepage stats override</h3>
         <p className="mt-1 text-sm text-neutral-500">
-          Leave blank to show real counts. Set a number here to display something else instead
-          (e.g. while the platform is new).
+          Leave blank to show the real live-tournament count. The homepage also shows a
+          simulated &ldquo;players online&rdquo; counter (200–1000, fluctuates live) and a static
+          &ldquo;20+ organizations onboard&rdquo; stat — neither is configurable here.
         </p>
-        <div className="mt-4 grid grid-cols-3 gap-3">
+        <div className="mt-4">
           <div>
             <label className="block text-sm font-medium">Live tournaments</label>
             <input
@@ -339,29 +332,7 @@ export default function SettingsTab() {
               value={displayLiveTournaments}
               onChange={(e) => setDisplayLiveTournaments(e.target.value)}
               placeholder="auto"
-              className="mt-1 w-full rounded-md premium-input px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Players</label>
-            <input
-              type="number"
-              min="0"
-              value={displayPlayers}
-              onChange={(e) => setDisplayPlayers(e.target.value)}
-              placeholder="auto"
-              className="mt-1 w-full rounded-md premium-input px-3 py-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Organizers</label>
-            <input
-              type="number"
-              min="0"
-              value={displayOrganizers}
-              onChange={(e) => setDisplayOrganizers(e.target.value)}
-              placeholder="auto"
-              className="mt-1 w-full rounded-md premium-input px-3 py-2"
+              className="mt-1 w-full max-w-[200px] rounded-md premium-input px-3 py-2"
             />
           </div>
         </div>

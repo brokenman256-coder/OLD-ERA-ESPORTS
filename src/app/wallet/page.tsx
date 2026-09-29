@@ -13,7 +13,9 @@ export default async function WalletPage() {
       </p>
       <h1 className="section-title mt-2 text-3xl font-black uppercase tracking-wide">My Wallet</h1>
       <p className="mt-2 text-neutral-400">
-        Add funds to pay entry/hosting fees instantly, or request a withdrawal of your balance.
+        {user.role === "ORGANIZER"
+          ? "Entry fees from your verified paid registrations are credited here automatically — request a withdrawal any time and our team will process the payout."
+          : "Add funds to pay entry/hosting fees instantly, or request a withdrawal of your balance."}
       </p>
       <WalletDashboard />
     </div>

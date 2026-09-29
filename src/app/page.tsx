@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { prisma } from "@/lib/db";
-import { APPROVAL, ROLES } from "@/lib/constants";
+import { APPROVAL } from "@/lib/constants";
 import TournamentCard from "@/components/TournamentCard";
 import PromoCarousel from "@/components/PromoCarousel";
 import StatCounter from "@/components/StatCounter";
+import PlayersOnlineCounter from "@/components/PlayersOnlineCounter";
 import SocialLinks from "@/components/SocialLinks";
 import { maybeRunBot } from "@/lib/bot";
 
@@ -19,7 +20,7 @@ export default async function Home() {
     include: { organizer: true, _count: { select: { registrations: true } } },
   });
 
-  const [tournaments, liveCount, playerCount, organizerCount, settings] = await Promise.all([
+  const [tournaments, liveCount, settings] = await Promise.all([
     prisma.tournament.findMany({
       where: { status: APPROVAL.APPROVED, id: { notIn: originalTournaments.map((t) => t.id) } },
       orderBy: { startDate: "asc" },
@@ -27,15 +28,11 @@ export default async function Home() {
       include: { organizer: true, _count: { select: { registrations: true } } },
     }),
     prisma.tournament.count({ where: { status: APPROVAL.APPROVED } }),
-    prisma.user.count({ where: { role: ROLES.PLAYER } }),
-    prisma.user.count({ where: { role: ROLES.ORGANIZER } }),
     prisma.siteSettings.upsert({ where: { id: "global" }, update: {}, create: { id: "global" } }),
   ]);
 
   const stats = {
     live: settings.displayLiveTournaments ?? liveCount,
-    players: settings.displayPlayers ?? playerCount,
-    organizers: settings.displayOrganizers ?? organizerCount,
   };
 
   return (
@@ -75,22 +72,24 @@ export default async function Home() {
 
           <div className="mx-auto mt-14 grid max-w-lg grid-cols-3 gap-4 text-center">
             <div>
+              <p className="flex items-center justify-center gap-1.5 text-2xl font-black text-emerald-400 sm:text-3xl">
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                </span>
+                <PlayersOnlineCounter />
+              </p>
+              <p className="text-xs uppercase tracking-wide text-neutral-400">Players online</p>
+            </div>
+            <div>
               <p className="text-2xl font-black text-orange-400 sm:text-3xl">
                 <StatCounter value={stats.live} />
               </p>
               <p className="text-xs uppercase tracking-wide text-neutral-400">Live tournaments</p>
             </div>
             <div>
-              <p className="text-2xl font-black text-amber-400 sm:text-3xl">
-                <StatCounter value={stats.players} />
-              </p>
-              <p className="text-xs uppercase tracking-wide text-neutral-400">Players</p>
-            </div>
-            <div>
-              <p className="text-2xl font-black text-yellow-400 sm:text-3xl">
-                <StatCounter value={stats.organizers} />
-              </p>
-              <p className="text-xs uppercase tracking-wide text-neutral-400">Organizers</p>
+              <p className="text-2xl font-black text-yellow-400 sm:text-3xl">20+</p>
+              <p className="text-xs uppercase tracking-wide text-neutral-400">Organizations onboard</p>
             </div>
           </div>
 
