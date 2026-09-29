@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser, hashPassword, verifyPassword } from "@/lib/auth";
+import { getCurrentUser, hashPassword, verifyPassword, signSession } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { SESSION_COOKIE } from "@/lib/constants";
 
 export async function GET() {
   const user = await getCurrentUser();
@@ -19,7 +20,9 @@ export async function GET() {
       twitterUrl: user.twitterUrl,
       websiteUrl: user.websiteUrl,
       gmail: user.gmail,
+      gameUid: user.gameUid,
       isVerified: user.isVerified,
+      emailVerified: Boolean(user.emailVerifiedAt),
     },
   });
 }
@@ -42,7 +45,22 @@ export async function PATCH(req: NextRequest) {
   }
 
   const passwordHash = await hashPassword(body.newPassword);
-  await prisma.user.update({ where: { id: user.id }, data: { passwordHash } });
+  // Bump sessionVersion so any other device's cookie is invalidated, then
+  // immediately reissue this device's cookie with the new version so the
+  // user changing their own password isn't logged out too.
+  const updated = await prisma.user.update({
+    where: { id: user.id },
+    data: { passwordHash, sessionVersion: { increment: 1 } },
+  });
 
-  return NextResponse.json({ ok: true });
+  const token = signSession({ userId: updated.id, role: updated.role, sessionVersion: updated.sessionVersion });
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set(SESSION_COOKIE, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  });
+  return res;
 }

@@ -32,6 +32,7 @@ const FILTERS = ["ALL", "PENDING", "APPROVED", "REJECTED"] as const;
 export default function TournamentsTab() {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [filter, setFilter] = useState<(typeof FILTERS)[number]>("PENDING");
+  const [originalsOnly, setOriginalsOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -67,9 +68,13 @@ export default function TournamentsTab() {
     load();
   }
 
+  const visibleTournaments = originalsOnly
+    ? tournaments.filter((t) => !t.organizerEmail.endsWith("@vantix.internal"))
+    : tournaments;
+
   return (
     <div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         {FILTERS.map((f) => (
           <button
             key={f}
@@ -83,20 +88,39 @@ export default function TournamentsTab() {
             {f}
           </button>
         ))}
+        <label className="ml-2 flex items-center gap-1.5 text-xs font-medium text-neutral-400">
+          <input
+            type="checkbox"
+            checked={originalsOnly}
+            onChange={(e) => setOriginalsOnly(e.target.checked)}
+          />
+          Vantix Originals only (hide bot)
+        </label>
       </div>
 
       {loading ? (
         <p className="mt-6 text-neutral-500">Loading...</p>
-      ) : tournaments.length === 0 ? (
+      ) : visibleTournaments.length === 0 ? (
         <p className="mt-6 text-neutral-500">No tournaments here.</p>
       ) : (
         <div className="mt-6 space-y-4">
-          {tournaments.map((t) => (
+          {visibleTournaments.map((t) => (
             <div key={t.id} className="glass-panel clip-corner p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-xs font-bold uppercase text-orange-400">{t.game}</p>
-                  <h3 className="text-lg font-bold">{t.title}</h3>
+                  <h3 className="text-lg font-bold">
+                    {t.title}
+                    {t.organizerEmail.endsWith("@vantix.internal") ? (
+                      <span className="ml-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-400 align-middle">
+                        Bot
+                      </span>
+                    ) : (
+                      <span className="ml-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-orange-400 align-middle">
+                        Vantix Original
+                      </span>
+                    )}
+                  </h3>
                   <p className="text-sm text-neutral-500">
                     Organizer: {t.organizerDisplayName || t.organizer?.firmName || t.organizer?.name}
                     {t.organizerDisplayName ? ` (account: ${t.organizer?.firmName || t.organizer?.name}, ` : " ("}

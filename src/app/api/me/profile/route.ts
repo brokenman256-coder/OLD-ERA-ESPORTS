@@ -3,7 +3,16 @@ import { getCurrentUser } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ROLES } from "@/lib/constants";
 
-const EDITABLE_FIELDS = ["name", "bio", "discordHandle", "twitterUrl", "websiteUrl", "gmail", "firmName"] as const;
+const EDITABLE_FIELDS = [
+  "name",
+  "bio",
+  "discordHandle",
+  "twitterUrl",
+  "websiteUrl",
+  "gmail",
+  "firmName",
+  "gameUid",
+] as const;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function PATCH(req: NextRequest) {
@@ -16,6 +25,7 @@ export async function PATCH(req: NextRequest) {
   const data: Record<string, unknown> = {};
   for (const field of EDITABLE_FIELDS) {
     if (field === "firmName" && user.role !== ROLES.ORGANIZER) continue;
+    if (field === "gameUid" && user.role !== ROLES.PLAYER) continue;
     if (field in body) data[field] = String(body[field] ?? "").slice(0, 2000) || null;
   }
 
@@ -42,6 +52,7 @@ export async function PATCH(req: NextRequest) {
       twitterUrl: updated.twitterUrl,
       websiteUrl: updated.websiteUrl,
       gmail: updated.gmail,
+      gameUid: updated.gameUid,
       isVerified: updated.isVerified,
     },
   });

@@ -111,7 +111,7 @@ export default async function TournamentDetailPage({
           <Link href={`/organizers/${tournament.organizer.id}`} className="hover:underline">
             {tournament.organizerDisplayName || tournament.organizer.firmName || tournament.organizer.name}
           </Link>{" "}
-          {tournament.organizer.isVerified && <VerifiedBadge label="Verified" />}
+          {tournament.organizer.isVerified && <VerifiedBadge label="Verified" variant="organizer" />}
         </p>
 
         <div className="mt-3">

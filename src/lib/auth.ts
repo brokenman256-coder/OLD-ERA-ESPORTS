@@ -13,6 +13,10 @@ if (!JWT_SECRET) {
 export interface SessionPayload {
   userId: string;
   role: string;
+  // Must match the user's current sessionVersion. Bumping that column (e.g. on
+  // password reset) instantly invalidates every cookie issued before the bump,
+  // without needing a server-side session store.
+  sessionVersion: number;
 }
 
 export async function hashPassword(password: string) {
@@ -45,6 +49,7 @@ export async function getCurrentUser() {
 
   const user = await prisma.user.findUnique({ where: { id: payload.userId } });
   if (!user || user.isBanned) return null;
+  if (typeof payload.sessionVersion === "number" && payload.sessionVersion !== user.sessionVersion) return null;
 
   return user;
 }

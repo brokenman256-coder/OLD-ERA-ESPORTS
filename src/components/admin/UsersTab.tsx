@@ -9,6 +9,7 @@ interface UserRow {
   role: string;
   firmName: string | null;
   phone: string | null;
+  gameUid: string | null;
   isBanned: boolean;
   isVerified: boolean;
   isBot: boolean;
@@ -94,6 +95,7 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
             <th className="py-2 pr-4">Name</th>
             <th className="py-2 pr-4">Email</th>
             <th className="py-2 pr-4">Phone</th>
+            <th className="py-2 pr-4">UID</th>
             <th className="py-2 pr-4">Role</th>
             <th className="py-2 pr-4">Status</th>
             <th className="py-2 pr-4">Actions</th>
@@ -121,6 +123,7 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
                   <span className="text-neutral-500">—</span>
                 )}
               </td>
+              <td className="py-2 pr-4">{u.gameUid || <span className="text-neutral-500">—</span>}</td>
               <td className="py-2 pr-4">
                 <select
                   value={u.role}
@@ -139,7 +142,9 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
                   onClick={() => toggleVerified(u.id, u.isVerified)}
                   className={`rounded-md px-3 py-1 text-xs font-medium hover:opacity-80 ${
                     u.isVerified
-                      ? "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
+                      ? u.role === "ORGANIZER"
+                        ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300"
+                        : "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
                       : "border border-white/10 bg-white/5 text-neutral-400 hover:bg-white/10"
                   }`}
                 >

@@ -30,8 +30,22 @@ model User {
   twitterUrl    String?
   websiteUrl    String?
   gmail         String? // linked Gmail / Google contact address, shown on the public profile
+  gameUid       String? // BGMI in-game UID, collected at signup for player identity verification
   isVerified    Boolean  @default(false) // verified-organizer / notable-player badge
   isBot         Boolean  @default(false) // system-controlled account (tournament/registration bots); admin-visible only
+
+  // Login hardening: lock the account out after repeated bad passwords instead
+  // of allowing unlimited guesses.
+  failedLoginAttempts Int       @default(0)
+  lockedUntil         DateTime?
+  // Bumped on password change/reset so previously-issued session cookies stop
+  // working immediately, without needing a server-side session store.
+  sessionVersion      Int       @default(1)
+
+  emailOtpCode      String? // hashed OTP, not the raw code
+  emailOtpExpiresAt DateTime?
+  emailOtpAttempts  Int       @default(0)
+  emailVerifiedAt   DateTime?
 
   walletBalance Float @default(0)
 

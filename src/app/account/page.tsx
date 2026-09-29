@@ -15,6 +15,8 @@ interface Me {
   twitterUrl: string | null;
   websiteUrl: string | null;
   gmail: string | null;
+  gameUid: string | null;
+  emailVerified: boolean;
 }
 
 export default function AccountPage() {
@@ -27,6 +29,7 @@ export default function AccountPage() {
   const [twitterUrl, setTwitterUrl] = useState("");
   const [websiteUrl, setWebsiteUrl] = useState("");
   const [gmail, setGmail] = useState("");
+  const [gameUid, setGameUid] = useState("");
   const [profileMsg, setProfileMsg] = useState<{ type: "error" | "success"; text: string } | null>(null);
   const [profileSaving, setProfileSaving] = useState(false);
 
@@ -36,6 +39,12 @@ export default function AccountPage() {
   const [newPassword, setNewPassword] = useState("");
   const [pwMessage, setPwMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
   const [pwLoading, setPwLoading] = useState(false);
+
+  const [otpEnabled, setOtpEnabled] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpMessage, setOtpMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
+  const [otpLoading, setOtpLoading] = useState(false);
 
   useEffect(() => {
     fetch("/api/me")
@@ -50,8 +59,46 @@ export default function AccountPage() {
         setTwitterUrl(data.user.twitterUrl ?? "");
         setWebsiteUrl(data.user.websiteUrl ?? "");
         setGmail(data.user.gmail ?? "");
+        setGameUid(data.user.gameUid ?? "");
       });
+    fetch("/api/settings")
+      .then((res) => res.json())
+      .then((data) => setOtpEnabled(Boolean(data.settings?.otpEnabled)))
+      .catch(() => setOtpEnabled(false));
   }, []);
+
+  async function requestOtp() {
+    setOtpMessage(null);
+    setOtpLoading(true);
+    const res = await fetch("/api/auth/otp/request", { method: "POST" });
+    const data = await res.json();
+    setOtpLoading(false);
+    if (!res.ok) {
+      setOtpMessage({ type: "error", text: data.error ?? "Something went wrong" });
+      return;
+    }
+    setOtpSent(true);
+    setOtpMessage({ type: "success", text: "Code sent — check your email." });
+  }
+
+  async function verifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    setOtpMessage(null);
+    setOtpLoading(true);
+    const res = await fetch("/api/auth/otp/verify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: otpCode }),
+    });
+    const data = await res.json();
+    setOtpLoading(false);
+    if (!res.ok) {
+      setOtpMessage({ type: "error", text: data.error ?? "Something went wrong" });
+      return;
+    }
+    setMe((prev) => (prev ? { ...prev, emailVerified: true } : prev));
+    setOtpMessage({ type: "success", text: "Email verified!" });
+  }
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -75,7 +122,7 @@ export default function AccountPage() {
     const res = await fetch("/api/me/profile", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, firmName, bio, discordHandle, twitterUrl, websiteUrl, gmail }),
+      body: JSON.stringify({ name, firmName, bio, discordHandle, twitterUrl, websiteUrl, gmail, gameUid }),
     });
     const data = await res.json();
     setProfileSaving(false);
@@ -185,6 +232,18 @@ export default function AccountPage() {
             <p className="mt-1 text-xs text-neutral-500">Shown on your public profile so others can reach you.</p>
           </div>
         </div>
+        {me.role === "PLAYER" && (
+          <div>
+            <label className="block text-sm font-medium">BGMI UID</label>
+            <input
+              value={gameUid}
+              onChange={(e) => setGameUid(e.target.value)}
+              placeholder="e.g. 5123456789"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
+            />
+            <p className="mt-1 text-xs text-neutral-500">Shown on your public profile to verify it&apos;s really you.</p>
+          </div>
+        )}
         {me.role === "ORGANIZER" && (
           <div>
             <label className="block text-sm font-medium">Website URL</label>
@@ -240,6 +299,68 @@ export default function AccountPage() {
           {pwLoading ? "Saving..." : "Update password"}
         </button>
       </form>
+
+      {otpEnabled && (
+        <div className="mt-6 space-y-4 rounded-lg border border-neutral-200 p-5 dark:border-neutral-800">
+          <h2 className="font-bold">Email verification</h2>
+          {me.emailVerified ? (
+            <p className="text-sm text-green-500">✓ Your email ({me.email}) is verified.</p>
+          ) : (
+            <>
+              <p className="text-sm text-neutral-500">
+                Verify {me.email} with a one-time code so we know it&apos;s really you.
+              </p>
+              {!otpSent ? (
+                <button
+                  type="button"
+                  onClick={requestOtp}
+                  disabled={otpLoading}
+                  className="clip-corner-sm premium-btn px-4 py-2 text-sm font-bold uppercase tracking-wide"
+                >
+                  {otpLoading ? "Sending..." : "Send verification code"}
+                </button>
+              ) : (
+                <form onSubmit={verifyOtp} className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium">6-digit code</label>
+                    <input
+                      value={otpCode}
+                      onChange={(e) => setOtpCode(e.target.value)}
+                      inputMode="numeric"
+                      pattern="\d{6}"
+                      maxLength={6}
+                      required
+                      className="mt-1 w-full rounded-md premium-input px-3 py-2 tracking-[0.3em]"
+                      placeholder="000000"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      disabled={otpLoading}
+                      className="clip-corner-sm premium-btn px-4 py-2 text-sm font-bold uppercase tracking-wide"
+                    >
+                      {otpLoading ? "Verifying..." : "Verify"}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={requestOtp}
+                      disabled={otpLoading}
+                      className="rounded-md border border-white/10 bg-white/5 px-4 py-2 text-sm font-medium text-neutral-300 hover:bg-white/10"
+                    >
+                      Resend code
+                    </button>
+                  </div>
+                </form>
+              )}
+              {otpMessage && (
+                <p className={`text-sm ${otpMessage.type === "error" ? "text-red-600" : "text-green-600"}`}>
+                  {otpMessage.text}
+                </p>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }

@@ -7,10 +7,16 @@ import { ROLES, SESSION_COOKIE } from "@/lib/constants";
 const schema = z.object({
   name: z.string().min(2).max(100),
   email: z.string().email(),
-  password: z.string().min(8).max(200),
+  password: z
+    .string()
+    .min(8)
+    .max(200)
+    .regex(/[A-Za-z]/, "Password must contain at least one letter")
+    .regex(/[0-9]/, "Password must contain at least one number"),
   role: z.enum([ROLES.PLAYER, ROLES.ORGANIZER]),
   firmName: z.string().max(200).optional(),
   phone: z.string().max(30).optional(),
+  gameUid: z.string().max(50).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -20,13 +26,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid input" }, { status: 400 });
   }
 
-  const { name, email, password, role, firmName, phone } = parsed.data;
+  const { name, email, password, role, firmName, phone, gameUid } = parsed.data;
 
   if (role === ROLES.ORGANIZER && !firmName?.trim()) {
     return NextResponse.json({ error: "Firm / company name is required for organizers" }, { status: 400 });
   }
   if (!phone?.trim()) {
     return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
+  }
+  if (role === ROLES.PLAYER && !gameUid?.trim()) {
+    return NextResponse.json({ error: "Your BGMI UID is required to register as a player" }, { status: 400 });
   }
 
   const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
@@ -44,10 +53,11 @@ export async function POST(req: NextRequest) {
       role,
       firmName: role === ROLES.ORGANIZER ? firmName : null,
       phone,
+      gameUid: role === ROLES.PLAYER ? gameUid?.trim() : null,
     },
   });
 
-  const token = signSession({ userId: user.id, role: user.role });
+  const token = signSession({ userId: user.id, role: user.role, sessionVersion: user.sessionVersion });
 
   const res = NextResponse.json({
     user: { id: user.id, name: user.name, email: user.email, role: user.role },

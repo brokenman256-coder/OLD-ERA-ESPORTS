@@ -29,7 +29,7 @@ export default async function OrganizerProfilePage({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold">{organizer.firmName || organizer.name}</h1>
-            {organizer.isVerified && <VerifiedBadge label="Verified Organizer" />}
+            {organizer.isVerified && <VerifiedBadge label="Verified Organizer" variant="organizer" />}
           </div>
           <p className="text-neutral-500">Organized by {organizer.name}</p>
           {organizer.bio && <p className="mt-2 max-w-xl text-neutral-700 dark:text-neutral-300">{organizer.bio}</p>}

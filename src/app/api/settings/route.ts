@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { emailIsConfigured } from "@/lib/email";
 
 export async function GET() {
   const settings = await prisma.siteSettings.upsert({
@@ -26,6 +27,7 @@ export async function GET() {
       displayOrganizers: settings.displayOrganizers,
       botEnabled: settings.botEnabled,
       botIntervalMinutes: settings.botIntervalMinutes,
+      otpEnabled: emailIsConfigured(),
     },
   });
 }

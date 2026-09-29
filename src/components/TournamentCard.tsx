@@ -77,7 +77,7 @@ export default function TournamentCard({ t, badge }: { t: CardTournament; badge?
         <h3 className="mt-1 text-lg font-bold group-hover:text-amber-400">{t.title}</h3>
         <p className="mt-1 flex items-center gap-1 text-sm text-neutral-500">
           by {t.organizerDisplayName || t.organizer.firmName || t.organizer.name}
-          {t.organizer.isVerified && <VerifiedBadge label="Verified" />}
+          {t.organizer.isVerified && <VerifiedBadge label="Verified" variant="organizer" />}
         </p>
         <p className="mt-3 text-sm text-neutral-400">
           Starts {new Date(t.startDate).toLocaleDateString()}

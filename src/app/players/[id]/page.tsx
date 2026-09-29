@@ -33,10 +33,11 @@ export default async function PlayerProfilePage({
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-2xl font-bold">{player.name}</h1>
-            {player.isVerified && <VerifiedBadge label="Notable Player" />}
+            {player.isVerified && <VerifiedBadge label="Notable Player" variant="player" />}
           </div>
           {player.bio && <p className="mt-2 max-w-xl text-neutral-700 dark:text-neutral-300">{player.bio}</p>}
           <div className="mt-3 flex flex-wrap gap-3 text-sm">
+            {player.gameUid && <span className="text-neutral-500">BGMI UID: {player.gameUid}</span>}
             {player.discordHandle && <span className="text-neutral-500">Discord: {player.discordHandle}</span>}
             {player.twitterUrl && (
               <a href={player.twitterUrl} target="_blank" rel="noreferrer" className="text-orange-400 hover:underline">

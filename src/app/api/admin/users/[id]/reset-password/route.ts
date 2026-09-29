@@ -18,7 +18,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
     const passwordHash = await hashPassword(newPassword);
-    await prisma.user.update({ where: { id }, data: { passwordHash } });
+    // Bumping sessionVersion invalidates any cookie this user already has —
+    // an admin-forced reset should log them out everywhere immediately.
+    await prisma.user.update({
+      where: { id },
+      data: { passwordHash, sessionVersion: { increment: 1 }, failedLoginAttempts: 0, lockedUntil: null },
+    });
 
     return NextResponse.json({ ok: true });
   } catch (err) {

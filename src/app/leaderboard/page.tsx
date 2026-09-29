@@ -74,7 +74,7 @@ export default async function LeaderboardPage() {
                   <span className="w-8 text-center text-lg font-bold text-orange-400">{medal(i)}</span>
                   <Avatar name={row.user.name} src={row.user.avatarUrl} size={32} />
                   <span className="flex-1 font-medium">
-                    {row.user.name} {row.user.isVerified && <VerifiedBadge label="Notable" />}
+                    {row.user.name} {row.user.isVerified && <VerifiedBadge label="Notable" variant="player" />}
                   </span>
                   <span className="text-sm text-neutral-400">{row.count} tournaments</span>
                 </Link>
@@ -101,7 +101,7 @@ export default async function LeaderboardPage() {
                     <span className="w-8 text-center text-lg font-bold text-amber-400">{medal(i)}</span>
                     <Avatar name={displayName} src={row.user.avatarUrl} size={32} />
                     <span className="flex-1 font-medium">
-                      {displayName} {row.user.isVerified && <VerifiedBadge label="Verified" />}
+                      {displayName} {row.user.isVerified && <VerifiedBadge label="Verified" variant="organizer" />}
                     </span>
                     <span className="text-sm text-neutral-400">{row.count} tournaments hosted</span>
                   </Link>

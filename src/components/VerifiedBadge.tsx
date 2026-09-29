@@ -1,16 +1,22 @@
-export default function VerifiedBadge({ label = "Verified" }: { label?: string }) {
+const VARIANT_STYLES = {
+  organizer: { dot: "bg-emerald-500", text: "text-emerald-700 dark:text-emerald-300", bg: "bg-emerald-100 dark:bg-emerald-900/40" },
+  player: { dot: "bg-blue-500", text: "text-blue-700 dark:text-blue-300", bg: "bg-blue-100 dark:bg-blue-900/40" },
+} as const;
+
+export default function VerifiedBadge({
+  label = "Verified",
+  variant = "player",
+}: {
+  label?: string;
+  variant?: keyof typeof VARIANT_STYLES;
+}) {
+  const styles = VARIANT_STYLES[variant];
   return (
     <span
       title={label}
-      className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-900/40 dark:text-blue-300"
+      className={`inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-xs font-medium ${styles.bg} ${styles.text}`}
     >
-      <svg viewBox="0 0 20 20" fill="currentColor" className="h-3.5 w-3.5">
-        <path
-          fillRule="evenodd"
-          d="M10 1.5l2.09 1.26 2.43-.3 1.03 2.22 2.22 1.03-.3 2.43L19 10l-1.53 2.09.3 2.43-2.22 1.03-1.03 2.22-2.43-.3L10 18.5l-2.09-1.53-2.43.3-1.03-2.22-2.22-1.03.3-2.43L1.5 10l1.53-2.09-.3-2.43 2.22-1.03L6 2.23l2.43.3L10 1.5zm3.28 6.53a.75.75 0 00-1.06-1.06L9 10.19 7.28 8.47a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.06 0l3.75-3.75z"
-          clipRule="evenodd"
-        />
-      </svg>
+      <span className={`h-1.5 w-1.5 rounded-full ${styles.dot}`} aria-hidden="true" />
       {label}
     </span>
   );
