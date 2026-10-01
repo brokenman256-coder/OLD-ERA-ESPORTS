@@ -9,9 +9,13 @@ export async function GET(req: NextRequest) {
     await requireRole(ROLES.ADMIN);
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status");
+    const tournamentId = searchParams.get("tournamentId");
 
     const registrations = await prisma.registration.findMany({
-      where: status ? { status } : {},
+      where: {
+        ...(status ? { status } : {}),
+        ...(tournamentId ? { tournamentId } : {}),
+      },
       orderBy: { createdAt: "desc" },
       include: { player: true, tournament: { include: { organizer: true } } },
     });

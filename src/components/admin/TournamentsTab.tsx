@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import StatusBadge from "@/components/StatusBadge";
 import RoomDetailsForm from "@/components/RoomDetailsForm";
+import TournamentEntriesPanel from "@/components/admin/TournamentEntriesPanel";
 
 interface Tournament {
   id: string;
@@ -38,6 +39,8 @@ export default function TournamentsTab() {
   const [originalsOnly, setOriginalsOnly] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [entriesId, setEntriesId] = useState<string | null>(null);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   async function load() {
     const qs = filter === "ALL" ? "" : `?status=${filter}`;
@@ -69,6 +72,17 @@ export default function TournamentsTab() {
     if (!window.confirm("Delete this tournament permanently?")) return;
     await fetch(`/api/tournaments/${id}`, { method: "DELETE" });
     load();
+  }
+
+  async function copyLink(id: string) {
+    const url = `${window.location.origin}/tournaments/${id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      window.prompt("Copy this registration link:", url);
+    }
+    setCopiedId(id);
+    setTimeout(() => setCopiedId((prev) => (prev === id ? null : prev)), 2000);
   }
 
   const visibleTournaments = originalsOnly
@@ -174,6 +188,22 @@ export default function TournamentsTab() {
                 >
                   {editingId === t.id ? "Close editor" : "Edit"}
                 </button>
+                {t.status === "APPROVED" && (
+                  <button
+                    onClick={() => setEntriesId(entriesId === t.id ? null : t.id)}
+                    className="rounded-md border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-medium text-neutral-300 transition hover:bg-white/10 hover:text-white"
+                  >
+                    {entriesId === t.id ? "Hide entries" : `View entries (${t.registrationCount})`}
+                  </button>
+                )}
+                {t.status === "APPROVED" && (
+                  <button
+                    onClick={() => copyLink(t.id)}
+                    className="rounded-md border border-orange-500/30 bg-orange-500/10 px-3 py-1.5 text-sm font-medium text-orange-400 transition hover:bg-orange-500/20"
+                  >
+                    {copiedId === t.id ? "Link copied!" : "Copy registration link"}
+                  </button>
+                )}
                 <button
                   onClick={() => remove(t.id)}
                   className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-sm font-medium text-red-400 transition hover:bg-red-500/20"
@@ -185,6 +215,8 @@ export default function TournamentsTab() {
               {editingId === t.id && (
                 <EditTournamentInline tournament={t} onSaved={() => { setEditingId(null); load(); }} />
               )}
+
+              {entriesId === t.id && <TournamentEntriesPanel tournamentId={t.id} />}
 
               {t.status === "APPROVED" && (
                 <RoomDetailsForm
