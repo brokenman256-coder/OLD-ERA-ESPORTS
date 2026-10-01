@@ -12,6 +12,7 @@ interface Registration {
   squadMembers: { name: string; gameId: string; instagram?: string }[] | null;
   paymentProof: string | null;
   utrNumber: string | null;
+  payerUpiId: string | null;
   resultProof: string | null;
   status: string;
   reviewNote: string | null;
@@ -105,6 +106,11 @@ export default function RegistrationsTab() {
                   {r.utrNumber && (
                     <p className="mt-1 text-sm">
                       UTR: <span className="font-mono font-semibold text-orange-400">{r.utrNumber}</span>
+                    </p>
+                  )}
+                  {r.payerUpiId && (
+                    <p className="mt-1 text-sm">
+                      Paid from: <span className="font-mono font-semibold text-orange-400">{r.payerUpiId}</span>
                     </p>
                   )}
                 </div>

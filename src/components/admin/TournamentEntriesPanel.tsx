@@ -12,6 +12,7 @@ interface Entry {
   squadMembers: { name: string; gameId: string; instagram?: string }[] | null;
   paymentProof: string | null;
   utrNumber: string | null;
+  payerUpiId: string | null;
   status: string;
   reviewNote: string | null;
   player?: { name: string; email: string };
@@ -101,6 +102,11 @@ export default function TournamentEntriesPanel({ tournamentId }: { tournamentId:
                   {e.utrNumber && (
                     <p className="mt-0.5 text-xs text-neutral-500">
                       UTR: <span className="font-mono font-semibold text-orange-400">{e.utrNumber}</span>
+                    </p>
+                  )}
+                  {e.payerUpiId && (
+                    <p className="mt-0.5 text-xs text-neutral-500">
+                      Paid from: <span className="font-mono font-semibold text-orange-400">{e.payerUpiId}</span>
                     </p>
                   )}
                 </div>

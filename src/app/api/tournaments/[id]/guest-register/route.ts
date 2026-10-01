@@ -71,6 +71,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       paymentProof = await savePaymentScreenshot(proofFile);
     }
     const utrNumber = String(form.get("utrNumber") ?? "").trim() || null;
+    const payerUpiId = String(form.get("payerUpiId") ?? "").trim() || null;
 
     if (tournament.entryFee > 0 && !paymentProof) {
       return NextResponse.json({ error: "Please upload a payment screenshot for the entry fee" }, { status: 400 });
@@ -80,6 +81,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         { error: "Please enter the UTR / transaction reference number for your payment" },
         { status: 400 }
       );
+    }
+    if (tournament.entryFee > 0 && !payerUpiId) {
+      return NextResponse.json({ error: "Please enter the UPI ID you paid from" }, { status: 400 });
     }
 
     const guestEmail = `guest-${normalizedPhone}@vantix.guest`;
@@ -117,6 +121,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         squadMembers,
         paymentProof,
         utrNumber,
+        payerUpiId,
         status: tournament.entryFee > 0 ? APPROVAL.PENDING : APPROVAL.APPROVED,
       },
     });

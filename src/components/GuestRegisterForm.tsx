@@ -38,6 +38,7 @@ export default function GuestRegisterForm({
   const [instagramHandle, setInstagramHandle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [utrNumber, setUtrNumber] = useState("");
+  const [payerUpiId, setPayerUpiId] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
@@ -70,6 +71,10 @@ export default function GuestRegisterForm({
       setError("Please enter the UTR / transaction reference number for your payment.");
       return;
     }
+    if (entryFee > 0 && !payerUpiId.trim()) {
+      setError("Please enter the UPI ID you paid from.");
+      return;
+    }
 
     setLoading(true);
     const form = new FormData();
@@ -85,6 +90,7 @@ export default function GuestRegisterForm({
     );
     if (file) form.set("paymentProof", file);
     if (utrNumber.trim()) form.set("utrNumber", utrNumber.trim());
+    if (payerUpiId.trim()) form.set("payerUpiId", payerUpiId.trim());
 
     const res = await fetch(`/api/tournaments/${tournamentId}/guest-register`, {
       method: "POST",
@@ -225,9 +231,19 @@ export default function GuestRegisterForm({
             placeholder="e.g. 123456789012"
             className={inputClass}
           />
+
+          <label className="mt-3 block text-sm font-medium">Your UPI ID (the one you paid from) — required</label>
+          <input
+            value={payerUpiId}
+            onChange={(e) => setPayerUpiId(e.target.value)}
+            placeholder="yourname@upi"
+            className={inputClass}
+          />
+
           <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
-            Upload a screenshot of your ₹{entryFee} payment and enter the UTR number from your
-            UPI app. Our admin will verify it manually before your registration is confirmed.
+            Upload a screenshot of your ₹{entryFee} payment, enter the UTR number from your UPI
+            app, and the UPI ID you paid from. Our admin will verify it manually before your
+            registration is confirmed.
           </p>
         </div>
       )}

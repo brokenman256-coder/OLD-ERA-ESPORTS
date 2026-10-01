@@ -80,6 +80,7 @@ export function publicRegistration(r: Registration & { player?: User; team?: Tea
     squadMembers: r.squadMembers,
     paymentProof: r.paymentProof,
     utrNumber: r.utrNumber,
+    payerUpiId: r.payerUpiId,
     resultProof: r.resultProof,
     paidWithWallet: r.paidWithWallet,
     status: r.status,

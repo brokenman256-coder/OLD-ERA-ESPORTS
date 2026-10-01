@@ -164,6 +164,7 @@ model Registration {
   resultProof   String? // screenshot of the match end result, submitted by the player after the match
   paidWithWallet Boolean @default(false)
   utrNumber      String? // UPI transaction reference number, collected as payment proof alongside/instead of a screenshot
+  payerUpiId     String? // the UPI ID the payer paid FROM, collected on the no-login/guest registration form for reconciliation
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
