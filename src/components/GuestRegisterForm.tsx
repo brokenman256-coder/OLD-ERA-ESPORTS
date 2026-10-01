@@ -11,13 +11,14 @@ interface SquadMember {
   name: string;
   gameId: string;
   instagram: string;
+  whatsapp: string;
 }
 
 const EMPTY_SQUAD: SquadMember[] = [
-  { name: "", gameId: "", instagram: "" },
-  { name: "", gameId: "", instagram: "" },
-  { name: "", gameId: "", instagram: "" },
-  { name: "", gameId: "", instagram: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
 ];
 
 const inputClass = "mt-1 w-full rounded-md premium-input px-3 py-2";
@@ -59,8 +60,8 @@ export default function GuestRegisterForm({
       setError("A valid contact email is required.");
       return;
     }
-    if (squad.some((m) => !m.name.trim() || !m.gameId.trim() || !m.instagram.trim())) {
-      setError("Please fill in the name, in-game ID, and Instagram ID for all 4 squad members.");
+    if (squad.some((m) => !m.name.trim() || !m.gameId.trim() || !m.instagram.trim() || !m.whatsapp.trim())) {
+      setError("Please fill in the name, in-game ID, Instagram ID, and WhatsApp number for all 4 squad members.");
       return;
     }
     if (entryFee > 0 && !file) {
@@ -85,7 +86,12 @@ export default function GuestRegisterForm({
     form.set(
       "squadMembers",
       JSON.stringify(
-        squad.map((m) => ({ name: m.name.trim(), gameId: m.gameId.trim(), instagram: m.instagram.trim() }))
+        squad.map((m) => ({
+          name: m.name.trim(),
+          gameId: m.gameId.trim(),
+          instagram: m.instagram.trim(),
+          whatsapp: m.whatsapp.trim(),
+        }))
       )
     );
     if (file) form.set("paymentProof", file);
@@ -122,7 +128,7 @@ export default function GuestRegisterForm({
       <h3 className="text-lg font-bold">Register for this tournament</h3>
       <p className="text-sm text-neutral-500">
         No account needed — just fill this in. Every registration must list all 4 squad members
-        (with their Instagram ID), a WhatsApp number, and an email so we can reach you.
+        with each player&apos;s WhatsApp number and Instagram ID, plus a team email.
       </p>
 
       <div>
@@ -130,37 +136,48 @@ export default function GuestRegisterForm({
         <input value={teamName} onChange={(e) => setTeamName(e.target.value)} className={inputClass} />
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <label className="block text-sm font-medium">Squad — all 4 players required</label>
         {squad.map((member, i) => (
-          <div key={i} className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            <input
-              value={member.name}
-              onChange={(e) => updateMember(i, "name", e.target.value)}
-              placeholder={`Player ${i + 1} name`}
-              required
-              className={inputClass}
-            />
-            <input
-              value={member.gameId}
-              onChange={(e) => updateMember(i, "gameId", e.target.value)}
-              placeholder={`Player ${i + 1} in-game UID`}
-              required
-              className={inputClass}
-            />
-            <input
-              value={member.instagram}
-              onChange={(e) => updateMember(i, "instagram", e.target.value)}
-              placeholder={`Player ${i + 1} Instagram ID`}
-              required
-              className={inputClass}
-            />
+          <div key={i} className="space-y-2 rounded-md border border-white/10 p-3">
+            <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">Player {i + 1}</p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <input
+                value={member.name}
+                onChange={(e) => updateMember(i, "name", e.target.value)}
+                placeholder="Name"
+                required
+                className={inputClass}
+              />
+              <input
+                value={member.gameId}
+                onChange={(e) => updateMember(i, "gameId", e.target.value)}
+                placeholder="In-game UID"
+                required
+                className={inputClass}
+              />
+              <input
+                value={member.whatsapp}
+                onChange={(e) => updateMember(i, "whatsapp", e.target.value)}
+                placeholder="WhatsApp number"
+                type="tel"
+                required
+                className={inputClass}
+              />
+              <input
+                value={member.instagram}
+                onChange={(e) => updateMember(i, "instagram", e.target.value)}
+                placeholder="Instagram ID"
+                required
+                className={inputClass}
+              />
+            </div>
           </div>
         ))}
       </div>
 
       <div>
-        <label className="block text-sm font-medium">WhatsApp number</label>
+        <label className="block text-sm font-medium">Team contact WhatsApp number</label>
         <input
           type="tel"
           value={contactPhone}

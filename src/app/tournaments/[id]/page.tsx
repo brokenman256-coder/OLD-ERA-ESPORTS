@@ -223,6 +223,32 @@ export default async function TournamentDetailPage({
               Registration closes {new Date(tournament.registrationDeadline).toLocaleString()}
             </p>
           )}
+
+          {tournament.status === APPROVAL.APPROVED &&
+            (tournament.roomId || tournament.roomPassword || tournament.roomLink) && (
+              <div className="mb-4 rounded-md border border-orange-800 bg-orange-950 p-4">
+                <p className="text-sm font-semibold text-orange-300">Match ID, password &amp; link</p>
+                {tournament.roomId && (
+                  <p className="mt-1 text-sm text-orange-200">
+                    Room ID: <span className="font-mono font-semibold">{tournament.roomId}</span>
+                  </p>
+                )}
+                {tournament.roomPassword && (
+                  <p className="mt-1 text-sm text-orange-200">
+                    Password: <span className="font-mono font-semibold">{tournament.roomPassword}</span>
+                  </p>
+                )}
+                {tournament.roomLink && (
+                  <p className="mt-1 text-sm text-orange-200">
+                    Link:{" "}
+                    <a href={tournament.roomLink} target="_blank" rel="noreferrer" className="font-semibold underline">
+                      {tournament.roomLink}
+                    </a>
+                  </p>
+                )}
+              </div>
+            )}
+
           {tournament.status !== APPROVAL.APPROVED ? null : !user ? (
             tournament.allowGuestRegistration ? (
               registrationClosed ? (
@@ -266,23 +292,6 @@ export default async function TournamentDetailPage({
                   Admin note: {existingRegistration.reviewNote}
                 </p>
               )}
-
-              {existingRegistration.status === APPROVAL.APPROVED &&
-                (tournament.roomId || tournament.roomPassword) && (
-                  <div className="mt-4 rounded-md border border-orange-800 bg-orange-950 p-4">
-                    <p className="text-sm font-semibold text-orange-300">Room details</p>
-                    {tournament.roomId && (
-                      <p className="mt-1 text-sm text-orange-200">
-                        Room ID: <span className="font-mono font-semibold">{tournament.roomId}</span>
-                      </p>
-                    )}
-                    {tournament.roomPassword && (
-                      <p className="mt-1 text-sm text-orange-200">
-                        Password: <span className="font-mono font-semibold">{tournament.roomPassword}</span>
-                      </p>
-                    )}
-                  </div>
-                )}
 
               {existingRegistration.status === APPROVAL.APPROVED &&
                 matchStarted &&

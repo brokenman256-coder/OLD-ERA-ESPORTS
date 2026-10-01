@@ -51,7 +51,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     const instagramHandle = String(form.get("instagramHandle") ?? "").trim() || null;
 
-    let squadMembers: { name: string; gameId: string; instagram: string }[];
+    let squadMembers: { name: string; gameId: string; instagram: string; whatsapp: string }[];
     try {
       squadMembers = JSON.parse(String(form.get("squadMembers") ?? "[]"));
     } catch {
@@ -60,10 +60,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (
       !Array.isArray(squadMembers) ||
       squadMembers.length !== 4 ||
-      squadMembers.some((m) => !m?.name?.trim() || !m?.gameId?.trim() || !m?.instagram?.trim())
+      squadMembers.some(
+        (m) => !m?.name?.trim() || !m?.gameId?.trim() || !m?.instagram?.trim() || !m?.whatsapp?.trim()
+      )
     ) {
       return NextResponse.json(
-        { error: "Please provide the name, in-game ID, and Instagram ID for all 4 squad members" },
+        { error: "Please provide the name, in-game ID, Instagram ID, and WhatsApp number for all 4 squad members" },
         { status: 400 }
       );
     }

@@ -115,6 +115,7 @@ model Tournament {
 
   roomId       String? // custom-match room ID, shared with approved players before start
   roomPassword String?
+  roomLink     String? // optional match/stream/group link shown alongside the room ID & password
 
   // Per-tournament payment override — when set, shown on the registration form
   // instead of the site-wide player UPI ID / QR code.

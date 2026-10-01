@@ -27,6 +27,7 @@ interface Tournament {
   organizer?: { name: string; firmName: string | null };
   roomId: string | null;
   roomPassword: string | null;
+  roomLink: string | null;
   paymentUpiId: string | null;
   paymentQrUrl: string | null;
   allowGuestRegistration: boolean;
@@ -231,6 +232,7 @@ export default function TournamentsTab() {
                   tournamentId={t.id}
                   initialRoomId={t.roomId}
                   initialRoomPassword={t.roomPassword}
+                  initialRoomLink={t.roomLink}
                 />
               )}
             </div>

@@ -20,11 +20,16 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
 
   const roomId = typeof body.roomId === "string" ? body.roomId.trim() || null : undefined;
   const roomPassword = typeof body.roomPassword === "string" ? body.roomPassword.trim() || null : undefined;
+  const roomLink = typeof body.roomLink === "string" ? body.roomLink.trim() || null : undefined;
 
   const updated = await prisma.tournament.update({
     where: { id },
-    data: { ...(roomId !== undefined && { roomId }), ...(roomPassword !== undefined && { roomPassword }) },
+    data: {
+      ...(roomId !== undefined && { roomId }),
+      ...(roomPassword !== undefined && { roomPassword }),
+      ...(roomLink !== undefined && { roomLink }),
+    },
   });
 
-  return NextResponse.json({ roomId: updated.roomId, roomPassword: updated.roomPassword });
+  return NextResponse.json({ roomId: updated.roomId, roomPassword: updated.roomPassword, roomLink: updated.roomLink });
 }

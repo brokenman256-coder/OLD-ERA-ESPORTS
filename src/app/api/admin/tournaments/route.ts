@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
         organizerEmail: t.organizer.email,
         roomId: t.roomId,
         roomPassword: t.roomPassword,
+        roomLink: t.roomLink,
       })),
     });
   } catch (err) {
