@@ -9,7 +9,7 @@ interface Entry {
   contactPhone: string | null;
   contactEmail: string | null;
   instagramHandle: string | null;
-  squadMembers: { name: string; gameId: string }[] | null;
+  squadMembers: { name: string; gameId: string; instagram?: string }[] | null;
   paymentProof: string | null;
   utrNumber: string | null;
   status: string;
@@ -111,7 +111,7 @@ export default function TournamentEntriesPanel({ tournamentId }: { tournamentId:
                 <div className="mt-2 grid grid-cols-2 gap-1 text-xs text-neutral-600 dark:text-neutral-400 sm:grid-cols-4">
                   {e.squadMembers.map((m, i) => (
                     <p key={i}>
-                      P{i + 1}: {m.name} ({m.gameId})
+                      P{i + 1}: {m.name} ({m.gameId}){m.instagram ? ` — ${m.instagram}` : ""}
                     </p>
                   ))}
                 </div>

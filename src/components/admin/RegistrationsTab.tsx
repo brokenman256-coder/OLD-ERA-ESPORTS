@@ -9,7 +9,7 @@ interface Registration {
   contactPhone: string | null;
   contactEmail: string | null;
   instagramHandle: string | null;
-  squadMembers: { name: string; gameId: string }[] | null;
+  squadMembers: { name: string; gameId: string; instagram?: string }[] | null;
   paymentProof: string | null;
   utrNumber: string | null;
   resultProof: string | null;
@@ -115,7 +115,7 @@ export default function RegistrationsTab() {
                 <div className="mt-3 grid grid-cols-2 gap-1 text-sm text-neutral-600 dark:text-neutral-400 sm:grid-cols-4">
                   {r.squadMembers.map((m, i) => (
                     <p key={i}>
-                      P{i + 1}: {m.name} ({m.gameId})
+                      P{i + 1}: {m.name} ({m.gameId}){m.instagram ? ` — ${m.instagram}` : ""}
                     </p>
                   ))}
                 </div>

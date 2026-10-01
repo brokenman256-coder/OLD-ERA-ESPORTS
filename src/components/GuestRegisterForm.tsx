@@ -10,13 +10,14 @@ interface TournamentPayment {
 interface SquadMember {
   name: string;
   gameId: string;
+  instagram: string;
 }
 
 const EMPTY_SQUAD: SquadMember[] = [
-  { name: "", gameId: "" },
-  { name: "", gameId: "" },
-  { name: "", gameId: "" },
-  { name: "", gameId: "" },
+  { name: "", gameId: "", instagram: "" },
+  { name: "", gameId: "", instagram: "" },
+  { name: "", gameId: "", instagram: "" },
+  { name: "", gameId: "", instagram: "" },
 ];
 
 const inputClass = "mt-1 w-full rounded-md premium-input px-3 py-2";
@@ -57,12 +58,8 @@ export default function GuestRegisterForm({
       setError("A valid contact email is required.");
       return;
     }
-    if (!instagramHandle.trim()) {
-      setError("An Instagram handle is required.");
-      return;
-    }
-    if (squad.some((m) => !m.name.trim() || !m.gameId.trim())) {
-      setError("Please fill in the name and in-game ID for all 4 squad members.");
+    if (squad.some((m) => !m.name.trim() || !m.gameId.trim() || !m.instagram.trim())) {
+      setError("Please fill in the name, in-game ID, and Instagram ID for all 4 squad members.");
       return;
     }
     if (entryFee > 0 && !file) {
@@ -79,8 +76,13 @@ export default function GuestRegisterForm({
     if (teamName.trim()) form.set("teamName", teamName.trim());
     form.set("contactPhone", contactPhone.trim());
     form.set("contactEmail", contactEmail.trim());
-    form.set("instagramHandle", instagramHandle.trim());
-    form.set("squadMembers", JSON.stringify(squad.map((m) => ({ name: m.name.trim(), gameId: m.gameId.trim() }))));
+    if (instagramHandle.trim()) form.set("instagramHandle", instagramHandle.trim());
+    form.set(
+      "squadMembers",
+      JSON.stringify(
+        squad.map((m) => ({ name: m.name.trim(), gameId: m.gameId.trim(), instagram: m.instagram.trim() }))
+      )
+    );
     if (file) form.set("paymentProof", file);
     if (utrNumber.trim()) form.set("utrNumber", utrNumber.trim());
 
@@ -114,7 +116,7 @@ export default function GuestRegisterForm({
       <h3 className="text-lg font-bold">Register for this tournament</h3>
       <p className="text-sm text-neutral-500">
         No account needed — just fill this in. Every registration must list all 4 squad members
-        and a contact number.
+        (with their Instagram ID), a WhatsApp number, and an email so we can reach you.
       </p>
 
       <div>
@@ -125,7 +127,7 @@ export default function GuestRegisterForm({
       <div className="space-y-3">
         <label className="block text-sm font-medium">Squad — all 4 players required</label>
         {squad.map((member, i) => (
-          <div key={i} className="grid grid-cols-2 gap-3">
+          <div key={i} className="grid grid-cols-1 gap-3 sm:grid-cols-3">
             <input
               value={member.name}
               onChange={(e) => updateMember(i, "name", e.target.value)}
@@ -140,12 +142,19 @@ export default function GuestRegisterForm({
               required
               className={inputClass}
             />
+            <input
+              value={member.instagram}
+              onChange={(e) => updateMember(i, "instagram", e.target.value)}
+              placeholder={`Player ${i + 1} Instagram ID`}
+              required
+              className={inputClass}
+            />
           </div>
         ))}
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Contact phone number</label>
+        <label className="block text-sm font-medium">WhatsApp number</label>
         <input
           type="tel"
           value={contactPhone}
@@ -153,6 +162,7 @@ export default function GuestRegisterForm({
           required
           className={inputClass}
         />
+        <p className="mt-1 text-xs text-neutral-500">We&apos;ll reach you here with match info and your room ID.</p>
       </div>
 
       <div>
@@ -167,12 +177,11 @@ export default function GuestRegisterForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium">Instagram handle</label>
+        <label className="block text-sm font-medium">Team / page Instagram (optional)</label>
         <input
           value={instagramHandle}
           onChange={(e) => setInstagramHandle(e.target.value)}
           placeholder="@yourusername"
-          required
           className={inputClass}
         />
       </div>
