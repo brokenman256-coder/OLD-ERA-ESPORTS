@@ -90,7 +90,7 @@ export default async function TournamentDetailPage({
         <img
           src={tournament.bannerUrl}
           alt=""
-          className="h-56 w-full object-cover sm:h-72"
+          className="h-80 w-full bg-black object-contain sm:h-[32rem]"
         />
       )}
 

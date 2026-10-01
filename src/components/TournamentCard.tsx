@@ -53,7 +53,7 @@ export default function TournamentCard({ t, badge }: { t: CardTournament; badge?
       <div className="relative">
         {t.bannerUrl ? (
           // eslint-disable-next-line @next/next/no-img-element -- arbitrary-sized user-uploaded banner
-          <img src={t.bannerUrl} alt="" className="h-32 w-full object-cover" />
+          <img src={t.bannerUrl} alt="" className="h-32 w-full bg-black object-contain" />
         ) : (
           <div className={`flex h-32 w-full items-center justify-center bg-gradient-to-br text-4xl ${gradientFor(t.game)}`}>
             {gameIcon(t.game)}
