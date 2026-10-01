@@ -87,20 +87,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Entry fee must be a non-negative number" }, { status: 400 });
     }
 
+    const isAdmin = user.role === ROLES.ADMIN;
+
     const settings = await prisma.siteSettings.upsert({
       where: { id: "global" },
       update: {},
       create: { id: "global" },
     });
-    const hostingFee = settings.hostingFeeAmount;
+    // A first-party tournament posted by an admin doesn't pay a hosting fee to
+    // itself — skip the gate entirely and publish it live, the same way bot
+    // postings work.
+    const hostingFee = isAdmin ? 0 : settings.hostingFeeAmount;
 
     const payHostingFeeWithWallet = form.get("payHostingFeeWithWallet") === "true";
 
     let hostingFeeProof: string | null = null;
     let hostingFeePaidWithWallet = false;
-    let hostingFeeVerified = false;
+    let hostingFeeVerified = isAdmin;
 
-    if (hostingFee > 0 && payHostingFeeWithWallet) {
+    if (isAdmin) {
+      // no-op — hosting fee waived
+    } else if (hostingFee > 0 && payHostingFeeWithWallet) {
       try {
         await debitWallet(user.id, hostingFee, "HOSTING_FEE_PAYMENT", `Hosting fee for "${title}"`);
       } catch (err) {
@@ -130,6 +137,9 @@ export async function POST(req: NextRequest) {
       bannerUrl = await saveTournamentBanner(bannerFile);
     }
 
+    const paymentUpiId = isAdmin && form.get("paymentUpiId") ? String(form.get("paymentUpiId")).trim() : null;
+    const allowGuestRegistration = isAdmin && form.get("allowGuestRegistration") === "true";
+
     const tournament = await prisma.tournament.create({
       data: {
         title,
@@ -151,7 +161,9 @@ export async function POST(req: NextRequest) {
         hostingFeeProof,
         hostingFeePaidWithWallet,
         hostingFeeVerified,
-        status: APPROVAL.PENDING,
+        paymentUpiId,
+        allowGuestRegistration,
+        status: isAdmin ? APPROVAL.APPROVED : APPROVAL.PENDING,
       },
     });
 
