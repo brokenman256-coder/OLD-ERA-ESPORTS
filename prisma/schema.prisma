@@ -33,6 +33,7 @@ model User {
   gameUid       String? // BGMI in-game UID, collected at signup for player identity verification
   isVerified    Boolean  @default(false) // verified-organizer / notable-player badge
   isBot         Boolean  @default(false) // system-controlled account (tournament/registration bots); admin-visible only
+  isGuest       Boolean  @default(false) // auto-created for a no-login quick registration; admin-visible only, can't log in meaningfully
 
   // Login hardening: lock the account out after repeated bad passwords instead
   // of allowing unlimited guesses.
@@ -112,6 +113,15 @@ model Tournament {
   roomId       String? // custom-match room ID, shared with approved players before start
   roomPassword String?
 
+  // Per-tournament payment override — when set, shown on the registration form
+  // instead of the site-wide player UPI ID / QR code.
+  paymentUpiId String?
+  paymentQrUrl String?
+  // Lets anyone register without an account (phone + squad info only), for
+  // tournaments meant to be shared as a public link. Off by default — regular
+  // tournaments still require a player account.
+  allowGuestRegistration Boolean @default(false)
+
   organizerId String
   organizer   User   @relation("OrganizerTournaments", fields: [organizerId], references: [id], onDelete: Cascade)
   // Optional override shown as "hosted by" instead of organizer.firmName/name — lets
@@ -151,6 +161,7 @@ model Registration {
   squadMembers  Json?   // array of exactly 4 { name, gameId } entries
   resultProof   String? // screenshot of the match end result, submitted by the player after the match
   paidWithWallet Boolean @default(false)
+  utrNumber      String? // UPI transaction reference number, collected as payment proof alongside/instead of a screenshot
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

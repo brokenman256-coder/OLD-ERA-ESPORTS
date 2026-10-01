@@ -20,6 +20,7 @@ export function publicUser(user: User) {
     // Admin-only field (publicUser() is only ever consumed by /api/admin/users
     // routes) — never surface this on player/organizer-facing endpoints.
     isBot: user.isBot,
+    isGuest: user.isGuest,
     walletBalance: user.walletBalance,
     createdAt: user.createdAt,
   };
@@ -51,6 +52,9 @@ export function publicTournament(t: Tournament & { organizer?: User }) {
     createdAt: t.createdAt,
     organizerId: t.organizerId,
     organizerDisplayName: t.organizerDisplayName,
+    paymentUpiId: t.paymentUpiId,
+    paymentQrUrl: t.paymentQrUrl,
+    allowGuestRegistration: t.allowGuestRegistration,
     organizer: t.organizer
       ? {
           id: t.organizer.id,
@@ -73,6 +77,7 @@ export function publicRegistration(r: Registration & { player?: User; team?: Tea
     contactPhone: r.contactPhone,
     squadMembers: r.squadMembers,
     paymentProof: r.paymentProof,
+    utrNumber: r.utrNumber,
     resultProof: r.resultProof,
     paidWithWallet: r.paidWithWallet,
     status: r.status,

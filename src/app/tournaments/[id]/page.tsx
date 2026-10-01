@@ -6,6 +6,7 @@ import { APPROVAL, ROLES, TOURNAMENT_FORMAT_LABELS } from "@/lib/constants";
 import { gameIcon } from "@/lib/gameIcons";
 import StatusBadge from "@/components/StatusBadge";
 import RegisterForm from "@/components/RegisterForm";
+import GuestRegisterForm from "@/components/GuestRegisterForm";
 import ResultSubmitForm from "@/components/ResultSubmitForm";
 import Countdown from "@/components/Countdown";
 import TagPills from "@/components/TagPills";
@@ -213,18 +214,30 @@ export default async function TournamentDetailPage({
 
         <div className="mt-10">
           {tournament.status !== APPROVAL.APPROVED ? null : !user ? (
-            <div className="glass-panel clip-corner p-6 text-center">
-              <p>
-                <Link href="/login" className="font-medium text-orange-400 hover:underline">
-                  Log in
-                </Link>{" "}
-                or{" "}
-                <Link href="/register" className="font-medium text-orange-400 hover:underline">
-                  sign up
-                </Link>{" "}
-                as a player to register for this tournament.
-              </p>
-            </div>
+            tournament.allowGuestRegistration ? (
+              isFull ? (
+                <p className="text-sm text-neutral-500">This tournament is full.</p>
+              ) : (
+                <GuestRegisterForm
+                  tournamentId={tournament.id}
+                  entryFee={tournament.entryFee}
+                  payment={{ paymentUpiId: tournament.paymentUpiId, paymentQrUrl: tournament.paymentQrUrl }}
+                />
+              )
+            ) : (
+              <div className="glass-panel clip-corner p-6 text-center">
+                <p>
+                  <Link href="/login" className="font-medium text-orange-400 hover:underline">
+                    Log in
+                  </Link>{" "}
+                  or{" "}
+                  <Link href="/register" className="font-medium text-orange-400 hover:underline">
+                    sign up
+                  </Link>{" "}
+                  as a player to register for this tournament.
+                </p>
+              </div>
+            )
           ) : user.role !== ROLES.PLAYER ? (
             <p className="text-sm text-neutral-500">Only player accounts can register for tournaments.</p>
           ) : existingRegistration ? (
@@ -270,7 +283,11 @@ export default async function TournamentDetailPage({
           ) : isFull ? (
             <p className="text-sm text-neutral-500">This tournament is full.</p>
           ) : (
-            <RegisterForm tournamentId={tournament.id} entryFee={tournament.entryFee} />
+            <RegisterForm
+              tournamentId={tournament.id}
+              entryFee={tournament.entryFee}
+              payment={{ paymentUpiId: tournament.paymentUpiId, paymentQrUrl: tournament.paymentQrUrl }}
+            />
           )}
         </div>
       </div>

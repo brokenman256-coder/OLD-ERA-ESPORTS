@@ -25,6 +25,9 @@ interface Tournament {
   organizer?: { name: string; firmName: string | null };
   roomId: string | null;
   roomPassword: string | null;
+  paymentUpiId: string | null;
+  paymentQrUrl: string | null;
+  allowGuestRegistration: boolean;
 }
 
 const FILTERS = ["ALL", "PENDING", "APPROVED", "REJECTED"] as const;
@@ -212,6 +215,9 @@ function EditTournamentInline({
   const [entryFee, setEntryFee] = useState(String(tournament.entryFee));
   const [hostingFee, setHostingFee] = useState(String(tournament.hostingFee));
   const [maxSlots, setMaxSlots] = useState(tournament.maxSlots ? String(tournament.maxSlots) : "");
+  const [paymentUpiId, setPaymentUpiId] = useState(tournament.paymentUpiId ?? "");
+  const [allowGuestRegistration, setAllowGuestRegistration] = useState(tournament.allowGuestRegistration);
+  const [qrUploading, setQrUploading] = useState(false);
   const [saving, setSaving] = useState(false);
 
   async function save() {
@@ -227,9 +233,22 @@ function EditTournamentInline({
         entryFee: Number(entryFee),
         hostingFee: Number(hostingFee),
         maxSlots: maxSlots ? Number(maxSlots) : null,
+        paymentUpiId,
+        allowGuestRegistration,
       }),
     });
     setSaving(false);
+    onSaved();
+  }
+
+  async function uploadQr(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setQrUploading(true);
+    const form = new FormData();
+    form.set("qr", file);
+    await fetch(`/api/admin/tournaments/${tournament.id}/payment-qr`, { method: "POST", body: form });
+    setQrUploading(false);
     onSaved();
   }
 
@@ -254,6 +273,39 @@ function EditTournamentInline({
         <input value={hostingFee} onChange={(e) => setHostingFee(e.target.value)} type="number" className={fieldClass} placeholder="Hosting fee" />
         <input value={maxSlots} onChange={(e) => setMaxSlots(e.target.value)} type="number" className={fieldClass} placeholder="Max slots" />
       </div>
+
+      <div className="rounded-md border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-900">
+        <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">
+          Payment override (optional — falls back to the site-wide player UPI/QR if blank)
+        </p>
+        <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <input
+            value={paymentUpiId}
+            onChange={(e) => setPaymentUpiId(e.target.value)}
+            className={fieldClass}
+            placeholder="UPI ID for this tournament"
+          />
+          <div className="flex items-center gap-3">
+            {tournament.paymentQrUrl && (
+              // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image
+              <img src={tournament.paymentQrUrl} alt="Payment QR" className="h-16 w-16 rounded-md border object-contain" />
+            )}
+            <label className="cursor-pointer text-sm font-medium text-orange-400 hover:underline">
+              {qrUploading ? "Uploading..." : tournament.paymentQrUrl ? "Replace QR" : "Upload QR"}
+              <input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={uploadQr} />
+            </label>
+          </div>
+        </div>
+        <label className="mt-3 flex items-center gap-2 text-sm font-medium">
+          <input
+            type="checkbox"
+            checked={allowGuestRegistration}
+            onChange={(e) => setAllowGuestRegistration(e.target.checked)}
+          />
+          Allow no-login registration (public link — phone + squad UIDs only)
+        </label>
+      </div>
+
       <button
         onClick={save}
         disabled={saving}

@@ -20,8 +20,10 @@ export async function GET(req: NextRequest) {
       registrations: registrations.map((r) => ({
         ...publicRegistration(r),
         tournament: publicTournament(r.tournament),
-        // Admin-only visibility into whether this registrant is a system bot account.
+        // Admin-only visibility into whether this registrant is a system bot account
+        // or a no-login guest registration.
         playerIsBot: r.player.isBot,
+        playerIsGuest: r.player.isGuest,
       })),
     });
   } catch (err) {

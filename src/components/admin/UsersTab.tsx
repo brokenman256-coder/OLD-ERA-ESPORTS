@@ -13,6 +13,7 @@ interface UserRow {
   isBanned: boolean;
   isVerified: boolean;
   isBot: boolean;
+  isGuest: boolean;
   createdAt: string;
 }
 
@@ -110,6 +111,11 @@ export default function UsersTab({ currentAdminId }: { currentAdminId: string })
                 {u.isBot && (
                   <span className="ml-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-400">
                     Bot
+                  </span>
+                )}
+                {u.isGuest && (
+                  <span className="ml-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-400">
+                    Guest
                   </span>
                 )}
               </td>

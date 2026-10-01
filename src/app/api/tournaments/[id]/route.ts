@@ -78,6 +78,10 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     if (typeof body.status !== "undefined") data.status = body.status;
     if (typeof body.reviewNote !== "undefined") data.reviewNote = body.reviewNote;
     if (typeof body.hostingFeeVerified !== "undefined") data.hostingFeeVerified = Boolean(body.hostingFeeVerified);
+    if (typeof body.paymentUpiId !== "undefined") data.paymentUpiId = body.paymentUpiId || null;
+    if (typeof body.allowGuestRegistration !== "undefined") {
+      data.allowGuestRegistration = Boolean(body.allowGuestRegistration);
+    }
   }
 
   // Editing a rejected tournament resets it to pending for re-review.

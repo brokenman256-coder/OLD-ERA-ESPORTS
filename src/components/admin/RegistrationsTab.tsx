@@ -9,11 +9,13 @@ interface Registration {
   contactPhone: string | null;
   squadMembers: { name: string; gameId: string }[] | null;
   paymentProof: string | null;
+  utrNumber: string | null;
   resultProof: string | null;
   status: string;
   reviewNote: string | null;
   player?: { name: string; email: string };
   playerIsBot?: boolean;
+  playerIsGuest?: boolean;
   tournament: { title: string; game: string; entryFee: number };
 }
 
@@ -87,10 +89,20 @@ export default function RegistrationsTab() {
                         Bot
                       </span>
                     )}
+                    {r.playerIsGuest && (
+                      <span className="ml-2 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-sky-400">
+                        Guest
+                      </span>
+                    )}
                     {r.teamName ? ` · Team/IGN: ${r.teamName}` : ""}
                   </p>
                   <p className="mt-1 text-sm">Entry fee: ₹{r.tournament.entryFee}</p>
                   {r.contactPhone && <p className="mt-1 text-sm">Contact: {r.contactPhone}</p>}
+                  {r.utrNumber && (
+                    <p className="mt-1 text-sm">
+                      UTR: <span className="font-mono font-semibold text-orange-400">{r.utrNumber}</span>
+                    </p>
+                  )}
                 </div>
                 <StatusBadge status={r.status} />
               </div>

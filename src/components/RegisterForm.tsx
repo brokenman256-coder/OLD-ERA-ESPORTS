@@ -16,6 +16,11 @@ interface Settings {
   playerQrCodeUrl: string | null;
 }
 
+interface TournamentPayment {
+  paymentUpiId?: string | null;
+  paymentQrUrl?: string | null;
+}
+
 interface SquadMember {
   name: string;
   gameId: string;
@@ -34,9 +39,11 @@ const inputClass =
 export default function RegisterForm({
   tournamentId,
   entryFee,
+  payment,
 }: {
   tournamentId: string;
   entryFee: number;
+  payment?: TournamentPayment;
 }) {
   const [teams, setTeams] = useState<Team[]>([]);
   const [teamId, setTeamId] = useState("");
@@ -44,6 +51,7 @@ export default function RegisterForm({
   const [squad, setSquad] = useState<SquadMember[]>(EMPTY_SQUAD);
   const [contactPhone, setContactPhone] = useState("");
   const [file, setFile] = useState<File | null>(null);
+  const [utrNumber, setUtrNumber] = useState("");
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [payWithWallet, setPayWithWallet] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -91,6 +99,10 @@ export default function RegisterForm({
       setError("Please upload a screenshot of your entry fee payment, or pay with your wallet.");
       return;
     }
+    if (entryFee > 0 && !payWithWallet && !utrNumber.trim()) {
+      setError("Please enter the UTR / transaction reference number for your payment.");
+      return;
+    }
     if (!contactPhone.trim()) {
       setError("A contact phone number is required.");
       return;
@@ -107,8 +119,9 @@ export default function RegisterForm({
     form.set("squadMembers", JSON.stringify(squad.map((m) => ({ name: m.name.trim(), gameId: m.gameId.trim() }))));
     if (payWithWallet) {
       form.set("payWithWallet", "true");
-    } else if (file) {
-      form.set("paymentProof", file);
+    } else {
+      if (file) form.set("paymentProof", file);
+      form.set("utrNumber", utrNumber.trim());
     }
 
     const res = await fetch(`/api/tournaments/${tournamentId}/register`, {
@@ -221,14 +234,21 @@ export default function RegisterForm({
           {!payWithWallet && (
             <>
               <div className="mt-2 flex flex-wrap items-center gap-4">
-                {settings?.playerUpiId && (
+                {(payment?.paymentUpiId || settings?.playerUpiId) && (
                   <p className="text-sm text-amber-800 dark:text-amber-300">
-                    UPI ID: <span className="font-mono font-semibold">{settings.playerUpiId}</span>
+                    UPI ID:{" "}
+                    <span className="font-mono font-semibold">
+                      {payment?.paymentUpiId || settings?.playerUpiId}
+                    </span>
                   </p>
                 )}
-                {settings?.playerQrCodeUrl && (
+                {(payment?.paymentQrUrl || settings?.playerQrCodeUrl) && (
                   // eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image
-                  <img src={settings.playerQrCodeUrl} alt="Payment QR code" className="h-24 w-24 rounded-md border border-amber-300 bg-white object-contain" />
+                  <img
+                    src={payment?.paymentQrUrl || settings?.playerQrCodeUrl || undefined}
+                    alt="Payment QR code"
+                    className="h-24 w-24 rounded-md border border-amber-300 bg-white object-contain"
+                  />
                 )}
               </div>
               <label className="mt-3 block text-sm font-medium">
@@ -240,9 +260,19 @@ export default function RegisterForm({
                 onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                 className="mt-1 w-full text-sm"
               />
+              <label className="mt-3 block text-sm font-medium">
+                UTR / transaction reference number — required
+              </label>
+              <input
+                value={utrNumber}
+                onChange={(e) => setUtrNumber(e.target.value)}
+                placeholder="e.g. 123456789012"
+                className={inputClass}
+              />
               <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
-                Upload a screenshot of your ₹{entryFee} payment. Our admin will verify it
-                manually before your registration is confirmed.
+                Upload a screenshot of your ₹{entryFee} payment and enter the UTR number from
+                your UPI app. Our admin will verify it manually before your registration is
+                confirmed.
               </p>
             </>
           )}

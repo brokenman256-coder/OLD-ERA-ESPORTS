@@ -78,6 +78,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     let paymentProof: string | null = null;
     let paidWithWallet = false;
+    let utrNumber: string | null = null;
 
     if (tournament.entryFee > 0 && payWithWallet) {
       try {
@@ -100,9 +101,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       if (proofFile instanceof File && proofFile.size > 0) {
         paymentProof = await savePaymentScreenshot(proofFile);
       }
+      utrNumber = String(form.get("utrNumber") ?? "").trim() || null;
       if (tournament.entryFee > 0 && !paymentProof) {
         return NextResponse.json(
           { error: "Please upload a payment screenshot for the entry fee, or pay with your wallet" },
+          { status: 400 }
+        );
+      }
+      if (tournament.entryFee > 0 && !utrNumber) {
+        return NextResponse.json(
+          { error: "Please enter the UTR / transaction reference number for your payment" },
           { status: 400 }
         );
       }
@@ -117,6 +125,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         contactPhone,
         squadMembers,
         paymentProof,
+        utrNumber,
         paidWithWallet,
         status: tournament.entryFee > 0 && !paidWithWallet ? APPROVAL.PENDING : APPROVAL.APPROVED,
       },
