@@ -44,6 +44,11 @@ export default async function TournamentDetailPage({
   }
 
   const isFull = tournament.maxSlots ? tournament._count.registrations >= tournament.maxSlots : false;
+  const registrationDeadlineMs = tournament.registrationDeadline
+    ? new Date(tournament.registrationDeadline).getTime()
+    : null;
+  // eslint-disable-next-line react-hooks/purity -- server component; freshly computed per request, not memoized
+  const registrationClosed = registrationDeadlineMs !== null && registrationDeadlineMs <= Date.now();
   // eslint-disable-next-line react-hooks/purity -- server component; freshly computed per request, not memoized
   const upcoming = new Date(tournament.startDate).getTime() > Date.now();
   // eslint-disable-next-line react-hooks/purity -- server component; freshly computed per request, not memoized
@@ -213,9 +218,16 @@ export default async function TournamentDetailPage({
         )}
 
         <div className="mt-10">
+          {tournament.status === APPROVAL.APPROVED && tournament.registrationDeadline && !registrationClosed && (
+            <p className="mb-3 text-sm font-medium text-amber-400">
+              Registration closes {new Date(tournament.registrationDeadline).toLocaleString()}
+            </p>
+          )}
           {tournament.status !== APPROVAL.APPROVED ? null : !user ? (
             tournament.allowGuestRegistration ? (
-              isFull ? (
+              registrationClosed ? (
+                <p className="text-sm text-neutral-500">Registration has closed for this tournament.</p>
+              ) : isFull ? (
                 <p className="text-sm text-neutral-500">This tournament is full.</p>
               ) : (
                 <GuestRegisterForm
@@ -280,6 +292,8 @@ export default async function TournamentDetailPage({
                 </p>
               )}
             </div>
+          ) : registrationClosed ? (
+            <p className="text-sm text-neutral-500">Registration has closed for this tournament.</p>
           ) : isFull ? (
             <p className="text-sm text-neutral-500">This tournament is full.</p>
           ) : (

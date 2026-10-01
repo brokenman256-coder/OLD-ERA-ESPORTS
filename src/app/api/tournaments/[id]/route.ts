@@ -31,6 +31,7 @@ const EDITABLE_FIELDS = [
   "maxSlots",
   "startDate",
   "endDate",
+  "registrationDeadline",
   "tags",
   "discordUrl",
   "streamUrl",
@@ -71,6 +72,9 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   if (typeof data.maxSlots !== "undefined") data.maxSlots = data.maxSlots ? Number(data.maxSlots) : null;
   if (typeof data.startDate !== "undefined") data.startDate = new Date(data.startDate as string);
   if (typeof data.endDate !== "undefined") data.endDate = data.endDate ? new Date(data.endDate as string) : null;
+  if (typeof data.registrationDeadline !== "undefined") {
+    data.registrationDeadline = data.registrationDeadline ? new Date(data.registrationDeadline as string) : null;
+  }
 
   // Only admins may directly change the platform hosting fee or status/verification/review fields.
   if (isAdmin) {

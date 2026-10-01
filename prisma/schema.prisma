@@ -103,6 +103,9 @@ model Tournament {
   maxSlots    Int?
   startDate   DateTime
   endDate     DateTime?
+  // When set, registration closes at this instant even though the tournament
+  // itself starts later — lets registration and match-start dates differ.
+  registrationDeadline DateTime?
 
   bannerUrl  String?
   tags       String? // comma-separated

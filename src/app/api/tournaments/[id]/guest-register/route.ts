@@ -22,6 +22,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!tournament.allowGuestRegistration) {
       return NextResponse.json({ error: "This tournament requires an account to register" }, { status: 403 });
     }
+    if (tournament.registrationDeadline && tournament.registrationDeadline.getTime() < Date.now()) {
+      return NextResponse.json({ error: "Registration has closed for this tournament" }, { status: 403 });
+    }
 
     if (tournament.maxSlots) {
       const count = await prisma.registration.count({

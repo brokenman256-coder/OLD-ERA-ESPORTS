@@ -17,6 +17,7 @@ interface Tournament {
   maxSlots: number | null;
   startDate: string;
   endDate: string | null;
+  registrationDeadline: string | null;
   status: string;
   reviewNote: string | null;
   hostingFeeProof: string | null;
@@ -32,6 +33,13 @@ interface Tournament {
 }
 
 const FILTERS = ["ALL", "PENDING", "APPROVED", "REJECTED"] as const;
+
+function toDatetimeLocal(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  const offsetMs = d.getTimezoneOffset() * 60000;
+  return new Date(d.getTime() - offsetMs).toISOString().slice(0, 16);
+}
 
 export default function TournamentsTab() {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
@@ -249,6 +257,9 @@ function EditTournamentInline({
   const [maxSlots, setMaxSlots] = useState(tournament.maxSlots ? String(tournament.maxSlots) : "");
   const [paymentUpiId, setPaymentUpiId] = useState(tournament.paymentUpiId ?? "");
   const [allowGuestRegistration, setAllowGuestRegistration] = useState(tournament.allowGuestRegistration);
+  const [registrationDeadline, setRegistrationDeadline] = useState(
+    toDatetimeLocal(tournament.registrationDeadline)
+  );
   const [qrUploading, setQrUploading] = useState(false);
   const [saving, setSaving] = useState(false);
 
@@ -267,6 +278,7 @@ function EditTournamentInline({
         maxSlots: maxSlots ? Number(maxSlots) : null,
         paymentUpiId,
         allowGuestRegistration,
+        registrationDeadline: registrationDeadline || null,
       }),
     });
     setSaving(false);
@@ -304,6 +316,18 @@ function EditTournamentInline({
         <input value={entryFee} onChange={(e) => setEntryFee(e.target.value)} type="number" className={fieldClass} placeholder="Entry fee" />
         <input value={hostingFee} onChange={(e) => setHostingFee(e.target.value)} type="number" className={fieldClass} placeholder="Hosting fee" />
         <input value={maxSlots} onChange={(e) => setMaxSlots(e.target.value)} type="number" className={fieldClass} placeholder="Max slots" />
+      </div>
+
+      <div>
+        <label className="block text-xs font-bold uppercase tracking-wide text-neutral-500">
+          Registration closes (blank = never auto-closes)
+        </label>
+        <input
+          value={registrationDeadline}
+          onChange={(e) => setRegistrationDeadline(e.target.value)}
+          type="datetime-local"
+          className={`mt-1 ${fieldClass}`}
+        />
       </div>
 
       <div className="rounded-md border border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-900">

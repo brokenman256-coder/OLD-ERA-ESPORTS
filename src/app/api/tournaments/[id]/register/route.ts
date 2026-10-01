@@ -22,6 +22,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!tournament || tournament.status !== APPROVAL.APPROVED) {
       return NextResponse.json({ error: "Tournament not found" }, { status: 404 });
     }
+    if (tournament.registrationDeadline && tournament.registrationDeadline.getTime() < Date.now()) {
+      return NextResponse.json({ error: "Registration has closed for this tournament" }, { status: 403 });
+    }
 
     const existing = await prisma.registration.findUnique({
       where: { tournamentId_playerId: { tournamentId: id, playerId: user.id } },

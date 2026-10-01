@@ -55,6 +55,7 @@ export function publicTournament(t: Tournament & { organizer?: User }) {
     paymentUpiId: t.paymentUpiId,
     paymentQrUrl: t.paymentQrUrl,
     allowGuestRegistration: t.allowGuestRegistration,
+    registrationDeadline: t.registrationDeadline,
     organizer: t.organizer
       ? {
           id: t.organizer.id,
