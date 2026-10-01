@@ -251,7 +251,11 @@ export default async function TournamentDetailPage({
               </div>
             )
           ) : user.role !== ROLES.PLAYER ? (
-            <p className="text-sm text-neutral-500">Only player accounts can register for tournaments.</p>
+            <p className="text-sm text-neutral-500">
+              Only player accounts can register for tournaments.
+              {tournament.allowGuestRegistration &&
+                " You're currently logged in — log out (or open this link in a private/incognito window) to see the no-signup registration form other visitors get."}
+            </p>
           ) : existingRegistration ? (
             <div className="glass-panel clip-corner p-6">
               <p className="font-medium">

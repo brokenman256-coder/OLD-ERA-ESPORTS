@@ -11,7 +11,7 @@ function timeParts(target: number) {
   return { diff, days, hours, minutes, seconds };
 }
 
-export default function Countdown({ startDate }: { startDate: string | Date }) {
+export default function Countdown({ startDate, label = "Match starts in" }: { startDate: string | Date; label?: string }) {
   const target = new Date(startDate).getTime();
   const [parts, setParts] = useState(() => timeParts(target));
 
@@ -33,7 +33,7 @@ export default function Countdown({ startDate }: { startDate: string | Date }) {
 
   return (
     <div className="flex items-center gap-4 glass-panel clip-corner px-4 py-3">
-      <span className="text-sm font-medium text-neutral-500">Starts in</span>
+      <span className="text-sm font-medium text-neutral-500">{label}</span>
       <div className="flex gap-3">
         {unit(parts.days, "days")}
         {unit(parts.hours, "hrs")}
