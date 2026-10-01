@@ -16,8 +16,25 @@ interface Me {
   websiteUrl: string | null;
   gmail: string | null;
   gameUid: string | null;
+  defaultSquad: { name: string; gameId: string; instagram: string; whatsapp: string }[] | null;
+  organizerUpiId: string | null;
+  organizerQrUrl: string | null;
   emailVerified: boolean;
 }
+
+interface SquadMember {
+  name: string;
+  gameId: string;
+  instagram: string;
+  whatsapp: string;
+}
+
+const EMPTY_SQUAD: SquadMember[] = [
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+];
 
 export default function AccountPage() {
   const [me, setMe] = useState<Me | null>(null);
@@ -40,6 +57,16 @@ export default function AccountPage() {
   const [pwMessage, setPwMessage] = useState<{ type: "error" | "success"; text: string } | null>(null);
   const [pwLoading, setPwLoading] = useState(false);
 
+  const [squad, setSquad] = useState<SquadMember[]>(EMPTY_SQUAD);
+  const [squadMsg, setSquadMsg] = useState<{ type: "error" | "success"; text: string } | null>(null);
+  const [squadSaving, setSquadSaving] = useState(false);
+
+  const [organizerUpiId, setOrganizerUpiId] = useState("");
+  const [organizerQrUrl, setOrganizerQrUrl] = useState<string | null>(null);
+  const [organizerQrUploading, setOrganizerQrUploading] = useState(false);
+  const [paymentMsg, setPaymentMsg] = useState<{ type: "error" | "success"; text: string } | null>(null);
+  const [paymentSaving, setPaymentSaving] = useState(false);
+
   const [otpEnabled, setOtpEnabled] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [otpCode, setOtpCode] = useState("");
@@ -60,6 +87,11 @@ export default function AccountPage() {
         setWebsiteUrl(data.user.websiteUrl ?? "");
         setGmail(data.user.gmail ?? "");
         setGameUid(data.user.gameUid ?? "");
+        if (Array.isArray(data.user.defaultSquad) && data.user.defaultSquad.length === 4) {
+          setSquad(data.user.defaultSquad);
+        }
+        setOrganizerUpiId(data.user.organizerUpiId ?? "");
+        setOrganizerQrUrl(data.user.organizerQrUrl ?? null);
       });
     fetch("/api/settings")
       .then((res) => res.json())
@@ -112,6 +144,58 @@ export default function AccountPage() {
     if (res.ok) {
       setMe((prev) => (prev ? { ...prev, avatarUrl: data.avatarUrl } : prev));
     }
+  }
+
+  function updateSquadMember(index: number, field: keyof SquadMember, value: string) {
+    setSquad((prev) => prev.map((m, i) => (i === index ? { ...m, [field]: value } : m)));
+  }
+
+  async function handleSquadSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSquadMsg(null);
+    setSquadSaving(true);
+    const res = await fetch("/api/me/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ defaultSquad: squad }),
+    });
+    const data = await res.json();
+    setSquadSaving(false);
+    if (!res.ok) {
+      setSquadMsg({ type: "error", text: data.error ?? "Something went wrong" });
+      return;
+    }
+    setSquadMsg({ type: "success", text: "Squad saved — it'll auto-fill your next registration." });
+  }
+
+  async function handlePaymentSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setPaymentMsg(null);
+    setPaymentSaving(true);
+    const res = await fetch("/api/me/profile", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ organizerUpiId }),
+    });
+    const data = await res.json();
+    setPaymentSaving(false);
+    if (!res.ok) {
+      setPaymentMsg({ type: "error", text: data.error ?? "Something went wrong" });
+      return;
+    }
+    setPaymentMsg({ type: "success", text: "Payment details saved." });
+  }
+
+  async function handleOrganizerQrChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setOrganizerQrUploading(true);
+    const form = new FormData();
+    form.set("qr", file);
+    const res = await fetch("/api/me/organizer-qr", { method: "POST", body: form });
+    const data = await res.json();
+    setOrganizerQrUploading(false);
+    if (res.ok) setOrganizerQrUrl(data.organizerQrUrl);
   }
 
   async function handleProfileSubmit(e: React.FormEvent) {
@@ -265,6 +349,109 @@ export default function AccountPage() {
           {profileSaving ? "Saving..." : "Save profile"}
         </button>
       </form>
+
+      {me.role === "PLAYER" && (
+        <form onSubmit={handleSquadSubmit} className="mt-6 space-y-4 rounded-lg border border-neutral-200 p-5 dark:border-neutral-800">
+          <h2 className="font-bold">Your squad</h2>
+          <p className="text-sm text-neutral-500">
+            Save this once and it auto-fills every tournament registration you make.
+          </p>
+          <div className="space-y-3">
+            {squad.map((member, i) => (
+              <div key={i} className="space-y-2 rounded-md border border-neutral-200 p-3 dark:border-neutral-800">
+                <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">Player {i + 1}</p>
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <input
+                    value={member.name}
+                    onChange={(e) => updateSquadMember(i, "name", e.target.value)}
+                    placeholder="Name"
+                    required
+                    className="rounded-md premium-input px-3 py-2 text-sm"
+                  />
+                  <input
+                    value={member.gameId}
+                    onChange={(e) => updateSquadMember(i, "gameId", e.target.value)}
+                    placeholder="In-game UID"
+                    required
+                    className="rounded-md premium-input px-3 py-2 text-sm"
+                  />
+                  <input
+                    value={member.whatsapp}
+                    onChange={(e) => updateSquadMember(i, "whatsapp", e.target.value)}
+                    placeholder="WhatsApp number"
+                    type="tel"
+                    required
+                    className="rounded-md premium-input px-3 py-2 text-sm"
+                  />
+                  <input
+                    value={member.instagram}
+                    onChange={(e) => updateSquadMember(i, "instagram", e.target.value)}
+                    placeholder="Instagram ID"
+                    required
+                    className="rounded-md premium-input px-3 py-2 text-sm"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+          {squadMsg && (
+            <p className={`text-sm ${squadMsg.type === "error" ? "text-red-600" : "text-green-600"}`}>{squadMsg.text}</p>
+          )}
+          <button
+            disabled={squadSaving}
+            className="w-full clip-corner-sm premium-btn px-4 py-2 font-bold uppercase tracking-wide"
+          >
+            {squadSaving ? "Saving..." : "Save squad"}
+          </button>
+        </form>
+      )}
+
+      {me.role === "ORGANIZER" && (
+        <form onSubmit={handlePaymentSubmit} className="mt-6 space-y-4 rounded-lg border border-neutral-200 p-5 dark:border-neutral-800">
+          <h2 className="font-bold">Payment details</h2>
+          <p className="text-sm text-neutral-500">
+            Shown to players on your tournaments unless you set a different UPI ID/QR for a specific one.
+          </p>
+          <p className="rounded-md border border-amber-400/30 bg-amber-400/5 p-3 text-xs text-amber-300">
+            Vantix keeps a 10% commission from each paid team registration — the remaining 90% is
+            credited to your wallet once a payment is verified.
+          </p>
+          <div>
+            <label className="block text-sm font-medium">UPI ID</label>
+            <input
+              value={organizerUpiId}
+              onChange={(e) => setOrganizerUpiId(e.target.value)}
+              placeholder="yourname@upi"
+              className="mt-1 w-full rounded-md premium-input px-3 py-2"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium">Payment QR code</label>
+            {organizerQrUrl && (
+              <div className="mt-2 flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element -- admin-uploaded QR image */}
+                <img src={organizerQrUrl} alt="Payment QR" className="h-24 w-24 rounded-md border object-contain" />
+              </div>
+            )}
+            <input
+              type="file"
+              accept="image/png,image/jpeg,image/webp"
+              onChange={handleOrganizerQrChange}
+              className="mt-2 w-full text-sm"
+            />
+            {organizerQrUploading && <p className="mt-1 text-xs text-neutral-500">Uploading...</p>}
+          </div>
+          {paymentMsg && (
+            <p className={`text-sm ${paymentMsg.type === "error" ? "text-red-600" : "text-green-600"}`}>{paymentMsg.text}</p>
+          )}
+          <button
+            disabled={paymentSaving}
+            className="w-full clip-corner-sm premium-btn px-4 py-2 font-bold uppercase tracking-wide"
+          >
+            {paymentSaving ? "Saving..." : "Save payment details"}
+          </button>
+        </form>
+      )}
 
       <form onSubmit={handlePasswordSubmit} className="mt-6 space-y-4 rounded-lg border border-neutral-200 p-5 dark:border-neutral-800">
         <h2 className="font-bold">Password</h2>

@@ -6,6 +6,9 @@ import { ROLES } from "@/lib/constants";
 import StatusBadge from "@/components/StatusBadge";
 import CreateTournamentForm from "@/components/CreateTournamentForm";
 import RoomDetailsForm from "@/components/RoomDetailsForm";
+import OrganizerTournamentSupportPanel from "@/components/OrganizerTournamentSupportPanel";
+import AnnouncementComposer from "@/components/AnnouncementComposer";
+import VerifiedBadge from "@/components/VerifiedBadge";
 import { APPROVAL } from "@/lib/constants";
 
 export default async function OrganizerDashboard() {
@@ -28,10 +31,27 @@ export default async function OrganizerDashboard() {
       <p className="skew-x-[-6deg] bg-gradient-to-r from-orange-300 via-amber-400 to-yellow-400 bg-clip-text text-xs font-black uppercase tracking-[0.35em] text-transparent">
         Organizer Dashboard
       </p>
-      <h1 className="section-title mt-2 text-3xl font-black uppercase tracking-wide">
+      <h1 className="section-title mt-2 flex items-center gap-2 text-3xl font-black uppercase tracking-wide">
         {user.firmName || user.name}
+        {user.isVerified && <VerifiedBadge label="Verified" variant="organizer" />}
       </h1>
       <p className="mt-1 text-neutral-500">{user.firmName ? user.name : ""}</p>
+
+      {(user.isVerified || user.role === ROLES.ADMIN) && (
+        <div className="mt-6 glass-panel clip-corner p-5">
+          <h2 className="font-bold">Send an announcement</h2>
+          <p className="mt-1 text-sm text-neutral-500">
+            Verified-organizer perk: broadcast an update to every player on the site.
+          </p>
+          <div className="mt-4">
+            <AnnouncementComposer
+              tournaments={tournaments
+                .filter((t) => t.status === APPROVAL.APPROVED)
+                .map((t) => ({ id: t.id, title: t.title }))}
+            />
+          </div>
+        </div>
+      )}
 
       <div className="mt-6">
         <CreateTournamentForm />
@@ -76,11 +96,15 @@ export default async function OrganizerDashboard() {
                 </a>
               )}
               {t.status === APPROVAL.APPROVED && (
-                <RoomDetailsForm
-                  tournamentId={t.id}
-                  initialRoomId={t.roomId}
-                  initialRoomPassword={t.roomPassword}
-                />
+                <>
+                  <RoomDetailsForm
+                    tournamentId={t.id}
+                    initialRoomId={t.roomId}
+                    initialRoomPassword={t.roomPassword}
+                    initialRoomLink={t.roomLink}
+                  />
+                  <OrganizerTournamentSupportPanel tournamentId={t.id} />
+                </>
               )}
             </div>
           ))}

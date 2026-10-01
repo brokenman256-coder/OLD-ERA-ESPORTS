@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { hashPassword, signSession } from "@/lib/auth";
 import { ROLES, SESSION_COOKIE } from "@/lib/constants";
+import { saveQrCode, UploadError } from "@/lib/upload";
 
 const schema = z.object({
   name: z.string().min(2).max(100),
@@ -17,16 +18,30 @@ const schema = z.object({
   firmName: z.string().max(200).optional(),
   phone: z.string().max(30).optional(),
   gameUid: z.string().max(50).optional(),
+  organizerUpiId: z.string().max(100).optional(),
 });
 
 export async function POST(req: NextRequest) {
-  const body = await req.json().catch(() => null);
-  const parsed = schema.safeParse(body);
+  const form = await req.formData().catch(() => null);
+  if (!form) return NextResponse.json({ error: "Invalid input" }, { status: 400 });
+
+  const raw = {
+    name: String(form.get("name") ?? ""),
+    email: String(form.get("email") ?? ""),
+    password: String(form.get("password") ?? ""),
+    role: String(form.get("role") ?? ""),
+    firmName: form.get("firmName") ? String(form.get("firmName")) : undefined,
+    phone: form.get("phone") ? String(form.get("phone")) : undefined,
+    gameUid: form.get("gameUid") ? String(form.get("gameUid")) : undefined,
+    organizerUpiId: form.get("organizerUpiId") ? String(form.get("organizerUpiId")) : undefined,
+  };
+
+  const parsed = schema.safeParse(raw);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.issues[0]?.message ?? "Invalid input" }, { status: 400 });
   }
 
-  const { name, email, password, role, firmName, phone, gameUid } = parsed.data;
+  const { name, email, password, role, firmName, phone, gameUid, organizerUpiId } = parsed.data;
 
   if (role === ROLES.ORGANIZER && !firmName?.trim()) {
     return NextResponse.json({ error: "Firm / company name is required for organizers" }, { status: 400 });
@@ -36,6 +51,44 @@ export async function POST(req: NextRequest) {
   }
   if (role === ROLES.PLAYER && !gameUid?.trim()) {
     return NextResponse.json({ error: "Your BGMI UID is required to register as a player" }, { status: 400 });
+  }
+
+  let defaultSquad: { name: string; gameId: string; instagram: string; whatsapp: string }[] | null = null;
+  if (role === ROLES.PLAYER) {
+    try {
+      defaultSquad = JSON.parse(String(form.get("squadMembers") ?? "[]"));
+    } catch {
+      defaultSquad = [];
+    }
+    if (
+      !Array.isArray(defaultSquad) ||
+      defaultSquad.length !== 4 ||
+      defaultSquad.some(
+        (m) => !m?.name?.trim() || !m?.gameId?.trim() || !m?.instagram?.trim() || !m?.whatsapp?.trim()
+      )
+    ) {
+      return NextResponse.json(
+        { error: "Please provide the name, in-game ID, Instagram ID, and WhatsApp number for all 4 squad members" },
+        { status: 400 }
+      );
+    }
+  }
+
+  let organizerQrUrl: string | null = null;
+  if (role === ROLES.ORGANIZER) {
+    if (!organizerUpiId?.trim()) {
+      return NextResponse.json({ error: "Your UPI ID is required to register as an organizer" }, { status: 400 });
+    }
+    const qrFile = form.get("organizerQr");
+    if (!(qrFile instanceof File) || qrFile.size === 0) {
+      return NextResponse.json({ error: "A payment QR code is required to register as an organizer" }, { status: 400 });
+    }
+    try {
+      organizerQrUrl = await saveQrCode(qrFile);
+    } catch (err) {
+      if (err instanceof UploadError) return NextResponse.json({ error: err.message }, { status: 400 });
+      throw err;
+    }
   }
 
   const existing = await prisma.user.findUnique({ where: { email: email.toLowerCase() } });
@@ -54,6 +107,9 @@ export async function POST(req: NextRequest) {
       firmName: role === ROLES.ORGANIZER ? firmName : null,
       phone,
       gameUid: role === ROLES.PLAYER ? gameUid?.trim() : null,
+      defaultSquad: role === ROLES.PLAYER ? defaultSquad ?? undefined : undefined,
+      organizerUpiId: role === ROLES.ORGANIZER ? organizerUpiId?.trim() : null,
+      organizerQrUrl: role === ROLES.ORGANIZER ? organizerQrUrl : null,
     },
   });
 

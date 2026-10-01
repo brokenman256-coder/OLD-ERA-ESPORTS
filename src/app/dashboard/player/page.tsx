@@ -5,6 +5,7 @@ import { prisma } from "@/lib/db";
 import { ROLES } from "@/lib/constants";
 import StatusBadge from "@/components/StatusBadge";
 import PlayerMatchesSection from "@/components/PlayerMatchesSection";
+import AnnouncementsFeed from "@/components/AnnouncementsFeed";
 
 export default async function PlayerDashboard() {
   const user = await getCurrentUser();
@@ -29,6 +30,11 @@ export default async function PlayerDashboard() {
         <Link href="/tournaments" className="text-sm font-bold text-orange-400 hover:underline">
           Browse tournaments →
         </Link>
+      </div>
+
+      <h2 className="section-title mt-10 text-xl font-black uppercase tracking-wide">Announcements</h2>
+      <div className="mt-4">
+        <AnnouncementsFeed />
       </div>
 
       {registrations.length === 0 ? (

@@ -31,6 +31,14 @@ model User {
   websiteUrl    String?
   gmail         String? // linked Gmail / Google contact address, shown on the public profile
   gameUid       String? // BGMI in-game UID, collected at signup for player identity verification
+  // Player's default 4-player squad, collected at signup: [{ name, gameId, instagram, whatsapp }].
+  // Auto-fills every tournament registration so a returning player doesn't retype it.
+  defaultSquad  Json?
+  // Organizer payment details, collected at signup and used as the default
+  // payment method shown on their tournaments' registration forms (a
+  // tournament's own paymentUpiId/paymentQrUrl overrides this if set).
+  organizerUpiId String?
+  organizerQrUrl String?
   isVerified    Boolean  @default(false) // verified-organizer / notable-player badge
   isBot         Boolean  @default(false) // system-controlled account (tournament/registration bots); admin-visible only
   isGuest       Boolean  @default(false) // auto-created for a no-login quick registration; admin-visible only, can't log in meaningfully
@@ -58,10 +66,50 @@ model User {
   captainOfTeams     Team[]              @relation("TeamCaptain")
   teamMemberships    TeamMember[]
   supportMessages    SupportMessage[]
+  tournamentSupportMessages TournamentSupportMessage[]
+  announcements      Announcement[]
   playerMatches      PlayerMatch[]       @relation("PlayerMatchCreator")
   walletTransactions WalletTransaction[]
   walletTopUps       WalletTopUp[]
   withdrawalRequests WithdrawalRequest[]
+}
+
+// Per-tournament help center: one thread per (tournament, player) pair. The
+// player raises requests here and the tournament's organizer is responsible
+// for answering — separate from the site-wide SupportMessage thread to admin.
+model TournamentSupportMessage {
+  id           String     @id @default(cuid())
+  tournamentId String
+  tournament   Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  body          String
+  fromOrganizer Boolean @default(false) // false = message from the player, true = reply from the organizer/admin
+  read          Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([tournamentId])
+  @@index([userId])
+}
+
+// A broadcast update from a verified organizer (or admin), always tied to one
+// of their own tournaments, shown to every player in a shared feed.
+model Announcement {
+  id           String      @id @default(cuid())
+  organizerId  String
+  organizer    User        @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  tournamentId String?
+  tournament   Tournament? @relation(fields: [tournamentId], references: [id], onDelete: SetNull)
+
+  body String
+
+  createdAt DateTime @default(now())
+
+  @@index([organizerId])
+  @@index([tournamentId])
 }
 
 model Team {
@@ -144,6 +192,8 @@ model Tournament {
 
   registrations Registration[]
   matches       Match[]
+  supportMessages TournamentSupportMessage[]
+  announcements   Announcement[]
 }
 
 model Registration {

@@ -76,6 +76,19 @@ export default function RegisterForm({
       .then((res) => res.json())
       .then((data) => setWalletBalance(typeof data.balance === "number" ? data.balance : null))
       .catch(() => setWalletBalance(null));
+    // Auto-pick the player's saved squad/contact details so returning players
+    // can just hit Register without retyping everything.
+    fetch("/api/me")
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.user) return;
+        if (Array.isArray(data.user.defaultSquad) && data.user.defaultSquad.length === 4) {
+          setSquad(data.user.defaultSquad);
+        }
+        if (data.user.phone) setContactPhone((prev) => prev || data.user.phone);
+        if (data.user.email) setContactEmail((prev) => prev || data.user.email);
+      })
+      .catch(() => {});
   }, []);
 
   function selectTeam(id: string) {

@@ -4,6 +4,22 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+interface SquadMember {
+  name: string;
+  gameId: string;
+  instagram: string;
+  whatsapp: string;
+}
+
+const EMPTY_SQUAD: SquadMember[] = [
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+];
+
+const inputClass = "mt-1.5 w-full rounded-md premium-input px-3 py-2";
+
 export default function RegisterPage() {
   const [role, setRole] = useState<"PLAYER" | "ORGANIZER">("PLAYER");
   const [name, setName] = useState("");
@@ -12,20 +28,57 @@ export default function RegisterPage() {
   const [firmName, setFirmName] = useState("");
   const [phone, setPhone] = useState("");
   const [gameUid, setGameUid] = useState("");
+  const [squad, setSquad] = useState<SquadMember[]>(EMPTY_SQUAD);
+  const [organizerUpiId, setOrganizerUpiId] = useState("");
+  const [organizerQr, setOrganizerQr] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
+  function updateMember(index: number, field: keyof SquadMember, value: string) {
+    setSquad((prev) => prev.map((m, i) => (i === index ? { ...m, [field]: value } : m)));
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
-    setLoading(true);
 
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password, role, firmName, phone, gameUid }),
-    });
+    if (role === "PLAYER" && squad.some((m) => !m.name.trim() || !m.gameId.trim() || !m.instagram.trim() || !m.whatsapp.trim())) {
+      setError("Please fill in the name, in-game ID, Instagram ID, and WhatsApp number for all 4 squad members.");
+      return;
+    }
+    if (role === "ORGANIZER" && !organizerQr) {
+      setError("Please upload your payment QR code.");
+      return;
+    }
+
+    setLoading(true);
+    const form = new FormData();
+    form.set("name", name);
+    form.set("email", email);
+    form.set("password", password);
+    form.set("role", role);
+    form.set("phone", phone);
+    if (role === "ORGANIZER") {
+      form.set("firmName", firmName);
+      form.set("organizerUpiId", organizerUpiId);
+      if (organizerQr) form.set("organizerQr", organizerQr);
+    } else {
+      form.set("gameUid", gameUid);
+      form.set(
+        "squadMembers",
+        JSON.stringify(
+          squad.map((m) => ({
+            name: m.name.trim(),
+            gameId: m.gameId.trim(),
+            instagram: m.instagram.trim(),
+            whatsapp: m.whatsapp.trim(),
+          }))
+        )
+      );
+    }
+
+    const res = await fetch("/api/auth/register", { method: "POST", body: form });
     const data = await res.json();
     setLoading(false);
 
@@ -79,7 +132,7 @@ export default function RegisterPage() {
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="mt-1.5 w-full rounded-md premium-input px-3 py-2"
+              className={inputClass}
             />
           </div>
 
@@ -93,7 +146,7 @@ export default function RegisterPage() {
                 required
                 value={firmName}
                 onChange={(e) => setFirmName(e.target.value)}
-                className="mt-1.5 w-full rounded-md premium-input px-3 py-2"
+                className={inputClass}
                 placeholder="e.g. Phoenix Gaming Pvt Ltd"
               />
             </div>
@@ -106,7 +159,7 @@ export default function RegisterPage() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1.5 w-full rounded-md premium-input px-3 py-2"
+              className={inputClass}
             />
           </div>
 
@@ -117,25 +170,110 @@ export default function RegisterPage() {
               required
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
-              className="mt-1.5 w-full rounded-md premium-input px-3 py-2"
+              className={inputClass}
             />
           </div>
 
           {role === "PLAYER" && (
-            <div>
-              <label className="block text-xs font-bold uppercase tracking-wide text-neutral-400">BGMI UID</label>
-              <input
-                type="text"
-                required
-                value={gameUid}
-                onChange={(e) => setGameUid(e.target.value)}
-                className="mt-1.5 w-full rounded-md premium-input px-3 py-2"
-                placeholder="e.g. 5123456789"
-              />
-              <p className="mt-1 text-xs text-neutral-500">
-                Your in-game UID — used to verify it&apos;s really you when you win.
-              </p>
-            </div>
+            <>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wide text-neutral-400">BGMI UID</label>
+                <input
+                  type="text"
+                  required
+                  value={gameUid}
+                  onChange={(e) => setGameUid(e.target.value)}
+                  className={inputClass}
+                  placeholder="e.g. 5123456789"
+                />
+                <p className="mt-1 text-xs text-neutral-500">
+                  Your in-game UID — used to verify it&apos;s really you when you win.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <label className="block text-xs font-bold uppercase tracking-wide text-neutral-400">
+                  Your squad — all 4 players required
+                </label>
+                <p className="text-xs text-neutral-500">
+                  Set this once and we&apos;ll auto-fill it on every tournament you register for.
+                </p>
+                {squad.map((member, i) => (
+                  <div key={i} className="space-y-2 rounded-md border border-white/10 p-3">
+                    <p className="text-[11px] font-bold uppercase tracking-wide text-neutral-500">Player {i + 1}</p>
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      <input
+                        value={member.name}
+                        onChange={(e) => updateMember(i, "name", e.target.value)}
+                        placeholder="Name"
+                        required
+                        className="rounded-md premium-input px-3 py-2 text-sm"
+                      />
+                      <input
+                        value={member.gameId}
+                        onChange={(e) => updateMember(i, "gameId", e.target.value)}
+                        placeholder="In-game UID"
+                        required
+                        className="rounded-md premium-input px-3 py-2 text-sm"
+                      />
+                      <input
+                        value={member.whatsapp}
+                        onChange={(e) => updateMember(i, "whatsapp", e.target.value)}
+                        placeholder="WhatsApp number"
+                        type="tel"
+                        required
+                        className="rounded-md premium-input px-3 py-2 text-sm"
+                      />
+                      <input
+                        value={member.instagram}
+                        onChange={(e) => updateMember(i, "instagram", e.target.value)}
+                        placeholder="Instagram ID"
+                        required
+                        className="rounded-md premium-input px-3 py-2 text-sm"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+
+          {role === "ORGANIZER" && (
+            <>
+              <div className="rounded-md border border-amber-400/30 bg-amber-400/5 p-3 text-xs text-amber-300">
+                Vantix keeps a 10% commission from each paid team registration on your tournaments —
+                the remaining 90% is credited to your Vantix wallet once a payment is verified, and
+                you can withdraw it any time.
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wide text-neutral-400">
+                  Your payment UPI ID
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={organizerUpiId}
+                  onChange={(e) => setOrganizerUpiId(e.target.value)}
+                  className={inputClass}
+                  placeholder="yourname@upi"
+                />
+                <p className="mt-1 text-xs text-neutral-500">
+                  Shown to players on your tournaments unless you set a different one per tournament.
+                </p>
+              </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wide text-neutral-400">
+                  Payment QR code
+                </label>
+                <input
+                  type="file"
+                  required
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(e) => setOrganizerQr(e.target.files?.[0] ?? null)}
+                  className="mt-1.5 w-full text-sm"
+                />
+              </div>
+            </>
           )}
 
           <div>
@@ -148,7 +286,7 @@ export default function RegisterPage() {
               title="At least 8 characters, with at least one letter and one number"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1.5 w-full rounded-md premium-input px-3 py-2"
+              className={inputClass}
             />
             <p className="mt-1 text-xs text-neutral-500">At least 8 characters, with a letter and a number.</p>
           </div>

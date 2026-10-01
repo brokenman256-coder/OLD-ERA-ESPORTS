@@ -12,6 +12,7 @@ const EDITABLE_FIELDS = [
   "gmail",
   "firmName",
   "gameUid",
+  "organizerUpiId",
 ] as const;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -25,6 +26,7 @@ export async function PATCH(req: NextRequest) {
   const data: Record<string, unknown> = {};
   for (const field of EDITABLE_FIELDS) {
     if (field === "firmName" && user.role !== ROLES.ORGANIZER) continue;
+    if (field === "organizerUpiId" && user.role !== ROLES.ORGANIZER) continue;
     if (field === "gameUid" && user.role !== ROLES.PLAYER) continue;
     if (field in body) data[field] = String(body[field] ?? "").slice(0, 2000) || null;
   }
@@ -35,6 +37,25 @@ export async function PATCH(req: NextRequest) {
 
   if (typeof data.gmail === "string" && !EMAIL_PATTERN.test(data.gmail)) {
     return NextResponse.json({ error: "Please enter a valid email address" }, { status: 400 });
+  }
+
+  if (user.role === ROLES.PLAYER && Array.isArray(body.defaultSquad)) {
+    const squad = body.defaultSquad as { name?: string; gameId?: string; instagram?: string; whatsapp?: string }[];
+    if (
+      squad.length !== 4 ||
+      squad.some((m) => !m?.name?.trim() || !m?.gameId?.trim() || !m?.instagram?.trim() || !m?.whatsapp?.trim())
+    ) {
+      return NextResponse.json(
+        { error: "Please provide the name, in-game ID, Instagram ID, and WhatsApp number for all 4 squad members" },
+        { status: 400 }
+      );
+    }
+    data.defaultSquad = squad.map((m) => ({
+      name: m.name!.trim(),
+      gameId: m.gameId!.trim(),
+      instagram: m.instagram!.trim(),
+      whatsapp: m.whatsapp!.trim(),
+    }));
   }
 
   const updated = await prisma.user.update({ where: { id: user.id }, data });
@@ -53,6 +74,9 @@ export async function PATCH(req: NextRequest) {
       websiteUrl: updated.websiteUrl,
       gmail: updated.gmail,
       gameUid: updated.gameUid,
+      defaultSquad: updated.defaultSquad,
+      organizerUpiId: updated.organizerUpiId,
+      organizerQrUrl: updated.organizerQrUrl,
       isVerified: updated.isVerified,
     },
   });

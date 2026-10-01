@@ -8,6 +8,7 @@ import StatusBadge from "@/components/StatusBadge";
 import RegisterForm from "@/components/RegisterForm";
 import GuestRegisterForm from "@/components/GuestRegisterForm";
 import ResultSubmitForm from "@/components/ResultSubmitForm";
+import TournamentHelpCenter from "@/components/TournamentHelpCenter";
 import Countdown from "@/components/Countdown";
 import TagPills from "@/components/TagPills";
 import VerifiedBadge from "@/components/VerifiedBadge";
@@ -315,6 +316,10 @@ export default async function TournamentDetailPage({
               entryFee={tournament.entryFee}
               payment={{ paymentUpiId: tournament.paymentUpiId, paymentQrUrl: tournament.paymentQrUrl }}
             />
+          )}
+
+          {user && user.role === ROLES.PLAYER && tournament.status === APPROVAL.APPROVED && (
+            <TournamentHelpCenter tournamentId={tournament.id} />
           )}
         </div>
       </div>

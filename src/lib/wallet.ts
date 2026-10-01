@@ -35,13 +35,18 @@ export async function creditWallet(
   });
 }
 
+// Vantix keeps a 10% commission on every paid team registration; the
+// organizer's wallet is credited the remaining 90%.
+export const ORGANIZER_PAYOUT_SHARE = 0.9;
+
 // Entry fees for a real organizer's tournament are paid to Vantix directly
 // (via the platform's own UPI, or a player's Vantix wallet), so the organizer
 // never sees that money change hands — this is how it reaches them instead:
-// once a paid registration is verified, we credit their Vantix wallet for the
-// entry fee, and they cash out later via a withdrawal request. Bot-organized
-// filler tournaments never earn real money, so isBotOrganizer short-circuits
-// both the credit and its reversal.
+// once a paid registration is verified, we credit their Vantix wallet for
+// 90% of the entry fee (Vantix keeps the other 10% as commission), and they
+// cash out later via a withdrawal request. Bot-organized filler tournaments
+// never earn real money, so isBotOrganizer short-circuits both the credit
+// and its reversal.
 export async function creditOrganizerEarning(
   organizerId: string,
   isBotOrganizer: boolean,
@@ -49,7 +54,8 @@ export async function creditOrganizerEarning(
   note: string
 ) {
   if (isBotOrganizer || amount <= 0) return;
-  await creditWallet(organizerId, amount, "ORGANIZER_EARNING", note);
+  const payout = Math.round(amount * ORGANIZER_PAYOUT_SHARE * 100) / 100;
+  await creditWallet(organizerId, payout, "ORGANIZER_EARNING", `${note} (90% after 10% platform commission)`);
 }
 
 export async function reverseOrganizerEarning(
@@ -59,7 +65,8 @@ export async function reverseOrganizerEarning(
   note: string
 ) {
   if (isBotOrganizer || amount <= 0) return;
-  await creditWallet(organizerId, -amount, "ORGANIZER_EARNING_REVERSAL", note);
+  const payout = Math.round(amount * ORGANIZER_PAYOUT_SHARE * 100) / 100;
+  await creditWallet(organizerId, -payout, "ORGANIZER_EARNING_REVERSAL", note);
 }
 
 export async function debitWallet(
