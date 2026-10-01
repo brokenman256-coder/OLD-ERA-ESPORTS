@@ -41,6 +41,16 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: "A valid contact phone number is required" }, { status: 400 });
     }
 
+    const contactEmail = String(form.get("contactEmail") ?? "").trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
+      return NextResponse.json({ error: "A valid contact email is required" }, { status: 400 });
+    }
+
+    const instagramHandle = String(form.get("instagramHandle") ?? "").trim();
+    if (!instagramHandle) {
+      return NextResponse.json({ error: "An Instagram handle is required" }, { status: 400 });
+    }
+
     let squadMembers: { name: string; gameId: string }[];
     try {
       squadMembers = JSON.parse(String(form.get("squadMembers") ?? "[]"));
@@ -105,6 +115,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         playerId: guest.id,
         teamName,
         contactPhone: contactPhoneRaw,
+        contactEmail,
+        instagramHandle,
         squadMembers,
         paymentProof,
         utrNumber,

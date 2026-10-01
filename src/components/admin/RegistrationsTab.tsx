@@ -7,6 +7,8 @@ interface Registration {
   id: string;
   teamName: string | null;
   contactPhone: string | null;
+  contactEmail: string | null;
+  instagramHandle: string | null;
   squadMembers: { name: string; gameId: string }[] | null;
   paymentProof: string | null;
   utrNumber: string | null;
@@ -98,6 +100,8 @@ export default function RegistrationsTab() {
                   </p>
                   <p className="mt-1 text-sm">Entry fee: ₹{r.tournament.entryFee}</p>
                   {r.contactPhone && <p className="mt-1 text-sm">Contact: {r.contactPhone}</p>}
+                  {r.contactEmail && <p className="mt-1 text-sm">Email: {r.contactEmail}</p>}
+                  {r.instagramHandle && <p className="mt-1 text-sm">Instagram: {r.instagramHandle}</p>}
                   {r.utrNumber && (
                     <p className="mt-1 text-sm">
                       UTR: <span className="font-mono font-semibold text-orange-400">{r.utrNumber}</span>

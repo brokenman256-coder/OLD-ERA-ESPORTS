@@ -33,6 +33,8 @@ export default function GuestRegisterForm({
   const [teamName, setTeamName] = useState("");
   const [squad, setSquad] = useState<SquadMember[]>(EMPTY_SQUAD);
   const [contactPhone, setContactPhone] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [instagramHandle, setInstagramHandle] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [utrNumber, setUtrNumber] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -49,6 +51,14 @@ export default function GuestRegisterForm({
 
     if (!contactPhone.trim()) {
       setError("A contact phone number is required.");
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail.trim())) {
+      setError("A valid contact email is required.");
+      return;
+    }
+    if (!instagramHandle.trim()) {
+      setError("An Instagram handle is required.");
       return;
     }
     if (squad.some((m) => !m.name.trim() || !m.gameId.trim())) {
@@ -68,6 +78,8 @@ export default function GuestRegisterForm({
     const form = new FormData();
     if (teamName.trim()) form.set("teamName", teamName.trim());
     form.set("contactPhone", contactPhone.trim());
+    form.set("contactEmail", contactEmail.trim());
+    form.set("instagramHandle", instagramHandle.trim());
     form.set("squadMembers", JSON.stringify(squad.map((m) => ({ name: m.name.trim(), gameId: m.gameId.trim() }))));
     if (file) form.set("paymentProof", file);
     if (utrNumber.trim()) form.set("utrNumber", utrNumber.trim());
@@ -138,6 +150,28 @@ export default function GuestRegisterForm({
           type="tel"
           value={contactPhone}
           onChange={(e) => setContactPhone(e.target.value)}
+          required
+          className={inputClass}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Contact email</label>
+        <input
+          type="email"
+          value={contactEmail}
+          onChange={(e) => setContactEmail(e.target.value)}
+          required
+          className={inputClass}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Instagram handle</label>
+        <input
+          value={instagramHandle}
+          onChange={(e) => setInstagramHandle(e.target.value)}
+          placeholder="@yourusername"
           required
           className={inputClass}
         />

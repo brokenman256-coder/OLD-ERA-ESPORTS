@@ -158,6 +158,8 @@ model Registration {
   reviewNote    String?
 
   contactPhone  String? // mandatory contact number collected at registration
+  contactEmail  String? // contact email, collected on the no-login/guest registration form
+  instagramHandle String? // team/player Instagram handle, collected on the no-login/guest registration form
   squadMembers  Json?   // array of exactly 4 { name, gameId } entries
   resultProof   String? // screenshot of the match end result, submitted by the player after the match
   paidWithWallet Boolean @default(false)
