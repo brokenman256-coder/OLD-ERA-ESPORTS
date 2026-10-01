@@ -116,9 +116,14 @@ export default function GuestRegisterForm({
   if (done) {
     return (
       <div className="rounded-md border border-green-300 bg-green-50 p-4 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-300">
-        You&apos;re registered! {entryFee > 0
-          ? "Your payment is pending admin verification — we'll reach out on the phone number you gave if anything's missing."
-          : "Your spot is confirmed."}
+        <p className="font-semibold">
+          Your registration is done! {entryFee > 0 && "Your payment is pending admin verification."}
+        </p>
+        <p className="mt-2 text-sm">
+          The room ID, password, and any match link will be posted right here on this same page once
+          it&apos;s ready — just revisit this link closer to match time. We&apos;ll also reach you by
+          WhatsApp and email with updates.
+        </p>
       </div>
     );
   }

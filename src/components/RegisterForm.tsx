@@ -24,13 +24,15 @@ interface TournamentPayment {
 interface SquadMember {
   name: string;
   gameId: string;
+  instagram: string;
+  whatsapp: string;
 }
 
 const EMPTY_SQUAD: SquadMember[] = [
-  { name: "", gameId: "" },
-  { name: "", gameId: "" },
-  { name: "", gameId: "" },
-  { name: "", gameId: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
+  { name: "", gameId: "", instagram: "", whatsapp: "" },
 ];
 
 const inputClass =
@@ -50,8 +52,10 @@ export default function RegisterForm({
   const [settings, setSettings] = useState<Settings | null>(null);
   const [squad, setSquad] = useState<SquadMember[]>(EMPTY_SQUAD);
   const [contactPhone, setContactPhone] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [utrNumber, setUtrNumber] = useState("");
+  const [payerUpiId, setPayerUpiId] = useState("");
   const [walletBalance, setWalletBalance] = useState<number | null>(null);
   const [payWithWallet, setPayWithWallet] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -82,6 +86,8 @@ export default function RegisterForm({
         Array.from({ length: 4 }, (_, i) => ({
           name: team.members?.[i]?.name ?? "",
           gameId: "",
+          instagram: "",
+          whatsapp: "",
         }))
       );
     }
@@ -103,12 +109,16 @@ export default function RegisterForm({
       setError("Please enter the UTR / transaction reference number for your payment.");
       return;
     }
+    if (entryFee > 0 && !payWithWallet && !payerUpiId.trim()) {
+      setError("Please enter the UPI ID you paid from.");
+      return;
+    }
     if (!contactPhone.trim()) {
       setError("A contact phone number is required.");
       return;
     }
-    if (squad.some((m) => !m.name.trim() || !m.gameId.trim())) {
-      setError("Please fill in the name and in-game ID for all 4 squad members.");
+    if (squad.some((m) => !m.name.trim() || !m.gameId.trim() || !m.instagram.trim() || !m.whatsapp.trim())) {
+      setError("Please fill in the name, in-game ID, Instagram ID, and WhatsApp number for all 4 squad members.");
       return;
     }
 
@@ -116,12 +126,24 @@ export default function RegisterForm({
     const form = new FormData();
     if (teamId) form.set("teamId", teamId);
     form.set("contactPhone", contactPhone.trim());
-    form.set("squadMembers", JSON.stringify(squad.map((m) => ({ name: m.name.trim(), gameId: m.gameId.trim() }))));
+    if (contactEmail.trim()) form.set("contactEmail", contactEmail.trim());
+    form.set(
+      "squadMembers",
+      JSON.stringify(
+        squad.map((m) => ({
+          name: m.name.trim(),
+          gameId: m.gameId.trim(),
+          instagram: m.instagram.trim(),
+          whatsapp: m.whatsapp.trim(),
+        }))
+      )
+    );
     if (payWithWallet) {
       form.set("payWithWallet", "true");
     } else {
       if (file) form.set("paymentProof", file);
       form.set("utrNumber", utrNumber.trim());
+      form.set("payerUpiId", payerUpiId.trim());
     }
 
     const res = await fetch(`/api/tournaments/${tournamentId}/register`, {
@@ -143,9 +165,14 @@ export default function RegisterForm({
   if (done) {
     return (
       <div className="rounded-md border border-green-300 bg-green-50 p-4 text-green-800 dark:border-green-800 dark:bg-green-950 dark:text-green-300">
-        You&apos;re registered! {entryFee > 0 && !payWithWallet
-          ? "Your payment screenshot is pending admin verification."
-          : "Your spot is confirmed."}
+        <p className="font-semibold">
+          Your registration is done! {entryFee > 0 && !payWithWallet && "Your payment is pending admin verification."}
+        </p>
+        <p className="mt-2 text-sm">
+          The room ID, password, and any match link will be posted right here on this same page once
+          it&apos;s ready — just revisit this link closer to match time. We&apos;ll also reach you by
+          WhatsApp and email with updates.
+        </p>
       </div>
     );
   }
@@ -181,24 +208,42 @@ export default function RegisterForm({
         </div>
       )}
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <label className="block text-sm font-medium">Squad — all 4 players required</label>
         {squad.map((member, i) => (
-          <div key={i} className="grid grid-cols-2 gap-3">
-            <input
-              value={member.name}
-              onChange={(e) => updateMember(i, "name", e.target.value)}
-              placeholder={`Player ${i + 1} name`}
-              required
-              className={inputClass}
-            />
-            <input
-              value={member.gameId}
-              onChange={(e) => updateMember(i, "gameId", e.target.value)}
-              placeholder={`Player ${i + 1} in-game ID`}
-              required
-              className={inputClass}
-            />
+          <div key={i} className="space-y-2 rounded-md border border-white/10 p-3">
+            <p className="text-xs font-bold uppercase tracking-wide text-neutral-500">Player {i + 1}</p>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <input
+                value={member.name}
+                onChange={(e) => updateMember(i, "name", e.target.value)}
+                placeholder="Name"
+                required
+                className={inputClass}
+              />
+              <input
+                value={member.gameId}
+                onChange={(e) => updateMember(i, "gameId", e.target.value)}
+                placeholder="In-game UID"
+                required
+                className={inputClass}
+              />
+              <input
+                value={member.whatsapp}
+                onChange={(e) => updateMember(i, "whatsapp", e.target.value)}
+                placeholder="WhatsApp number"
+                type="tel"
+                required
+                className={inputClass}
+              />
+              <input
+                value={member.instagram}
+                onChange={(e) => updateMember(i, "instagram", e.target.value)}
+                placeholder="Instagram ID"
+                required
+                className={inputClass}
+              />
+            </div>
           </div>
         ))}
       </div>
@@ -210,6 +255,16 @@ export default function RegisterForm({
           value={contactPhone}
           onChange={(e) => setContactPhone(e.target.value)}
           required
+          className={inputClass}
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium">Contact email (optional)</label>
+        <input
+          type="email"
+          value={contactEmail}
+          onChange={(e) => setContactEmail(e.target.value)}
           className={inputClass}
         />
       </div>
@@ -269,10 +324,17 @@ export default function RegisterForm({
                 placeholder="e.g. 123456789012"
                 className={inputClass}
               />
+              <label className="mt-3 block text-sm font-medium">Your UPI ID (the one you paid from) — required</label>
+              <input
+                value={payerUpiId}
+                onChange={(e) => setPayerUpiId(e.target.value)}
+                placeholder="yourname@upi"
+                className={inputClass}
+              />
               <p className="mt-1 text-xs text-amber-700 dark:text-amber-400">
-                Upload a screenshot of your ₹{entryFee} payment and enter the UTR number from
-                your UPI app. Our admin will verify it manually before your registration is
-                confirmed.
+                Upload a screenshot of your ₹{entryFee} payment, enter the UTR number from your
+                UPI app, and the UPI ID you paid from. Our admin will verify it manually before
+                your registration is confirmed.
               </p>
             </>
           )}

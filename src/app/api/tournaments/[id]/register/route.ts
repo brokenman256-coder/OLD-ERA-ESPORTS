@@ -60,7 +60,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: "A contact phone number is required" }, { status: 400 });
     }
 
-    let squadMembers: { name: string; gameId: string }[];
+    const contactEmail = String(form.get("contactEmail") ?? "").trim() || user.email;
+
+    let squadMembers: { name: string; gameId: string; instagram: string; whatsapp: string }[];
     try {
       squadMembers = JSON.parse(String(form.get("squadMembers") ?? "[]"));
     } catch {
@@ -69,10 +71,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (
       !Array.isArray(squadMembers) ||
       squadMembers.length !== 4 ||
-      squadMembers.some((m) => !m?.name?.trim() || !m?.gameId?.trim())
+      squadMembers.some(
+        (m) => !m?.name?.trim() || !m?.gameId?.trim() || !m?.instagram?.trim() || !m?.whatsapp?.trim()
+      )
     ) {
       return NextResponse.json(
-        { error: "Please provide the name and in-game ID for all 4 squad members" },
+        { error: "Please provide the name, in-game ID, Instagram ID, and WhatsApp number for all 4 squad members" },
         { status: 400 }
       );
     }
@@ -82,6 +86,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     let paymentProof: string | null = null;
     let paidWithWallet = false;
     let utrNumber: string | null = null;
+    let payerUpiId: string | null = null;
 
     if (tournament.entryFee > 0 && payWithWallet) {
       try {
@@ -105,6 +110,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         paymentProof = await savePaymentScreenshot(proofFile);
       }
       utrNumber = String(form.get("utrNumber") ?? "").trim() || null;
+      payerUpiId = String(form.get("payerUpiId") ?? "").trim() || null;
       if (tournament.entryFee > 0 && !paymentProof) {
         return NextResponse.json(
           { error: "Please upload a payment screenshot for the entry fee, or pay with your wallet" },
@@ -117,6 +123,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
           { status: 400 }
         );
       }
+      if (tournament.entryFee > 0 && !payerUpiId) {
+        return NextResponse.json({ error: "Please enter the UPI ID you paid from" }, { status: 400 });
+      }
     }
 
     const registration = await prisma.registration.create({
@@ -126,9 +135,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         teamName,
         teamId,
         contactPhone,
+        contactEmail,
         squadMembers,
         paymentProof,
         utrNumber,
+        payerUpiId,
         paidWithWallet,
         status: tournament.entryFee > 0 && !paidWithWallet ? APPROVAL.PENDING : APPROVAL.APPROVED,
       },
