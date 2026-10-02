@@ -7,7 +7,7 @@ export async function GET() {
   const user = await getCurrentUser();
   if (!user) return NextResponse.json({ user: null });
 
-  return NextResponse.json({
+  const res = NextResponse.json({
     user: {
       id: user.id,
       name: user.name,
@@ -29,6 +29,20 @@ export async function GET() {
       emailVerified: Boolean(user.emailVerifiedAt),
     },
   });
+
+  // Sliding session: every authenticated page load (the navbar hits this
+  // route on each navigation) resets the 30-day expiry, so an active user
+  // is never silently signed out mid-session.
+  const token = signSession({ userId: user.id, role: user.role, sessionVersion: user.sessionVersion });
+  res.cookies.set(SESSION_COOKIE, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  });
+
+  return res;
 }
 
 export async function PATCH(req: NextRequest) {

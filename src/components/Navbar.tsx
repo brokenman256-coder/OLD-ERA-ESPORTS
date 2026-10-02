@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Avatar from "@/components/Avatar";
 import Logo from "@/components/Logo";
@@ -19,13 +19,18 @@ export default function Navbar() {
   const [user, setUser] = useState<Me | null | undefined>(undefined);
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
+    // The navbar lives in the root layout, so it survives client-side
+    // navigations (login/register redirect via router.push without a full
+    // reload) — re-check auth on every route change so it doesn't keep
+    // showing the logged-out state after a successful login/register.
     fetch("/api/me")
       .then((res) => res.json())
       .then((data) => setUser(data.user))
       .catch(() => setUser(null));
-  }, []);
+  }, [pathname]);
 
   async function logout() {
     await fetch("/api/auth/logout", { method: "POST" });

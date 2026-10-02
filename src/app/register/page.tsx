@@ -241,9 +241,9 @@ export default function RegisterPage() {
           {role === "ORGANIZER" && (
             <>
               <div className="rounded-md border border-amber-400/30 bg-amber-400/5 p-3 text-xs text-amber-300">
-                Vantix keeps a 10% commission from each paid team registration on your tournaments —
-                the remaining 90% is credited to your Vantix wallet once a payment is verified, and
-                you can withdraw it any time.
+                Vantix keeps a 5% commission from each paid team registration on your tournaments —
+                the remaining 95% is credited to your Vantix wallet once a payment is verified, and
+                you can withdraw it any time. Hosting your tournament on Vantix is free.
               </div>
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wide text-neutral-400">

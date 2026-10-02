@@ -21,7 +21,7 @@ interface Settings {
 
 export default function SettingsTab() {
   const [settings, setSettings] = useState<Settings | null>(null);
-  const [hostingFeeAmount, setHostingFeeAmount] = useState("200");
+  const [hostingFeeAmount, setHostingFeeAmount] = useState("0");
   const [upiId, setUpiId] = useState("");
   const [playerUpiId, setPlayerUpiId] = useState("");
   const [whatsappLink, setWhatsappLink] = useState("");

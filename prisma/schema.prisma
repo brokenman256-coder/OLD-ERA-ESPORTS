@@ -275,7 +275,7 @@ model Match {
 
 model SiteSettings {
   id               String   @id @default("global")
-  hostingFeeAmount Float    @default(200)
+  hostingFeeAmount Float    @default(0)
   upiId            String? // organizer-facing UPI ID, for hosting fee payments
   qrCodeUrl        String? // organizer-facing payment QR code
   playerUpiId      String? // player-facing UPI ID, for entry fee payments

@@ -35,7 +35,7 @@ export default function CreateTournamentForm() {
       .catch(() => setWalletBalance(null));
   }, []);
 
-  const hostingFee = settings?.hostingFeeAmount ?? 200;
+  const hostingFee = settings?.hostingFeeAmount ?? 0;
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

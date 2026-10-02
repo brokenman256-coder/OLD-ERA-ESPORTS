@@ -413,7 +413,7 @@ export default function AccountPage() {
             Shown to players on your tournaments unless you set a different UPI ID/QR for a specific one.
           </p>
           <p className="rounded-md border border-amber-400/30 bg-amber-400/5 p-3 text-xs text-amber-300">
-            Vantix keeps a 10% commission from each paid team registration — the remaining 90% is
+            Vantix keeps a 5% commission from each paid team registration — the remaining 95% is
             credited to your wallet once a payment is verified.
           </p>
           <div>
