@@ -33,7 +33,7 @@ export default function AnnouncementComposer({ tournaments }: { tournaments: Tou
       return;
     }
     setBody("");
-    setMessage({ type: "success", text: "Sent to everyone." });
+    setMessage({ type: "success", text: "Sent to everyone registered for this tournament." });
   }
 
   if (tournaments.length === 0) {
@@ -79,7 +79,7 @@ export default function AnnouncementComposer({ tournaments }: { tournaments: Tou
         disabled={sending}
         className="clip-corner-sm premium-btn px-4 py-2 text-sm font-bold uppercase tracking-wide disabled:opacity-50"
       >
-        {sending ? "Sending..." : "Send to everyone"}
+        {sending ? "Sending..." : "Send to registered players"}
       </button>
     </form>
   );

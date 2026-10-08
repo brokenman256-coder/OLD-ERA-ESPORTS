@@ -41,7 +41,7 @@ export default async function OrganizerDashboard() {
         <div className="mt-6 glass-panel clip-corner p-5">
           <h2 className="font-bold">Send an announcement</h2>
           <p className="mt-1 text-sm text-neutral-500">
-            Verified-organizer perk: broadcast an update to every player on the site.
+            Verified-organizer perk: send an update to everyone registered for one of your tournaments.
           </p>
           <div className="mt-4">
             <AnnouncementComposer
